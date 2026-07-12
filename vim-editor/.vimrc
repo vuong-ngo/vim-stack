@@ -1,7 +1,8 @@
 " =========================================================
 " VIMRC - NO PLUGINS, BUILT-IN VIM FEATURES ONLY
 " Full keymap set: file tree, new tab, quit, splits,
-" buffer switching, fuzzy file finder, comment toggle,
+" buffer switching, fuzzy file finder, gc/gcc comment toggle
+" (synced with Neovim's built-in commenting keys),
 " tab navigation, quick config editing, bracket auto-pairing,
 " matchit motion, clipboard sync, auto-reload + cursor restore,
 " custom statusline, integrated terminal, indent guides.
@@ -121,10 +122,18 @@ set wildignore+=*/node_modules/*,*/.git/*,*/dist/*,*/build/*
 nnoremap <leader>p :find<Space>
 
 " =========================================================
-" 7. CTRL + /  (Normal & Visual mode) => COMMENT / UNCOMMENT CODE
+" 7. gc / gcc / gc{motion}  (Normal & Visual mode) => COMMENT / UNCOMMENT
 "    (hand-written function, no commentary-style plugin needed)
+"
+"    SYNCED WITH LAZYVIM: Neovim 0.10+ ships gc/gcc built in
+"    (Treesitter-aware), so this vimrc now uses the SAME keys instead of
+"    Ctrl+/ or Space+/. Those two are now intentionally left unbound
+"    here to match LazyVim, where Ctrl+/ is reserved for the integrated
+"    terminal and Space+/ is Grep Project - keeping either bound to
+"    comment-toggle here would mean the same physical key does two
+"    different things depending on which editor you're in.
 " =========================================================
-function! ToggleComment() range
+function! s:ToggleCommentLines(startline, endline) abort
     " Pick the comment prefix/suffix based on the current filetype.
     " l:ce (comment end) is empty for single-marker languages, and only
     " set for languages that need a closing marker too (e.g. HTML).
@@ -147,7 +156,7 @@ function! ToggleComment() range
     let l:escaped_cs = escape(l:cs, '/\')
     let l:escaped_ce = escape(l:ce, '/\')
 
-    for l:lnum in range(a:firstline, a:lastline)
+    for l:lnum in range(a:startline, a:endline)
         let l:line = getline(l:lnum)
         " Skip fully blank lines so we don't comment out whitespace-only lines
         if l:line =~# '^\s*$'
@@ -174,17 +183,29 @@ function! ToggleComment() range
     endfor
 endfunction
 
-" Ctrl + / in Visual mode -> comment/uncomment the selected lines
-" (some terminals send Ctrl+/ as the Ctrl+_ byte sequence, so map both to be safe)
-vnoremap <silent> gcc :call ToggleComment()<CR>
-vnoremap <silent> <C-/> :call ToggleComment()<CR>
+" Kept for anything that still calls it directly with a range (e.g. a
+" visual-mode ":'<,'>call ToggleComment()" invocation auto-filled by Vim).
+function! ToggleComment() range
+    call s:ToggleCommentLines(a:firstline, a:lastline)
+endfunction
 
-" Ctrl + / in Normal mode -> comment/uncomment the current line
+" 'operatorfunc' target for gc{motion} (gcap, gcip, gc3j, ...). Vim calls
+" this AFTER moving over the motion and sets '[ / '] to its start/end.
+function! CommentOperatorFunc(type) abort
+    call s:ToggleCommentLines(line("'["), line("']"))
+endfunction
+
+" gcc -> toggle comment on the current line
 nnoremap <silent> gcc :call ToggleComment()<CR>
-nnoremap <silent> <C-/> :call ToggleComment()<CR>
 
-" Space + / as a fallback, in case your terminal can't send Ctrl+/ at all
-nnoremap <silent> <leader>/ :call ToggleComment()<CR>
+" gc{motion} -> toggle comment over any motion/text object (matches
+" Neovim's built-in gc operator, e.g. gcap, gcip, gc3j)
+nnoremap <silent> gc :set operatorfunc=CommentOperatorFunc<CR>g@
+
+" gc in Visual mode -> toggle comment on the selected lines
+" (":" from Visual mode auto-fills the command line with "'<,'>", which is
+" the range ToggleComment()'s `range` declaration picks up)
+xnoremap <silent> gc :call ToggleComment()<CR>
 
 " =========================================================
 " 8. SHIFT + H  /  SHIFT + L  => SWITCH BETWEEN TABS
