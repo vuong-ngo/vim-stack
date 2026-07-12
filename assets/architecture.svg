@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="200" viewBox="0 0 600 200">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#060913" />
+      <stop offset="100%" stop-color="#0a0f1d" />
+    </linearGradient>
+
+    <!-- Glowing effect filters -->
+    <filter id="glow-green" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glow-orange" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Grid pattern -->
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255, 255, 255, 0.02)" stroke-width="1"/>
+    </pattern>
+
+    <!-- Node Gradients -->
+    <linearGradient id="vim-node" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+
+    <linearGradient id="neovim-node" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="200" rx="12" fill="url(#bg-grad)" />
+  <rect width="600" height="200" rx="12" fill="url(#grid)" />
+
+  <!-- Node 1: Minimal Vim (.vimrc) -->
+  <g transform="translate(40, 50)">
+    <rect width="160" height="80" rx="8" fill="url(#vim-node)" opacity="0.9" />
+    <rect width="160" height="80" rx="8" fill="none" stroke="#34D399" stroke-width="1.5" />
+    <text x="80" y="35" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="bold" font-size="14" fill="#FFFFFF">Minimal Vim</text>
+    <text x="80" y="55" text-anchor="middle" font-family="monospace" font-size="11" fill="#E2E8F0">.vimrc</text>
+  </g>
+
+  <!-- Node 2: Keymap Sync Contract (Center) -->
+  <g transform="translate(240, 65)">
+    <rect width="120" height="50" rx="25" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5" filter="url(#glow-orange)" />
+    <text x="60" y="25" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="bold" font-size="11" fill="#FBBF24">1:1 PARITY</text>
+    <text x="60" y="38" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#94A3B8">Keymap Sync</text>
+  </g>
+
+  <!-- Node 3: LazyVim (keymaps.lua) -->
+  <g transform="translate(400, 50)">
+    <rect width="160" height="80" rx="8" fill="url(#neovim-node)" opacity="0.9" />
+    <rect width="160" height="80" rx="8" fill="none" stroke="#22D3EE" stroke-width="1.5" />
+    <text x="80" y="35" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="bold" font-size="14" fill="#FFFFFF">Modern Neovim</text>
+    <text x="80" y="55" text-anchor="middle" font-family="monospace" font-size="11" fill="#E2E8F0">keymaps.lua</text>
+  </g>
+
+  <!-- Sync lines and arrows -->
+  <!-- Left to Center -->
+  <path d="M 200 90 L 230 90" fill="none" stroke="#10B981" stroke-width="2" stroke-dasharray="3,3" />
+  <polygon points="234,90 228,86 228,94" fill="#10B981" />
+
+  <!-- Right to Center -->
+  <path d="M 400 90 L 370 90" fill="none" stroke="#06B6D4" stroke-width="2" stroke-dasharray="3,3" />
+  <polygon points="366,90 372,86 372,94" fill="#06B6D4" />
+
+  <!-- Update loop loop -->
+  <path d="M 120 130 C 120 170, 480 170, 480 130" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="4,4" />
+  <!-- Arrows on loop -->
+  <polygon points="120,130 116,136 124,136" fill="#F59E0B" />
+  <polygon points="480,130 476,136 484,136" fill="#F59E0B" />
+  <text x="300" y="180" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#94A3B8" font-style="italic">Keep both configurations &amp; documentation updated together</text>
+</svg>
