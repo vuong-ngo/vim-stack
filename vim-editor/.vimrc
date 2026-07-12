@@ -176,11 +176,11 @@ endfunction
 
 " Ctrl + / in Visual mode -> comment/uncomment the selected lines
 " (some terminals send Ctrl+/ as the Ctrl+_ byte sequence, so map both to be safe)
-vnoremap <silent> <C-_> :call ToggleComment()<CR>
+vnoremap <silent> gcc :call ToggleComment()<CR>
 vnoremap <silent> <C-/> :call ToggleComment()<CR>
 
 " Ctrl + / in Normal mode -> comment/uncomment the current line
-nnoremap <silent> <C-_> :call ToggleComment()<CR>
+nnoremap <silent> gcc :call ToggleComment()<CR>
 nnoremap <silent> <C-/> :call ToggleComment()<CR>
 
 " Space + / as a fallback, in case your terminal can't send Ctrl+/ at all

@@ -26,7 +26,7 @@ The **Space** bar is set as the leader key. Any shortcut written as `<leader>x` 
 | `Ctrl i`                        | Normal          | Switch to the**next** open buffer/file                                                                     |
 | `Ctrl o`                        | Normal          | Switch to the**previous** open buffer/file                                                                 |
 | `Space p`                       | Normal          | Open a fuzzy-style file finder (`:find `) — start typing and press `Tab` to cycle through matches           |
-| `Ctrl /`                        | Normal / Visual | Toggle line comment for the current line (or selected lines), using the correct comment syntax for the file type |
+| `Ctrl /`, `gcc`                 | Normal / Visual | Toggle line comment for the current line (or selected lines), using the correct comment syntax for the file type |
 | `Space /`                       | Normal          | Fallback for`Ctrl /` in terminals that can't send that key combo                                               |
 | `Shift H`                       | Normal          | Switch to the**previous** tab                                                                              |
 | `Shift L`                       | Normal          | Switch to the**next** tab                                                                                  |
