@@ -85,6 +85,17 @@ snapshot from when the sync work started.
    with `pcall` so a slow/missing blink load degrades gracefully instead
    of crashing).
 
+9. **`Ctrl+Space` (show completion menu) unreliable under tmux.** It's
+   blink.cmp's correct default trigger and needs no config normally, but
+   under tmux it can be swallowed entirely — either because tmux's
+   `prefix` key is itself set to `<C-Space>`, or (on tmux < 3.2) because
+   `Ctrl+Space` and plain `Space` aren't reliably distinguished over the
+   pty unless `extended-keys` is turned on in `tmux.conf`. Rather than
+   depend on the user's tmux setup, `lua/plugins/completion.lua` adds a
+   second, tmux-safe trigger on `<C-l>` (unmapped by Neovim in insert mode
+   by default; the `<C-l>` in `config/keymaps.lua` is normal-mode-only, so
+   there's no collision).
+
 ### Known inconsistency, not yet fixed
 
 `plugins/coding.lua` still has an `opts` block for `hrsh7th/nvim-cmp`.
@@ -148,6 +159,8 @@ the same thing:
 - **Picker / fuzzy-find / grep / explorer:** `folke/snacks.nvim` only.
   (Telescope was removed — see bug #3.)
 - **Completion:** `blink.cmp` (confirmed via `lazy-lock.json` — see bug #8).
+  `plugins/completion.lua` adds one extra keybind on top of its defaults —
+  see bug #9.
 - **LSP:** `neovim/nvim-lspconfig` + `mason-org/mason.nvim` +
   `mason-org/mason-lspconfig.nvim`, scoped to Python, Java, Rust, Bash,
   YAML, XML, JSON, Markdown, and Lua (for editing this config itself). See
@@ -171,9 +184,17 @@ the same thing:
 
 ## Requirements
 
+Run `./install-deps.sh` (Debian/Ubuntu, Fedora, Arch, and macOS/Homebrew are
+supported) to install everything below in one go. It's idempotent — safe to
+re-run any time, it skips whatever's already installed.
+
 - Neovim 0.10+ (for built-in `gc`/`gcc` commenting)
 - `git`, and a [Nerd Font](https://www.nerdfonts.com/) for the icons used
   throughout (Snacks, lualine, mini.icons, etc.)
 - `ripgrep` and `fd` on your `$PATH` for Snacks' file/grep pickers
+- Node.js + npm, Python 3 + pip/venv, and a JDK — runtimes Mason needs to
+  install the LSP servers/formatters below
+- `lazygit` for `<leader>gg`
+- A C compiler + `make`, so `nvim-treesitter` can compile parsers
 - Everything else (LSP servers, formatters) installs automatically via
-  Mason on first launch
+  Mason on first launch, using the runtimes above
