@@ -8,13 +8,18 @@
   <strong>Dual terminal text editor configurations sharing a unified muscle memory.</strong>
 </p>
 
+![Neovim v0.10+](https://img.shields.io/badge/Neovim-v0.10+-green?logo=neovim)
+![Vim 8.2+](https://img.shields.io/badge/Vim-v8.2+-green?logo=vim)
+![Theme-Catppuccin_Mocha-purple](https://img.shields.io/badge/Theme-Catppuccin_Mocha-purple)
+![License-MIT-yellow](https://img.shields.io/badge/License-MIT-yellow)
+
 ---
 
-**Vim Stack** is a curated collection of dual configurations designed to optimize terminal text editing. It consists of a dependency-free **Minimal Vim** setup and a feature-rich, modern **Neovim (LazyVim)** environment. Both configurations are carefully synchronized so that the exact same keybindings trigger equivalent functionalities.
+**Vim Stack** is a curated collection of dual editor configurations designed to optimize terminal text editing. It consists of a zero-plugin **Minimal Vim** setup (`vim-editor`) and a feature-rich, modern **Neovim (LazyVim)** IDE (`lazyvim`). Both configurations are carefully synchronized so that identical keybindings trigger equivalent actions.
 
 This dual setup allows you to switch seamlessly between:
-1. **Remote Servers, SSH Sessions & Containers**: Using the lightweight, zero-plugin Vim config (`vim-editor`) which boots instantly and requires no setup.
-2. **Local Machine & Heavy Development Work**: Using the modern Neovim IDE configuration (`lazyvim`) equipped with LSPs, autocomplete, Treesitter parser highlighting, and robust plugins.
+1. **Remote Servers, SSH Sessions & Containers**: Using the lightweight, zero-plugin Vim config (`vim-editor`) which boots instantly with pure stock Vimscript.
+2. **Local Machine & Heavy Development Work**: Using the modern Neovim IDE configuration (`lazyvim`) equipped with `blink.cmp` autocompletion, Mason LSPs, Treesitter highlighting, `snacks.nvim`, and `grug-far` search & replace.
 
 ---
 
@@ -22,87 +27,84 @@ This dual setup allows you to switch seamlessly between:
 
 The project is split into two specialized workspaces:
 
-* **[vim-editor/](file:///home/ngoducvuong/Documents/Projects/dotfiles-linux/vim-stack/vim-editor/)**: Contains the classic Vim setup.
-  * **[.vimrc](file:///home/ngoducvuong/Documents/Projects/dotfiles-linux/vim-stack/vim-editor/.vimrc)**: A single-file, dependency-free configuration using only stock Vim features.
-  * **[vim-editor/README.md](file:///home/ngoducvuong/Documents/Projects/dotfiles-linux/vim-stack/vim-editor/README.md)**: Feature list and installation details for minimal Vim.
-* **[lazyvim/](file:///home/ngoducvuong/Documents/Projects/dotfiles-linux/vim-stack/lazyvim/)**: Contains the advanced Neovim setup.
-  * **[lazyvim/init.lua](file:///home/ngoducvuong/Documents/Projects/dotfiles-linux/vim-stack/lazyvim/init.lua)**: Entry point for the LazyVim-based setup.
-  * **[lazyvim/lua/config/keymaps.lua](file:///home/ngoducvuong/Documents/Projects/dotfiles-linux/vim-stack/lazyvim/lua/config/keymaps.lua)**: The synced custom keybindings mirroring the `.vimrc` settings.
-  * **[lazyvim/lua/config/options.lua](file:///home/ngoducvuong/Documents/Projects/dotfiles-linux/vim-stack/lazyvim/lua/config/options.lua)**: Sensible options, including clipboard sync and indentation guides.
-  * **[lazyvim/install-deps.sh](file:///home/ngoducvuong/Documents/Projects/dotfiles-linux/vim-stack/lazyvim/install-deps.sh)**: A comprehensive bash script to install all needed binaries (LSPs, compilers, formatting runtimes).
-  * **[lazyvim/README.md](file:///home/ngoducvuong/Documents/Projects/dotfiles-linux/vim-stack/lazyvim/README.md)**: Deep dive into the Neovim plugins, structure, and optimization details.
-* **[assets/](file:///home/ngoducvuong/Documents/Projects/dotfiles-linux/vim-stack/assets/)**: Stores design assets, including the custom banner SVG.
-  * **[assets/banner.svg](file:///home/ngoducvuong/Documents/Projects/dotfiles-linux/vim-stack/assets/banner.svg)**: Vector illustration comparing both configurations.
+* **[`vim-editor/`](file:///home/ngoducvuong/Documents/projects/dotfiles/vim-stack/vim-editor/)**: Contains the classic Vim setup.
+  * **[`vim-editor/.vimrc`](file:///home/ngoducvuong/Documents/projects/dotfiles/vim-stack/vim-editor/.vimrc)**: Single-file, zero-plugin configuration using pure Vimscript (native commenting, absolute line numbers, transparent theme).
+  * **[`vim-editor/README.md`](file:///home/ngoducvuong/Documents/projects/dotfiles/vim-stack/vim-editor/README.md)**: Feature list and installation details for minimal Vim.
+* **[`lazyvim/`](file:///home/ngoducvuong/Documents/projects/dotfiles/vim-stack/lazyvim/)**: Contains the advanced Neovim setup.
+  * **[`lazyvim/init.lua`](file:///home/ngoducvuong/Documents/projects/dotfiles/vim-stack/lazyvim/init.lua)**: Entry point loading config options before lazy plugin bootstrap.
+  * **[`lazyvim/lua/config/keymaps.lua`](file:///home/ngoducvuong/Documents/projects/dotfiles/vim-stack/lazyvim/lua/config/keymaps.lua)**: Synchronized custom keybindings (`<leader>q` tab closing, `<Alt+1..9>` tab jump, zero save clutter).
+  * **[`lazyvim/lua/config/options.lua`](file:///home/ngoducvuong/Documents/projects/dotfiles/vim-stack/lazyvim/lua/config/options.lua)**: Sensible options (absolute line numbers `relativenumber=false`, clipboard sync).
+  * **[`lazyvim/install-deps.sh`](file:///home/ngoducvuong/Documents/projects/dotfiles/vim-stack/lazyvim/install-deps.sh)**: Comprehensive bash script installing CLI dependencies (`ripgrep`, `fd`, `lazygit`, compilers).
+  * **[`lazyvim/README.md`](file:///home/ngoducvuong/Documents/projects/dotfiles/vim-stack/lazyvim/README.md)**: Deep dive into the Neovim plugins, statusline, and optimization details.
+* **[`assets/`](file:///home/ngoducvuong/Documents/projects/dotfiles/vim-stack/assets/)**: Stores design assets, including the custom banner SVG.
 
 ---
 
-## 🔄 Keyboard & Behavior Parity
-
-The core philosophy of **Vim Stack** is that **the same key combinations should do the same thing** across both editors. Whenever possible, Neovim upgrades the experience with plugins while retaining the exact same physical keys.
+## 🔄 Synchronized Keyboard & Behavior Parity
 
 The leader key is set to **`Space`** in both editors.
 
 | Key combination | Mode | Minimal Vim (`vim-editor`) | Neovim (`lazyvim`) | Behavior Description |
 | :--- | :---: | :--- | :--- | :--- |
-| **`Space + e`** | Normal | `:Ex` (built-in `netrw`) | `Snacks.explorer()` | Toggles the sidebar file tree explorer |
-| **`Space + p`** | Normal | `:find` + recursive tab completion | `Snacks.picker.files()` | Opens a fuzzy file finder / picker |
-| **`Space + t`** | Normal | `:tabnew` | `:tabnew` | Opens a new empty tab page |
-| **`Space + q`** | Normal | `:q` | `:q` | Closes the current window pane or split |
-| **`Space + \|`** | Normal | `:vsplit` | `:vsplit` | Creates a vertical window split (side-by-side) |
-| **`Space + -`** | Normal | `:split` | `:split` | Creates a horizontal window split (stacked) |
-| **`Ctrl + i`** | Normal | `:bnext` | `:bnext` | Switches to the next open buffer/file |
-| **`Ctrl + o`** | Normal | `:bprevious` | `:bprevious` | Switches to the previous open buffer/file |
-| **`Shift + H`** | Normal | `:tabprevious` | `:tabprevious` | Switches to the previous tab |
-| **`Shift + L`** | Normal | `:tabnext` | `:tabnext` | Switches to the next tab |
-| **`Ctrl + \``** | Normal/Term | *Not bound* | `Snacks.terminal()` (bottom) | Toggles the integrated terminal panel |
-| **`Space + s + h`** | Normal | `:terminal` (horizontal split) | *Not bound* | Opens a horizontal terminal split |
-| **`Space + s + v`** | Normal | `:terminal` (vertical split) | *Not bound* | Opens a vertical terminal split |
-| **`Esc + Esc`** | Terminal | Switch to Terminal Normal Mode | Switch to Terminal Normal Mode | Escapes insert mode inside the terminal buffer |
-| **`Ctrl + /`** (or `Space + /`) | Normal/Visual | Custom `ToggleComment` function | Native `gc` / `gcc` commenting | Toggles comment lines using correct language syntax |
-| **`Space + r + c`** | Normal | Open `$MYVIMRC` in vsplit | Open `init.lua` in vsplit | Quickly opens the config file for editing |
-| **`Space + r + o`** | Normal | Open `$MYVIMRC` in new tab | Open config directory in tab | Opens the configuration folder in a new tab |
-| **`Space + r + s`** | Normal | `:source $MYVIMRC` | Reloads options & keymaps | Reloads configuration changes on the fly |
-| **`(` `[` `{` `"` `'`** | Insert | Custom mapping script | `mini.pairs` plugin | Auto-closes brackets/quotes and manages smart deletions |
-| **`%`** | Normal | `matchit` (HTML tags, code blocks) | `matchit` (HTML tags, code blocks) | Jumps between matching tags, brackets, or code pairs |
+| **`<leader>q`** | Normal | `:bdelete` (Close buffer) | `Snacks.bufdelete()` | **Closes current tab/buffer ONLY** (Instant 0ms) |
+| **`<leader>Q`** | Normal | `:qa!` | `:confirm qa<CR>` | Quits editor completely |
+| **`H` / `L`** | Normal | `:bprevious` / `:bnext` | `:bprevious` / `:bnext` | Switches to Previous / Next Tab |
+| **`Alt + 1..9`** | Normal | Jump to Buffer 1..9 | `bufferline.go_to(1..9)` | Jumps directly to Tab 1 through 9 |
+| **`<leader>e`** | Normal | `:Lexplore` (netrw) | `Snacks.explorer()` | Toggles the sidebar file explorer |
+| **`Ctrl + P` / `<leader>ff`** | Normal | `:find` recursive | `Snacks.picker.files()` | Opens fuzzy file finder |
+| **`Ctrl + F` / `<leader>fg`** | Normal | Grep search | `Snacks.picker.grep()` | Searches text in project (Live Grep) |
+| **`<leader>sr`** | Normal | Search & replace | `grug-far.open()` | Global workspace search & replace UI |
+| **`<leader>\|`** | Normal | `:vsplit` | `:vsplit` | Creates vertical split (side-by-side) |
+| **`<leader>-`** | Normal | `:split` | `:split` | Creates horizontal split (stacked) |
+| **`Ctrl + /`** | Normal/Term | *Not bound* | `Snacks.terminal()` | Toggles integrated floating terminal |
+| **`<leader>gg`** | Normal | *Not bound* | `Snacks.lazygit()` | Opens LazyGit floating terminal UI |
+| **`Ctrl + /`** / **`gcc`** | Normal/Visual | Native `ToggleCommentNative()` | Native `gc` / `gcc` | Toggles comments with language syntax |
+| **`<leader>ca`** | Normal | *Not bound* | `vim.lsp.buf.code_action` | Trigger LSP Code Action |
+| **`<leader>rn`** | Normal | *Not bound* | `vim.lsp.buf.rename` | Rename symbol under cursor |
+| **`<leader>cf`** | Normal | `gg=G` | `conform.format()` | Format current document |
+| **`Esc`** | Normal | `:nohlsearch` | `:nohlsearch` | Clears search highlights |
 
 ---
 
 ## ⚙️ Shared Sensible Defaults
 
 In addition to keymaps, both configurations establish consistent behaviors:
-* **System Clipboard Integration**: Copy, cut, and paste actions automatically synchronize with the system clipboard (`clipboard=unnamedplus`), with Wayland fallback detection in Neovim.
-* **Smart Tab Indentation**: Sensible 4-space width, expanding tabs to spaces, with smart/auto alignment.
-* **Case-Sensitive Searching**: Searches are case-insensitive by default but automatically switch to case-sensitive if you include uppercase letters. Highlights matches incrementally as you type.
-* **File Reloading & Cursor Recovery**: Files modified outside the editor automatically reload. Reopening a file jumps you back to your last cursor position.
+* **Absolute Line Numbers**: Native 1-to-1 line numbers enabled (`number=true`, `relativenumber=false`) matching VS Code and system editors.
+* **System Clipboard Integration**: Copy, cut, and paste actions automatically synchronize with system clipboard (`clipboard=unnamedplus`) with Wayland `wl-clipboard` support.
+* **Smart Tab Indentation**: Sensible 4-space width, expanding tabs to spaces, with auto/smart alignment.
+* **Case-Sensitive Searching**: Searches are case-insensitive by default (`ignorecase`) but switch to case-sensitive if uppercase letters are included (`smartcase`).
 * **Invisible Character Display**: Shows subtle indicator guides for trailing whitespace, non-breaking spaces, and tab markers (`listchars`).
 
 ---
 
-## 📥 Installation
+## 📥 Installation & Deployment
 
 ### 1. Minimal Vim Configuration
-To install the minimal configuration, simply copy the `.vimrc` to your home directory:
+To install the minimal zero-plugin configuration:
 ```bash
 cp vim-editor/.vimrc ~/.vimrc
 ```
-Launch Vim, and it will immediately run with the synced features and zero dependencies.
+Launch Vim (`vim`), and it will run instantly with zero third-party plugin dependencies.
 
 ### 2. Neovim Configuration
-To install the Neovim configuration, follow these steps:
+To install the Neovim IDE configuration:
 
 1. **Backup existing config (if any)**:
    ```bash
-   mv ~/.config/nvim ~/.config/nvim.bak
-   mv ~/.local/share/nvim ~/.local/share/nvim.bak
+   mv ~/.config/nvim ~/.config/nvim.bak 2>/dev/null || true
    ```
 
-2. **Copy or Symlink the directory**:
+2. **Symlink or Clone repository**:
+   ```bash
+   git clone https://github.com/vuong-ngo/vim-stack.git ~/.config/nvim
+   ```
+   *Alternatively, if cloning the full repo locally:*
    ```bash
    ln -s "$(pwd)/lazyvim" ~/.config/nvim
    ```
 
 3. **Install System Dependencies**:
-   This configuration relies on external helpers like `ripgrep`, `fd`, `lazygit`, and language compilation toolchains. Run the provided script to install dependencies automatically:
+   Install external tools (`ripgrep`, `fd`, `lazygit`, compilers) using the provided script:
    ```bash
    cd lazyvim
    chmod +x install-deps.sh
@@ -113,12 +115,12 @@ To install the Neovim configuration, follow these steps:
    ```bash
    nvim
    ```
-   On first launch, LazyVim will automatically install `lazy.nvim` and all configured plugins (`snacks.nvim`, `blink.cmp`, LSPs, and treesitter parsers).
+   On first launch, LazyVim will automatically bootstrap `lazy.nvim` and initialize `blink.cmp`, LSPs, and Treesitter parsers.
 
 ---
 
-## 🛠️ Requirements & System Info
+## 🛠️ System Requirements
 
-* **Vim**: Requires Vim compiled with `+termguicolors` (true-color themes), `+clipboard` (clipboard sync), and `+terminal` (integrated terminal).
-* **Neovim**: Neovim version `0.10+` is required for out-of-the-box Treesitter-based commenting and modern picker capabilities.
-* **Fonts**: A [Nerd Font](https://www.nerdfonts.com/) is highly recommended for Neovim's statusline and file tree icons.
+* **Vim**: Requires Vim version `8.2+` compiled with `+termguicolors` and `+clipboard`.
+* **Neovim**: Requires Neovim `v0.10+` for modern picker support and Treesitter parsers.
+* **Font**: A [Nerd Font](https://www.nerdfonts.com/) (e.g. JetBrainsMono Nerd Font) is recommended for statusline icons.
