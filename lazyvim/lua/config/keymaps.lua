@@ -1,172 +1,138 @@
--- ================================================
---   _   ____  ______  _  _______  _  ___________
---  | | / / / / / __ \/ |/ / ___/ / |/ / ___/ __ \
---  | |/ / /_/ / /_/ /    / (_ / /    / (_ / /_/ /
---  |___/\____/\____/_/|_/\___/ /_/|_/\___/\____/
--- ================================================
+-- ============================================================
+-- Neovim Keymaps (Ultimate IDE Keybindings & Fast Ergonomics)
+-- ============================================================
 
--- Leader key
+local set = vim.keymap.set
+
+-- Set Leader Keys
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
--- Move between windows using Ctrl + h/j/k/l
-vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
-vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to below window" })
-vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to above window" })
-vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
-
--- Move selected lines up and down in visual mode
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
-
--- =========================================================
--- 1. SPACE + e  => FILE EXPLORER
--- =========================================================
--- Already bound to the Snacks explorer in lua/plugins/ui.lua (Snacks'
--- own `keys` table sets <leader>e). Nothing to add here - this note is
--- just so the numbering below stays aligned with vimrc's section 1.
--- The old netrw-based `<leader>pv` mapping was removed: Snacks explorer
--- fully replaces it and having two different "open explorer" keys was
--- confusing.
-
--- =========================================================
--- 2. SPACE + t  => OPEN A NEW TAB
--- =========================================================
-vim.keymap.set("n", "<leader>t", "<cmd>tabnew<CR>", { desc = "New tab" })
-
--- =========================================================
--- 3. SPACE + q  => QUIT the current window/file
--- =========================================================
-vim.keymap.set("n", "<leader>q", "<cmd>q<CR>", { desc = "Quit window" })
--- NOTE: LazyVim's own defaults also bind <leader>qq ("Quit All"). Since
--- that's a different two-key sequence than our single <leader>q, both
--- can coexist, but Neovim will briefly wait (per 'timeoutlen') to see if
--- a second 'q' is coming before firing <leader>q alone. This is a minor,
--- cosmetic delay and not a functional conflict.
-
--- =========================================================
--- 4. SPACE + |  AND  SPACE + -  => CREATE SPLITS
--- =========================================================
--- Space + |  -> vertical split (side by side)
--- Space + -  -> horizontal split (stacked)
--- (Unlike Vimscript, Lua keymap strings don't need the "|" escaped.)
-vim.keymap.set("n", "<leader>|", "<cmd>vsplit<CR>", { desc = "Vertical split" })
-vim.keymap.set("n", "<leader>-", "<cmd>split<CR>", { desc = "Horizontal split" })
-
--- Close current window (kept from the original config; doesn't collide
--- with anything above)
-vim.keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current window" })
-
--- =========================================================
--- 5. CTRL + i  /  CTRL + o  => SWITCH BETWEEN OPEN FILES (BUFFERS)
--- =========================================================
--- Same caveat as vimrc: this overrides Neovim's default jumplist
--- navigation (normally on Ctrl-I / Ctrl-O), and some terminals send the
--- same code for <Tab> and <C-i>.
-vim.keymap.set("n", "<C-i>", "<cmd>bnext<CR>", { desc = "Next buffer" })
-vim.keymap.set("n", "<C-o>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
-
--- =========================================================
--- 6. SPACE + p  => FUZZY FILE FINDER
--- =========================================================
--- vimrc uses the built-in :find command since it has no plugins. Neovim
--- already ships a much better fuzzy finder via Snacks (already used
--- everywhere else in this config), so <leader>p is wired to that instead
--- of reinventing :find here - same key, strictly better result.
-vim.keymap.set("n", "<leader>p", function()
-	Snacks.picker.files()
-end, { desc = "Find files (fuzzy)" })
-
--- =========================================================
--- 7. COMMENT / UNCOMMENT CODE
--- =========================================================
--- No custom keymap needed: Neovim 0.10+ already ships `gc`/`gcc` out of
--- the box, reading 'commentstring' (set per-language by Treesitter), so
--- it's correct for every target language in this IDE with zero config.
--- A Ctrl+/ alias used to duplicate this - removed as dead weight, and
--- freed up so Ctrl+` alone owns the terminal (see below).
-
--- =========================================================
--- 8. SHIFT + H  /  SHIFT + L  => SWITCH BETWEEN TABS
--- =========================================================
--- Same override note as vimrc: this replaces the default H/L cursor
--- motions (top/bottom of visible screen). Use gg/G or zt/zb instead if
--- you still need those occasionally.
-vim.keymap.set("n", "H", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
-vim.keymap.set("n", "L", "<cmd>tabnext<CR>", { desc = "Next tab" })
-
--- =========================================================
--- 9. QUICK CONFIG EDITING
--- =========================================================
-local config_dir = vim.fn.stdpath("config")
-
--- Space + r + c -> edit init.lua (the entry point) in a vertical split
-vim.keymap.set("n", "<leader>rc", function()
-	vim.cmd("vsplit " .. config_dir .. "/init.lua")
-end, { desc = "Edit init.lua" })
-
--- Space + r + o -> open the whole config folder in a new tab via the
--- fuzzy finder, scoped to the config directory
-vim.keymap.set("n", "<leader>ro", function()
-	vim.cmd("tabnew")
-	Snacks.picker.files({ cwd = config_dir })
-end, { desc = "Open config folder in new tab" })
-
--- Space + r + s -> reload options/keymaps/autocmds without restarting
--- Neovim. NOTE: unlike vimrc's `:source $MYVIMRC`, this can't safely
--- re-run lazy.nvim's plugin bootstrapping, so changes to plugin specs
--- still need a restart (or `:Lazy reload <plugin>`). Changes to options,
--- keymaps, and autocmds apply immediately.
-local function reload_config()
-	for name, _ in pairs(package.loaded) do
-		if name:match("^config") then
-			package.loaded[name] = nil
-		end
-	end
-	require("config.options")
-	require("config.keymaps")
-	require("config.autocmds")
-	vim.notify("Config reloaded (options/keymaps/autocmds)", vim.log.levels.INFO)
+local function map(mode, lhs, rhs, desc)
+	set(mode, lhs, rhs, { desc = desc, noremap = true, silent = true })
 end
-vim.keymap.set("n", "<leader>rs", reload_config, { desc = "Reload config" })
 
--- =========================================================
--- AUTO-CLOSE BRACKETS/QUOTES, MATCHIT, CLIPBOARD, STATUSLINE,
--- INDENT GUIDES: already covered by existing plugins/options and need
--- no keymap changes here - see README.md for the full equivalence table.
--- =========================================================
+-- ------------------------------------------------------------
+-- 1. TAB & BUFFER MANAGEMENT (<leader>q closes 1 tab only!)
+-- ------------------------------------------------------------
+-- <leader>q closes current buffer/tab ONLY (without closing window/Neovim)
+map("n", "<leader>q", function()
+	Snacks.bufdelete()
+end, "Close Current Tab/Buffer")
 
--- =========================================================
--- INTEGRATED TERMINAL  (Ctrl + `)
--- =========================================================
--- A single, unified terminal shortcut (VS Code-style Ctrl+`), replacing
--- three overlapping ways to open a terminal that existed before
--- (Space+s+h, Space+s+v, and toggleterm.nvim's own Ctrl+t float).
--- toggleterm.nvim has been removed from lua/plugins/ui.lua entirely so
--- there is exactly one terminal implementation (Snacks.terminal) and
--- exactly one key to reach it.
---
--- LazyVim itself ALSO ships a default terminal shortcut on <C-/> (and its
--- terminal-translation <C-_>), bound in normal+terminal mode to the same
--- Snacks.terminal. That default is what was still duplicating Ctrl+`
--- (removing our own <C-/> comment-toggle mapping earlier wasn't enough,
--- since this one comes from LazyVim's defaults, loaded before this file).
--- Delete it here so Ctrl+` is the only terminal shortcut left.
-pcall(vim.keymap.del, "n", "<C-/>")
-pcall(vim.keymap.del, "t", "<C-/>")
-pcall(vim.keymap.del, "n", "<C-_>")
-pcall(vim.keymap.del, "t", "<C-_>")
+-- <leader>Q quits Neovim completely
+map("n", "<leader>Q", "<cmd>confirm qa<CR>", "Quit Neovim All")
 
-vim.keymap.set({ "n", "t" }, "<C-`>", function()
-	Snacks.terminal(nil, { win = { position = "bottom", height = 0.3 } })
-end, { desc = "Toggle terminal" })
+-- Buffer Tab Navigation (H / L & Alt+1..9)
+map("n", "H", "<cmd>bprevious<CR>", "Previous Tab")
+map("n", "L", "<cmd>bnext<CR>", "Next Tab")
 
--- Leave terminal-insert mode with Esc twice, for any terminal buffer
--- (Snacks' own terminal windows already close on <Esc>, this just keeps
--- the same muscle memory for plain :terminal buffers too).
-vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+-- Alt + Number to jump directly to tabs 1-9
+for i = 1, 9 do
+	map("n", "<A-" .. i .. ">", function()
+		require("bufferline").go_to(i, true)
+	end, "Go to Tab " .. i)
+end
 
--- =========================================================
--- MISC (kept from the original config, no sync conflicts)
--- =========================================================
-vim.keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode with jk" })
-vim.keymap.set("n", "<leader>nh", "<cmd>nohlsearch<CR>", { desc = "Clear search highlights" })
+-- Clear Search Highlights (<esc>)
+map("n", "<esc>", "<cmd>nohlsearch<CR>", "Clear Search Highlight")
+
+-- Unmap save keybindings
+pcall(vim.keymap.del, "n", "<leader>w")
+pcall(vim.keymap.del, { "n", "i", "v" }, "<C-s>")
+
+-- ------------------------------------------------------------
+-- 2. FILE EXPLORER & QUICK SEARCH
+-- ------------------------------------------------------------
+-- Toggle Sidebar Explorer (<leader>e)
+map("n", "<leader>e", function()
+	Snacks.explorer()
+end, "Toggle Sidebar Explorer")
+
+-- Quick File Search (Ctrl+P or <leader>ff)
+map("n", "<C-p>", function()
+	Snacks.picker.files()
+end, "Find Files (Ctrl+P)")
+
+map("n", "<leader>ff", function()
+	Snacks.picker.files()
+end, "Find Files")
+
+-- Live Grep / Project Text Search (Ctrl+Shift+F or <leader>fg)
+map("n", "<C-f>", function()
+	Snacks.picker.grep()
+end, "Search Text in Project")
+
+map("n", "<leader>fg", function()
+	Snacks.picker.grep()
+end, "Search Text (Grep)")
+
+-- Recent Files (<leader>fr)
+map("n", "<leader>fr", function()
+	Snacks.picker.recent()
+end, "Recent Files")
+
+-- Buffers List (<leader>fb)
+map("n", "<leader>fb", function()
+	Snacks.picker.buffers()
+end, "Open Buffers")
+
+-- Global Search & Replace (grug-far) (<leader>sr)
+map("n", "<leader>sr", function()
+	local grug = require("grug-far")
+	grug.open()
+end, "Search & Replace (Workspace)")
+
+-- ------------------------------------------------------------
+-- 3. WINDOW SPLITS & NAVIGATION
+-- ------------------------------------------------------------
+map("n", "<C-h>", "<C-w>h", "Move Left Window")
+map("n", "<C-j>", "<C-w>j", "Move Down Window")
+map("n", "<C-k>", "<C-w>k", "Move Up Window")
+map("n", "<C-l>", "<C-w>l", "Move Right Window")
+
+-- Window Resize controls (Ctrl+Arrows)
+map("n", "<C-Up>", "<cmd>resize +2<CR>", "Increase Height")
+map("n", "<C-Down>", "<cmd>resize -2<CR>", "Decrease Height")
+map("n", "<C-Left>", "<cmd>vertical resize -2<CR>", "Decrease Width")
+map("n", "<C-Right>", "<cmd>vertical resize +2<CR>", "Increase Width")
+
+map("n", "<leader>|", "<cmd>vsplit<CR>", "Split Vertically")
+map("n", "<leader>-", "<cmd>split<CR>", "Split Horizontally")
+
+-- Move Selected Lines Up/Down in Visual Mode (Alt+j / Alt+k)
+map("v", "<A-j>", ":m '>+1<CR>gv=gv", "Move Selection Down")
+map("v", "<A-k>", ":m '<-2<CR>gv=gv", "Move Selection Up")
+
+-- ------------------------------------------------------------
+-- 4. INTEGRATED TERMINAL & GIT UI
+-- ------------------------------------------------------------
+-- Toggle Floating Terminal (Ctrl+/ or <leader>ft)
+map({ "n", "t" }, "<C-/>", function()
+	Snacks.terminal()
+end, "Toggle Integrated Terminal")
+
+map({ "n", "t" }, "<leader>ft", function()
+	Snacks.terminal()
+end, "Toggle Integrated Terminal")
+
+-- LazyGit Floating Window (<leader>gg)
+map("n", "<leader>gg", function()
+	Snacks.lazygit()
+end, "Open LazyGit")
+
+-- ------------------------------------------------------------
+-- 5. LSP & CODE ACTIONS
+-- ------------------------------------------------------------
+map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
+map("n", "<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
+map("n", "<leader>cf", function()
+	require("conform").format({ async = true, lsp_fallback = true })
+end, "Format Document")
+
+-- Unmap any remaining conflicting LazyVim multi-key sequences
+pcall(vim.keymap.del, "n", "<leader>qq")
+pcall(vim.keymap.del, "n", "<leader>qs")
+pcall(vim.keymap.del, "n", "<leader>ql")
+pcall(vim.keymap.del, "n", "<leader>qd")
+pcall(vim.keymap.del, "n", "<leader>qf")

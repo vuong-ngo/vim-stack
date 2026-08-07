@@ -6,9 +6,9 @@
 -- ================================================
 
 -- bootstrap lazy.nvim, LazyVim and your plugins
-require("config.lazy")
 require("config.options")
 require("config.keymaps")
+require("config.lazy")
 require("config.autocmds")
 
 -- NOTE: plugins under lua/plugins/*.lua are NOT required manually here.
