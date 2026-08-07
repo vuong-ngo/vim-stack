@@ -1,363 +1,213 @@
-" =========================================================
-" VIMRC - NO PLUGINS, BUILT-IN VIM FEATURES ONLY
-" Full keymap set: file tree, new tab, quit, splits,
-" buffer switching, fuzzy file finder, gc/gcc comment toggle
-" (synced with Neovim's built-in commenting keys),
-" tab navigation, quick config editing, bracket auto-pairing,
-" matchit motion, clipboard sync, auto-reload + cursor restore,
-" custom statusline, integrated terminal, indent guides.
-" See README.md for the full shortcut reference.
-" =========================================================
+" ============================================================
+" NATURAL & MODERN VIM CONFIGURATION
+" Clean Defaults, Intuitive Keybindings, Transparent High-Contrast UI
+" Synchronized with VS Code Vim Configuration
+" ============================================================
 
-" ---------- BASICS ----------
-set nocompatible              " disable old vi-compatible mode
-syntax on                     " enable syntax highlighting
-filetype plugin indent on     " enable filetype detection + per-filetype indent
+" --- 1. GENERAL SETTINGS ---
+set nocompatible
+filetype plugin indent on
+syntax on
 
-set number                    " show absolute line numbers (not relative)
-set numberwidth=4             " width of the line number column
-set cursorline                " highlight the line the cursor is on
-set showcmd                   " show partially typed commands in the bottom right
-set wrap                      " soft-wrap long lines
-set scrolloff=8               " keep 8 lines of context above/below cursor when scrolling
-set signcolumn=yes            " always show the sign column (like VS Code's gutter)
+let mapleader = " "
+let maplocalleader = " "
 
-" ---------- INDENTATION ----------
-set tabstop=4                 " a <Tab> is displayed as 4 columns
-set shiftwidth=4              " use 4 spaces for each step of (auto)indent
-set expandtab                 " insert spaces instead of a literal <Tab> character
-set autoindent
-set smartindent
+set encoding=utf-8
+set fileencoding=utf-8
+set hidden                      " Allow buffer switching without saving
+set mouse=a                     " Enable mouse support in all modes
+set clipboard^=unnamed,unnamedplus " Sync with system clipboard
+set backspace=indent,eol,start  " Make backspace behave naturally
+set history=1000                " Store line history
+set updatetime=300              " Faster completion / diagnostics response
+set timeoutlen=500              " Fast leader key timeout
+set nobackup nowritebackup swapfile
 
-" ---------- SEARCH ----------
-set ignorecase                " case-insensitive search by default
-set smartcase                 " ...unless the search contains an uppercase letter
-set incsearch                 " jump to matches as you type
-set hlsearch                  " highlight all search matches
-
-" ---------- APPEARANCE ----------
-" Sync with the terminal's theme: do NOT force a hardcoded colorscheme.
-" Vim keeps its default palette but with a transparent background, so it
-" automatically inherits whatever theme the terminal app is using
-" (Dracula, Nord, Solarized, Gruvbox, etc.)
-if $COLORTERM ==# 'truecolor' || $COLORTERM ==# '24bit'
-    set termguicolors         " only enable 24-bit color if the terminal actually supports it
+if has('persistent_undo')
+    set undofile
+    set undodir=~/.vim/undodir
 endif
-set background=dark           " tell Vim to assume a dark background for contrast choices
 
-" Clear Vim's default background so it falls back to the terminal's own background color
-autocmd VimEnter,ColorScheme * highlight Normal       ctermbg=NONE guibg=NONE
-autocmd VimEnter,ColorScheme * highlight NonText      ctermbg=NONE guibg=NONE
-autocmd VimEnter,ColorScheme * highlight LineNr       ctermbg=NONE guibg=NONE
-autocmd VimEnter,ColorScheme * highlight SignColumn   ctermbg=NONE guibg=NONE
-autocmd VimEnter,ColorScheme * highlight EndOfBuffer  ctermbg=NONE guibg=NONE
-autocmd VimEnter,ColorScheme * highlight VertSplit    ctermbg=NONE guibg=NONE
-autocmd VimEnter,ColorScheme * highlight StatusLine   ctermbg=NONE guibg=NONE
-autocmd VimEnter,ColorScheme * highlight StatusLineNC ctermbg=NONE guibg=NONE
-autocmd VimEnter,ColorScheme * highlight Folded       ctermbg=NONE guibg=NONE
-
-" ---------- LEADER KEY ----------
-let mapleader = " "            " use Space as the leader key
-
-" =========================================================
-" 1. SPACE + e  => TOGGLE FILE TREE (built-in netrw, no NERDTree needed)
-" =========================================================
-let g:netrw_banner = 0        " hide the verbose netrw banner
-let g:netrw_liststyle = 3     " use tree-style listing
-let g:netrw_browse_split = 4  " open selected file in the previous (right-hand) window
-let g:netrw_altv = 1
-let g:netrw_winsize = 25      " file tree takes 25% of the screen width
-
-" :Lexplore is netrw's own native toggle (open if closed, close if open),
-" so we just map straight to it instead of tracking state ourselves.
-nnoremap <silent> <leader>e :Lexplore<CR>
-
-" =========================================================
-" 2. SPACE + t  => OPEN A NEW TAB
-" =========================================================
-" Opens a brand new empty tab page (like Ctrl+T in a browser).
-nnoremap <silent> <leader>t :tabnew<CR>
-
-" =========================================================
-" 3. SPACE + q  => QUIT the current window/file
-" =========================================================
-nnoremap <leader>q :q<CR>
-
-" =========================================================
-" 4. SPACE + |  AND  SPACE + -  => CREATE SPLITS
-" =========================================================
-" Space + |  -> vertical split (side by side)
-" Space + -  -> horizontal split (stacked)
-" Note: "|" is the command separator in Ex commands, so it must be escaped
-" with a backslash on the left-hand side of the mapping.
-nnoremap <silent> <leader>\| :vsplit<CR>
-nnoremap <silent> <leader>-  :split<CR>
-
-" =========================================================
-" 5. CTRL + i  /  CTRL + o  => SWITCH BETWEEN OPEN FILES (BUFFERS)
-" =========================================================
-" Ctrl+I  -> go to the next buffer (next file already opened)
-" Ctrl+O  -> go to the previous buffer (previous file already opened)
-" NOTE: this intentionally overrides Vim's default jumplist navigation
-" (normally bound to Ctrl-I / Ctrl-O) in favor of quick file switching.
-" Also note some terminals send the same code for <Tab> and <C-i>, so
-" Ctrl+I may behave like <Tab> in certain terminal emulators.
-nnoremap <silent> <C-i> :bnext<CR>
-nnoremap <silent> <C-o> :bprevious<CR>
-
-" =========================================================
-" 6. SPACE + p  => FUZZY-STYLE FILE FINDER (built-in :find, no plugin)
-" =========================================================
-" 'path=**' makes :find search recursively through all subdirectories
-" of the current working directory, and wildmenu/wildmode give you an
-" interactive, tab-completable list of matches as you type - the closest
-" thing to a fuzzy finder using only built-in Vim features.
-set path+=**
-set wildmenu
+" --- 2. UI & APPEARANCE ---
+set number                      " Show absolute line numbers
+" set relativenumber            " Relative line numbers disabled
+set cursorline                  " Highlight active line
+set showcmd                     " Show partial command in bottom bar
+set laststatus=2                " Always display statusline
+set title                       " Set terminal title
+set scrolloff=8                 " Keep 8 lines visible above/below cursor
+set sidescrolloff=8
+set wildmenu                    " Visual completion popup for command mode
 set wildmode=longest:full,full
-set wildignore+=*/node_modules/*,*/.git/*,*/dist/*,*/build/*
 
-" Opens the command line pre-filled with ":find " so you can start typing
-" a filename and press <Tab> to cycle through matches.
-nnoremap <leader>p :find<Space>
+if has("patch-8.2.0000") || has("nvim")
+    set wildoptions=pum
+endif
 
-" =========================================================
-" 7. gc / gcc / gc{motion}  (Normal & Visual mode) => COMMENT / UNCOMMENT
-"    (hand-written function, no commentary-style plugin needed)
-"
-"    SYNCED WITH LAZYVIM: Neovim 0.10+ ships gc/gcc built in
-"    (Treesitter-aware), so this vimrc now uses the SAME keys instead of
-"    Ctrl+/ or Space+/. Those two are now intentionally left unbound
-"    here to match LazyVim, where Ctrl+/ is reserved for the integrated
-"    terminal and Space+/ is Grep Project - keeping either bound to
-"    comment-toggle here would mean the same physical key does two
-"    different things depending on which editor you're in.
-" =========================================================
-function! s:ToggleCommentLines(startline, endline) abort
-    " Pick the comment prefix/suffix based on the current filetype.
-    " l:ce (comment end) is empty for single-marker languages, and only
-    " set for languages that need a closing marker too (e.g. HTML).
-    let l:cs = "#"   " default prefix
-    let l:ce = ""    " default: no suffix needed
-    if &filetype ==# 'vim'
-        let l:cs = '"'
-    elseif &filetype =~# '\v(javascript|typescript|java|c|cpp|go|rust|php|css|scss)'
-        let l:cs = '//'
-    elseif &filetype =~# '\v(python|sh|bash|ruby|yaml|dockerfile)'
-        let l:cs = '#'
-    elseif &filetype ==# 'lua'
-        let l:cs = '--'
-    elseif &filetype ==# 'html'
-        " HTML needs BOTH an opening and a closing marker to be valid
-        let l:cs = '<!--'
-        let l:ce = '-->'
+if has("termguicolors")
+    set termguicolors
+endif
+
+" --- Transparent Background & Custom Highlights ---
+highlight Normal guibg=NONE ctermbg=NONE
+highlight CursorLine guibg=#27272a ctermbg=236 cterm=NONE gui=NONE
+highlight CursorLineNr guifg=#38bdf8 ctermfg=81 gui=bold cterm=bold
+highlight LineNr guifg=#71717a ctermfg=243
+highlight Visual guibg=#3f3f46 ctermbg=238
+highlight Search guibg=#f59e0b guifg=#18181b ctermbg=214 ctermfg=234
+highlight IncSearch guibg=#38bdf8 guifg=#18181b ctermbg=81 ctermfg=234
+highlight StatusLine guibg=NONE ctermbg=NONE guifg=#f4f4f5 ctermfg=255 gui=bold
+highlight StatusLineNC guibg=NONE ctermbg=NONE guifg=#71717a ctermfg=243
+highlight Pmenu guibg=#27272a guifg=#f4f4f5 ctermbg=236 ctermfg=255
+highlight PmenuSel guibg=#38bdf8 guifg=#18181b ctermbg=81 ctermfg=234 gui=bold
+highlight Directory guifg=#38bdf8 ctermfg=81 gui=bold
+
+" --- Statusline ---
+set statusline=
+set statusline+=\ %Y\ \|
+set statusline+=\ %f\ %M%R
+set statusline+=%=
+set statusline+=\ %{&fileencoding?&fileencoding:&encoding}\ \|
+set statusline+=\ %l:%c\ \|
+set statusline+=\ %p%%
+
+" --- 3. INDENTATION & WRAPPING ---
+set expandtab                   " Convert tabs to spaces
+set tabstop=4                   " 1 tab = 4 spaces
+set shiftwidth=4                " Indent width = 4 spaces
+set softtabstop=4
+set autoindent                  " Copy indent from current line
+set smartindent                 " Smart indenting for code
+set wrap                        " Wrap long lines
+set linebreak                   " Wrap lines at convenient points (words)
+
+" --- 4. SEARCH OPTIONS ---
+set ignorecase                  " Case-insensitive searching...
+set smartcase                   " ...unless search contains capital letters
+set hlsearch                    " Highlight search results
+set incsearch                   " Search incrementally as characters are typed
+
+" --- 5. SPLITS & WINDOW MANAGEMENT ---
+set splitbelow                  " Horizontal split opens below
+set splitright                  " Vertical split opens right
+
+" --- 6. NETRW FILE EXPLORER ---
+let g:netrw_banner = 0          " Hide top banner
+let g:netrw_liststyle = 3       " Tree view
+let g:netrw_browse_split = 0    " Open files in current window
+let g:netrw_winsize = 25        " Explorer width 25%
+
+" ============================================================
+" --- 7. NATURAL KEYBINDINGS ---
+" ============================================================
+
+" --- Wrapped Line Navigation ---
+" Move by visual lines instead of physical lines when text wraps
+nnoremap j gj
+nnoremap k gk
+vnoremap j gj
+vnoremap k gk
+
+" --- Fast Quitting (Space Leader) ---
+" nnoremap <leader>w :w<CR>
+nnoremap <leader>q :q<CR>
+nnoremap <leader>Q :qa!<CR>
+nnoremap <leader>x :x<CR>
+
+" --- Clear Search Highlight ---
+nnoremap <leader>h :nohlsearch<CR>
+nnoremap <silent> <Esc> :nohlsearch<CR><Esc>
+
+" --- File Explorer Toggle ---
+nnoremap <leader>e :Lexplore<CR>
+
+" --- Move Selected Lines Up / Down ---
+nnoremap <A-k> :m .-2<CR>==
+nnoremap <A-j> :m .+1<CR>==
+vnoremap <A-k> :m '<-2<CR>gv=gv
+vnoremap <A-j> :m '>+1<CR>gv=gv
+
+" --- Continuous Visual Indentation ---
+" Keep selection active after indenting with < or >
+vnoremap < <gv
+vnoremap > >gv
+
+" --- Window Navigation (Ctrl + h/j/k/l & Alt + h/j/k/l) ---
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
+
+" --- Window Management Shortcuts (Leader + | & Leader + -) ---
+nnoremap <leader>\| :vsplit<CR>
+nnoremap <leader>- :split<CR>
+nnoremap <leader>sv :vsplit<CR>
+nnoremap <leader>sh :split<CR>
+nnoremap <leader>sc :close<CR>
+
+" --- Window Resizing (Ctrl + Arrow keys) ---
+nnoremap <C-Up> :resize +2<CR>
+nnoremap <C-Down> :resize -2<CR>
+nnoremap <C-Left> :vertical resize -2<CR>
+nnoremap <C-Right> :vertical resize +2<CR>
+
+" --- Buffer / Tab Navigation ---
+nnoremap H :bprevious<CR>
+nnoremap L :bnext<CR>
+nnoremap <leader>bn :bnext<CR>
+nnoremap <leader>bp :bprevious<CR>
+nnoremap <leader>bd :bdelete<CR>
+nnoremap ]b :bnext<CR>
+nnoremap [b :bprevious<CR>
+
+" --- Clipboard Paste Enhancement ---
+" Prevent replacing paste register when pasting over visual selection
+xnoremap p "_dP
+
+" ============================================================
+" --- 8. PURE NATIVE CODE COMMENTING (ZERO PLUGINS) ---
+" ============================================================
+" Toggles comments on selected lines or current line natively using Vimscript
+function! ToggleCommentNative() range
+    let l:comment = '#'
+    if index(['c', 'cpp', 'java', 'javascript', 'typescript', 'php', 'css', 'go', 'rust', 'dart'], &filetype) >= 0
+        let l:comment = '//'
+    elseif index(['vim'], &filetype) >= 0
+        let l:comment = '"'
+    elseif index(['html', 'xml'], &filetype) >= 0
+        let l:comment = '<!--'
     endif
 
-    let l:escaped_cs = escape(l:cs, '/\')
-    let l:escaped_ce = escape(l:ce, '/\')
+    let l:first = a:firstline
+    let l:last = a:lastline
 
-    for l:lnum in range(a:startline, a:endline)
-        let l:line = getline(l:lnum)
-        " Skip fully blank lines so we don't comment out whitespace-only lines
-        if l:line =~# '^\s*$'
-            continue
-        endif
-
-        if l:line =~# '^\s*' . l:escaped_cs
-            " already commented -> strip both the prefix and (if any) suffix
-            let l:newline = substitute(l:line, '^\(\s*\)' . l:escaped_cs . '\s\?', '\1', '')
-            if !empty(l:ce)
-                let l:newline = substitute(l:newline, '\s\?' . l:escaped_ce . '\s*$', '', '')
-            endif
-            call setline(l:lnum, l:newline)
-        else
-            " not commented yet -> wrap the line in prefix (and suffix, if any)
-            let l:indent = matchstr(l:line, '^\s*')
-            let l:rest = strpart(l:line, len(l:indent))
-            if empty(l:ce)
-                call setline(l:lnum, l:indent . l:cs . ' ' . l:rest)
+    for l:i in range(l:first, l:last)
+        let l:line = getline(l:i)
+        if l:comment == '<!--'
+            if l:line =~ '^\s*<!--.*-->\s*$'
+                call setline(l:i, substitute(l:line, '^\(\s*\)<!--\s*\(.*\)\s*-->\s*$', '\1\2', ''))
             else
-                call setline(l:lnum, l:indent . l:cs . ' ' . l:rest . ' ' . l:ce)
+                call setline(l:i, substitute(l:line, '^\(\s*\)\(.*\)$', '\1<!-- \2 -->', ''))
+            endif
+        else
+            let l:escaped = escape(l:comment, '/"*')
+            if l:line =~ '^\s*' . l:escaped
+                call setline(l:i, substitute(l:line, '^\(\s*\)' . l:escaped . '\s*', '\1', ''))
+            else
+                call setline(l:i, substitute(l:line, '^\(\s*\)', '\1' . l:comment . ' ', ''))
             endif
         endif
     endfor
 endfunction
 
-" Kept for anything that still calls it directly with a range (e.g. a
-" visual-mode ":'<,'>call ToggleComment()" invocation auto-filled by Vim).
-function! ToggleComment() range
-    call s:ToggleCommentLines(a:firstline, a:lastline)
-endfunction
+" Toggle comment on current line or visual selection using <leader>/ or gcc
+nnoremap <silent> <leader>/ :call ToggleCommentNative()<CR>
+vnoremap <silent> <leader>/ :call ToggleCommentNative()<CR>
+nnoremap <silent> gcc :call ToggleCommentNative()<CR>
+vnoremap <silent> gc :call ToggleCommentNative()<CR>
 
-" 'operatorfunc' target for gc{motion} (gcap, gcip, gc3j, ...). Vim calls
-" this AFTER moving over the motion and sets '[ / '] to its start/end.
-function! CommentOperatorFunc(type) abort
-    call s:ToggleCommentLines(line("'["), line("']"))
-endfunction
-
-" gcc -> toggle comment on the current line
-nnoremap <silent> gcc :call ToggleComment()<CR>
-
-" gc{motion} -> toggle comment over any motion/text object (matches
-" Neovim's built-in gc operator, e.g. gcap, gcip, gc3j)
-nnoremap <silent> gc :set operatorfunc=CommentOperatorFunc<CR>g@
-
-" gc in Visual mode -> toggle comment on the selected lines
-" (":" from Visual mode auto-fills the command line with "'<,'>", which is
-" the range ToggleComment()'s `range` declaration picks up)
-xnoremap <silent> gc :call ToggleComment()<CR>
-
-" =========================================================
-" 8. SHIFT + H  /  SHIFT + L  => SWITCH BETWEEN TABS
-" =========================================================
-" Shift+H -> go to the previous tab (like Ctrl+Shift+Tab in a browser)
-" Shift+L -> go to the next tab     (like Ctrl+Tab in a browser)
-" NOTE: this overrides the default 'H'/'L' cursor motions (jump to the
-" top/bottom of the visible screen). Use 'gg'/'G' or 'zt'/'zb' instead
-" if you still need that behavior.
-nnoremap <silent> H :tabprevious<CR>
-nnoremap <silent> L :tabnext<CR>
-
-" =========================================================
-" 9. QUICK CONFIG EDITING  => EDIT AND RELOAD THIS VIMRC FASTER
-" =========================================================
-" $MYVIMRC always points to whichever vimrc file Vim actually loaded on
-" startup, so these mappings work no matter where the file lives.
-"
-" Space + r + c  -> open $MYVIMRC in a new vertical split for quick edits
-" Space + r + s  -> reload (source) $MYVIMRC to apply changes immediately,
-"                   without needing to restart Vim
-" Space + r + o  -> open $MYVIMRC in a new tab instead of a split
-nnoremap <silent> <leader>rc :vsplit $MYVIMRC<CR>
-nnoremap <silent> <leader>ro :tabnew $MYVIMRC<CR>
-nnoremap <silent> <leader>rs :source $MYVIMRC<CR>:echo "vimrc reloaded"<CR>
-
-" Automatically reload the config the moment you save vimrc itself,
-" so changes take effect immediately without manually pressing <leader>rs.
-augroup AutoReloadVimrc
-    autocmd!
-    autocmd BufWritePost $MYVIMRC source $MYVIMRC | echo "vimrc reloaded"
-augroup END
-
-" =========================================================
-" 10. AUTO-CLOSE BRACKETS AND QUOTES (Insert mode)
-" =========================================================
-" Typing an opening bracket/quote automatically inserts its matching
-" closing character and places the cursor in between.
-inoremap ( ()<Left>
-inoremap [ []<Left>
-inoremap { {}<Left>
-
-" Typing a CLOSING bracket that is already sitting right under the cursor
-" just moves past it instead of inserting a duplicate.
-inoremap <expr> ) strpart(getline('.'), col('.')-1, 1) ==# ')' ? "\<Right>" : ")"
-inoremap <expr> ] strpart(getline('.'), col('.')-1, 1) ==# ']' ? "\<Right>" : "]"
-inoremap <expr> } strpart(getline('.'), col('.')-1, 1) ==# '}' ? "\<Right>" : "}"
-
-" Quotes use the same character to open and close, so we just toggle:
-" if the next character is already the matching quote, skip over it;
-" otherwise insert a fresh pair.
-inoremap <expr> " strpart(getline('.'), col('.')-1, 1) ==# '"'  ? "\<Right>" : '""<Left>'
-inoremap <expr> ' strpart(getline('.'), col('.')-1, 1) ==# "'"  ? "\<Right>" : "''<Left>"
-
-" Pressing Backspace right between an empty pair (e.g. "(|)") deletes
-" both characters at once instead of leaving a dangling bracket.
-function! s:SmartBackspace() abort
-    let l:line = getline('.')
-    let l:col = col('.')
-    let l:before = l:col > 1 ? l:line[l:col - 2] : ''
-    let l:after = l:line[l:col - 1]
-    let l:pairs = {'(': ')', '[': ']', '{': '}', '"': '"', "'": "'"}
-    if has_key(l:pairs, l:before) && l:after ==# l:pairs[l:before]
-        return "\<Right>\<BS>\<BS>"
-    endif
-    return "\<BS>"
-endfunction
-inoremap <expr> <BS> <SID>SmartBackspace()
-
-" =========================================================
-" 11. ENABLE MATCHIT (ships with Vim itself, not an external plugin)
-" =========================================================
-" Extends the '%' motion so it can jump between matching if/end,
-" opening/closing HTML tags, and other language-aware pairs, not just
-" single brackets.
-if !exists('g:loaded_matchit')
-    packadd! matchit
-endif
-
-" =========================================================
-" 12. SYSTEM CLIPBOARD SYNC
-" =========================================================
-" Makes yank/delete/paste (y, d, p) use the OS clipboard by default, so
-" copying in Vim lets you paste in other apps and vice versa.
-" Requires Vim compiled with +clipboard (check with ":echo has('clipboard')").
-if has('clipboard')
-    set clipboard=unnamedplus
-endif
-
-" =========================================================
-" 13. AUTO-RELOAD CHANGED FILES + RESTORE LAST CURSOR POSITION
-" =========================================================
-" If a file is changed outside of Vim (e.g. by git, another editor, a
-" build tool), automatically reload it instead of showing a stale buffer.
-set autoread
-autocmd FocusGained,BufEnter,CursorHold * checktime
-
-" When reopening a file, jump back to the line/column you were last
-" editing instead of always starting at the top.
-autocmd BufReadPost *
-    \ if line("'\"") > 1 && line("'\"") <= line("$") |
-    \   execute "normal! g`\"" |
-    \ endif
-
-" =========================================================
-" 14. CUSTOM STATUSLINE
-" =========================================================
-" Shows: current mode, filename + modified/readonly flags, git branch
-" (if inside a repo), filetype, and line:column / percentage through file.
-set laststatus=2               " always show the statusline, even with a single window
-
-function! s:GitBranch() abort
-    if !executable('git')
-        return ''
-    endif
-    let l:branch = system('git rev-parse --abbrev-ref HEAD 2>/dev/null')
-    if v:shell_error || empty(l:branch)
-        return ''
-    endif
-    return ' | ' . substitute(l:branch, '\n', '', '') . ' '
-endfunction
-
-function! s:StatusLine() abort
-    let l:mode_names = {
-        \ 'n':  'NORMAL', 'i':  'INSERT', 'v':  'VISUAL', 'V':  'V-LINE',
-        \ "\<C-v>": 'V-BLOCK', 'c': 'COMMAND', 'R': 'REPLACE', 't': 'TERMINAL'
-        \ }
-    let l:mode = get(l:mode_names, mode(), mode())
-    let l:ft = empty(&filetype) ? 'no ft' : &filetype
-    return ' ' . l:mode . ' | %f%m%r%h%w' . s:GitBranch() . '%=' . l:ft . ' | %l:%c | %p%% '
-endfunction
-
-" Apply the function above as the actual statusline format.
-" (Without this line, the function exists but is never displayed.)
-set statusline=%!s:StatusLine()
-
-" =========================================================
-" 15. INTEGRATED TERMINAL
-" =========================================================
-" Space + s + h -> open a terminal in a horizontal split at the bottom,
-" handy for running the current project without leaving Vim.
-nnoremap <silent> <leader>sh :botright split \| resize 15 \| terminal<CR>
-" Space + s + v -> same, but as a vertical split instead
-nnoremap <silent> <leader>sv :botright vsplit \| terminal<CR>
-" Esc twice leaves terminal-insert mode and returns to Normal mode,
-" matching the muscle memory of every other Vim buffer.
-tnoremap <Esc><Esc> <C-\><C-n>
-
-" =========================================================
-" 16. INDENT / WHITESPACE GUIDES
-" =========================================================
-" Makes invisible characters visible: tabs, trailing spaces, and where
-" a wrapped line continues, so indentation mistakes are easy to spot.
-set list
-set listchars=tab:\▸\ ,trail:·,extends:❯,precedes:❮,nbsp:␣
