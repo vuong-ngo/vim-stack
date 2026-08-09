@@ -16,15 +16,23 @@ if vim.fn.executable("wl-copy") == 1 then
 	}
 end
 
--- Line numbers & UI
+-- Line numbers & UI (Absolute 1-to-1 Line Numbers like VS Code)
 vim.opt.number = true
-vim.opt.relativenumber = false -- Absolute line numbers (like VS Code)
+vim.opt.relativenumber = false
 vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
 vim.opt.wrap = true
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
+
+-- Force relativenumber = false on buffer open (overriding LazyVim default)
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+	group = vim.api.nvim_create_augroup("DisableRelativeNumbers", { clear = true }),
+	callback = function()
+		vim.opt.relativenumber = false
+	end,
+})
 
 -- Indentation & Tabs (2 spaces standard, smart handling)
 vim.opt.tabstop = 2
@@ -62,4 +70,3 @@ vim.opt.listchars = {
 	precedes = "❮",
 	nbsp = "␣",
 }
-
