@@ -81,7 +81,7 @@ return {
 		end,
 	},
 
-	-- 2. Bufferline Top Tabs (Sleek IDE Tab Bar)
+	-- 2. Bufferline Top Tabs (Square IDE Tab Bar)
 	{
 		"akinsho/bufferline.nvim",
 		event = "VeryLazy",
@@ -89,11 +89,15 @@ return {
 		opts = {
 			options = {
 				mode = "buffers",
-				separator_style = "slant",
+				separator_style = "thin", -- Vuông phẳng (thin), không vát nghiêng (slant)
+				indicator = {
+					icon = "▎",
+					style = "icon",
+				},
 				diagnostics = "nvim_lsp",
 				always_show_bufferline = true,
 				show_buffer_close_icons = true,
-				show_close_icon = true,
+				show_close_icon = false,
 				color_icons = true,
 				buffer_close_icon = "󰅖",
 				modified_icon = "●",

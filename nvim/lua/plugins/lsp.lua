@@ -142,7 +142,16 @@ return {
 		version = "*",
 		dependencies = "rafamadriz/friendly-snippets",
 		opts = {
-			keymap = { preset = "default" },
+			keymap = {
+				preset = "super-tab",
+				["<CR>"] = { "accept", "fallback" },
+				["<Tab>"] = { "select_and_accept", "snippet_forward", "fallback" },
+				["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
+				["<Up>"] = { "select_prev", "fallback" },
+				["<Down>"] = { "select_next", "fallback" },
+				["<C-p>"] = { "select_prev", "fallback_to_mappings" },
+				["<C-n>"] = { "select_next", "fallback_to_mappings" },
+			},
 			appearance = {
 				use_nvim_cmp_as_default = true,
 				nerd_font_variant = "mono",
@@ -153,6 +162,13 @@ return {
 			completion = {
 				documentation = { auto_show = true, auto_show_delay_ms = 200 },
 				menu = { border = "rounded" },
+				ghost_text = { enabled = true },
+				list = {
+					selection = {
+						preselect = true,
+						auto_insert = false,
+					},
+				},
 			},
 		},
 	},
