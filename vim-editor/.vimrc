@@ -108,8 +108,8 @@ nnoremap k gk
 vnoremap j gj
 vnoremap k gk
 
-" --- Fast Quitting (Space Leader) ---
-" nnoremap <leader>w :w<CR>
+" --- Fast Saving & Quitting (Space Leader) ---
+nnoremap <leader>w :w<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>Q :qa!<CR>
 nnoremap <leader>x :x<CR>
