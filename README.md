@@ -100,13 +100,13 @@ To install the Neovim IDE configuration:
    ```
    *Alternatively, if cloning the full repo locally:*
    ```bash
-   ln -s "$(pwd)/lazyvim" ~/.config/nvim
+   ln -s "$(pwd)/nvim" ~/.config/nvim
    ```
 
 3. **Install System Dependencies**:
    Install external tools (`ripgrep`, `fd`, `lazygit`, compilers) using the provided script:
    ```bash
-   cd lazyvim
+   cd nvim
    chmod +x install-deps.sh
    ./install-deps.sh
    ```
