@@ -1,8 +1,7 @@
-" ============================================================
-" NATURAL & MODERN VIM CONFIGURATION
-" Clean Defaults, Intuitive Keybindings, Transparent High-Contrast UI
-" Synchronized with VS Code Vim Configuration
-" ============================================================
+" ================================================
+" Script: .vimrc
+" Description: Minimal zero-plugin Vim configuration with clean defaults, intuitive keybindings, transparent theme, and native commenting.
+" ================================================
 
 " --- 1. GENERAL SETTINGS ---
 set nocompatible
@@ -24,9 +23,13 @@ set timeoutlen=500              " Fast leader key timeout
 set nobackup nowritebackup swapfile
 
 if has('persistent_undo')
+    if !isdirectory(expand('~/.vim/undodir'))
+        call mkdir(expand('~/.vim/undodir'), 'p')
+    endif
     set undofile
     set undodir=~/.vim/undodir
 endif
+
 
 " --- 2. UI & APPEARANCE ---
 set number                      " Show absolute line numbers
@@ -132,16 +135,11 @@ vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap < <gv
 vnoremap > >gv
 
-" --- Window Navigation (Ctrl + h/j/k/l & Alt + h/j/k/l) ---
+" --- Window Navigation (Ctrl + h/j/k/l) ---
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-
-nnoremap <A-h> <C-w>h
-nnoremap <A-j> <C-w>j
-nnoremap <A-k> <C-w>k
-nnoremap <A-l> <C-w>l
 
 " --- Window Management Shortcuts (Leader + | & Leader + -) ---
 nnoremap <leader>\| :vsplit<CR>
@@ -165,9 +163,24 @@ nnoremap <leader>bd :bdelete<CR>
 nnoremap ]b :bnext<CR>
 nnoremap [b :bprevious<CR>
 
+" --- Jump to Buffer 1..9 (Alt + 1..9) ---
+nnoremap <A-1> :b1<CR>
+nnoremap <A-2> :b2<CR>
+nnoremap <A-3> :b3<CR>
+nnoremap <A-4> :b4<CR>
+nnoremap <A-5> :b5<CR>
+nnoremap <A-6> :b6<CR>
+nnoremap <A-7> :b7<CR>
+nnoremap <A-8> :b8<CR>
+nnoremap <A-9> :b9<CR>
+
+" --- Document Formatting (<leader>cf) ---
+nnoremap <leader>cf gg=G<C-o><C-o>
+
 " --- Clipboard Paste Enhancement ---
 " Prevent replacing paste register when pasting over visual selection
 xnoremap p "_dP
+
 
 " ============================================================
 " --- 8. PURE NATIVE CODE COMMENTING (ZERO PLUGINS) ---
