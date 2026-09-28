@@ -1,9 +1,11 @@
--- ============================================================
--- LSP, Auto-completion, Treesitter, Formatting & Diagnostics
--- ============================================================
+-- ================================================
+-- Script: lsp.lua
+-- Description: Configures Language Server Protocol and Treesitter syntax highlighting, including Mason package installer, Mason-Lspconfig, Nvim-Lspconfig with keymaps, and LazyDev for Neovim Lua API types.
+-- ================================================
+
 
 return {
-	-- 1. Neovim Lua API Autocompletion for editing configs
+	-- 1. Neovim Lua API Autocompletion & Types for config editing
 	{
 		"folke/lazydev.nvim",
 		ft = "lua",
@@ -15,7 +17,7 @@ return {
 		},
 	},
 
-	-- 2. Treesitter Syntax Highlighting
+	-- 2. Treesitter Syntax Highlighting & AST Indentation
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
@@ -47,14 +49,7 @@ return {
 		},
 	},
 
-	-- 3. Auto Close & Rename HTML/JSX Tags
-	{
-		"windwp/nvim-ts-autotag",
-		event = { "BufReadPost", "BufNewFile" },
-		opts = {},
-	},
-
-	-- 3. Mason (Automatic LSP & Tools Installer)
+	-- 3. Mason (Portable Package Manager for LSP Servers & Formatters)
 	{
 		"mason-org/mason.nvim",
 		cmd = "Mason",
@@ -120,9 +115,8 @@ return {
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 				callback = function(ev)
-					local opts = { buffer = ev.buf, silent = true }
 					local map = function(keys, func, desc)
-						vim.keymap.set("n", keys, func, { buffer = ev.buf, desc = "LSP: " .. desc })
+						vim.keymap.set("n", keys, func, { buffer = ev.buf, desc = "LSP: " .. desc, silent = true })
 					end
 
 					map("gd", vim.lsp.buf.definition, "Go to Definition")
@@ -134,69 +128,5 @@ return {
 				end,
 			})
 		end,
-	},
-
-	-- 5. Blink.cmp (Ultra-fast Autocomplete Engine)
-	{
-		"saghen/blink.cmp",
-		version = "*",
-		dependencies = "rafamadriz/friendly-snippets",
-		opts = {
-			keymap = {
-				preset = "super-tab",
-				["<CR>"] = { "accept", "fallback" },
-				["<Tab>"] = { "select_and_accept", "snippet_forward", "fallback" },
-				["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
-				["<Up>"] = { "select_prev", "fallback" },
-				["<Down>"] = { "select_next", "fallback" },
-				["<C-p>"] = { "select_prev", "fallback_to_mappings" },
-				["<C-n>"] = { "select_next", "fallback_to_mappings" },
-			},
-			appearance = {
-				use_nvim_cmp_as_default = true,
-				nerd_font_variant = "mono",
-			},
-			sources = {
-				default = { "lsp", "path", "snippets", "buffer" },
-			},
-			completion = {
-				documentation = { auto_show = true, auto_show_delay_ms = 200 },
-				menu = { border = "rounded" },
-				ghost_text = { enabled = true },
-				list = {
-					selection = {
-						preselect = true,
-						auto_insert = false,
-					},
-				},
-			},
-		},
-	},
-
-	-- 6. Conform Auto-formatting (VSCode Save Format)
-	{
-		"stevearc/conform.nvim",
-		event = { "BufWritePre" },
-		cmd = { "ConformInfo" },
-		opts = {
-			formatters_by_ft = {
-				lua = { "stylua" },
-				python = { "isort", "black" },
-				javascript = { "prettier" },
-				typescript = { "prettier" },
-				javascriptreact = { "prettier" },
-				typescriptreact = { "prettier" },
-				json = { "prettier" },
-				yaml = { "prettier" },
-				html = { "prettier" },
-				css = { "prettier" },
-				sh = { "shfmt" },
-				bash = { "shfmt" },
-			},
-			format_on_save = {
-				timeout_ms = 1000,
-				lsp_fallback = true,
-			},
-		},
 	},
 }

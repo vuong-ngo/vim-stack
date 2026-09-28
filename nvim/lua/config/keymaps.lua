@@ -1,6 +1,8 @@
--- ============================================================
--- Neovim Keymaps (Ultimate IDE Keybindings & Fast Ergonomics)
--- ============================================================
+-- ================================================
+-- Script: keymaps.lua
+-- Description: This file contains custom key mappings for Neovim, including tab and buffer management, file explorer and quick search, window splits and navigation, integrated terminal, code actions, and formatting.
+-- ================================================
+
 
 local set = vim.keymap.set
 
@@ -105,7 +107,7 @@ map("v", "<A-j>", ":m '>+1<CR>gv=gv", "Move Selection Down")
 map("v", "<A-k>", ":m '<-2<CR>gv=gv", "Move Selection Up")
 
 -- ------------------------------------------------------------
--- 4. INTEGRATED TERMINAL & GIT UI
+-- 4. INTEGRATED TERMINAL
 -- ------------------------------------------------------------
 -- Toggle Floating Terminal (Ctrl+/ or <leader>ft)
 map({ "n", "t" }, "<C-/>", function()
@@ -116,14 +118,10 @@ map({ "n", "t" }, "<leader>ft", function()
 	Snacks.terminal()
 end, "Toggle Integrated Terminal")
 
--- LazyGit Floating Window (<leader>gg)
-map("n", "<leader>gg", function()
-	Snacks.lazygit()
-end, "Open LazyGit")
-
 -- ------------------------------------------------------------
 -- 5. LSP & CODE ACTIONS
 -- ------------------------------------------------------------
+
 map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
 map("n", "<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
 map("n", "<leader>cf", function()

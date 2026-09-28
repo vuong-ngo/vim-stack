@@ -1,10 +1,60 @@
--- ============================================================
--- Statusline & Top Tab Bar (Lualine & Bufferline)
--- Theme: Transparent Powerline Graphite Matching Terminal
--- ============================================================
+-- ================================================
+-- Script: ui.lua
+-- Description: Configures visual appearance, including Catppuccin Mocha theme with full transparency, Lualine statusline, Bufferline tabs, and Noice floating commandline/notifications.
+-- ================================================
+
 
 return {
-	-- 1. Lualine Statusline (Bottom Bar)
+	-- 1. Theme & Colorscheme (Catppuccin Mocha with 100% Terminal Transparency)
+	{
+		"catppuccin/nvim",
+		name = "catppuccin",
+		priority = 1000,
+		opts = {
+			flavour = "mocha",
+			transparent_background = true,
+			integrations = {
+				blink_cmp = true,
+				bufferline = true,
+				mason = true,
+				gitsigns = true,
+				treesitter = true,
+				which_key = true,
+				noice = true,
+				trouble = true,
+				native_lsp = { enabled = true },
+			},
+			custom_highlights = function(colors)
+				return {
+					Normal = { bg = "NONE" },
+					NormalNC = { bg = "NONE" },
+					NormalFloat = { bg = "NONE", fg = colors.text },
+					FloatBorder = { bg = "NONE", fg = colors.overlay0 },
+					FloatTitle = { bg = "NONE", fg = colors.blue, bold = true },
+
+					WhichKeyNormal = { bg = "NONE" },
+
+					SnacksPicker = { bg = "NONE" },
+					SnacksPickerBorder = { fg = colors.overlay0, bg = "NONE" },
+					SnacksPickerTitle = { fg = colors.blue, bg = "NONE", bold = true },
+					SnacksNormal = { bg = "NONE" },
+
+					CursorLine = { bg = "#27272a" },
+					PmenuSel = { bg = "#3f3f46", fg = colors.text, bold = true },
+				}
+			end,
+		},
+	},
+
+	-- Activate Catppuccin as LazyVim's default colorscheme
+	{
+		"LazyVim/LazyVim",
+		opts = {
+			colorscheme = "catppuccin-mocha",
+		},
+	},
+
+	-- 2. Lualine Statusline (Powerline Graphite Style)
 	{
 		"nvim-lualine/lualine.nvim",
 		event = "VeryLazy",
@@ -81,7 +131,7 @@ return {
 		end,
 	},
 
-	-- 2. Bufferline Top Tabs (Square IDE Tab Bar)
+	-- 3. Bufferline Top Tab Bar (VS Code Flat Square Tabs)
 	{
 		"akinsho/bufferline.nvim",
 		event = "VeryLazy",
@@ -89,7 +139,7 @@ return {
 		opts = {
 			options = {
 				mode = "buffers",
-				separator_style = "thin", -- Vuông phẳng (thin), không vát nghiêng (slant)
+				separator_style = "thin",
 				indicator = {
 					icon = "▎",
 					style = "icon",
@@ -107,7 +157,7 @@ return {
 				max_name_length = 18,
 				max_prefix_length = 15,
 				tab_size = 18,
-				diagnostics_indicator = function(count, level, diagnostics_dict, context)
+				diagnostics_indicator = function(count, level)
 					local icon = level:match("error") and " " or " "
 					return " " .. icon .. count
 				end,
@@ -124,6 +174,35 @@ return {
 						text_align = "left",
 						highlight = "Directory",
 					},
+				},
+			},
+		},
+	},
+
+	-- 4. Noice UI (Floating Commandline & Notifications)
+	{
+		"folke/noice.nvim",
+		event = "VeryLazy",
+		dependencies = { "MunifTanjim/nui.nvim" },
+		opts = {
+			lsp = {
+				override = {
+					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+					["vim.lsp.util.stylize_markdown"] = true,
+					["cmp.entry.get_documentation"] = true,
+				},
+			},
+			presets = {
+				bottom_search = false,
+				command_palette = true,
+				long_message_to_split = true,
+				inc_rename = false,
+				lsp_doc_border = true,
+			},
+			routes = {
+				{
+					filter = { event = "msg_show", find = "written" },
+					opts = { skip = true },
 				},
 			},
 		},

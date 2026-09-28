@@ -1,5 +1,6 @@
 -- ================================================
--- Neovim Global Options & Settings
+-- Script: options.lua
+-- Description: This file contains Neovim options and settings, including clipboard synchronization, line numbering, indentation, search behavior, split window direction, performance optimizations, and whitespace display.
 -- ================================================
 
 -- Sync clipboard between OS and Neovim
@@ -25,6 +26,11 @@ vim.opt.termguicolors = true
 vim.opt.wrap = true
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
+
+-- Explicitly disable spell check globally (VS Code style - no red underlines)
+vim.opt.spell = false
+vim.opt.spelllang = { "en" }
+
 
 -- Force relativenumber = false on buffer open (overriding LazyVim default)
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {

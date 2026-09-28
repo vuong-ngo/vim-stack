@@ -1,9 +1,8 @@
 -- ================================================
---   _   ____  ______  _  _______  _  ___________
---  | | / / / / / __ \/ |/ / ___/ / |/ / ___/ __ \
---  | |/ / /_/ / /_/ /    / (_ / /    / (_ / /_/ /
---  |___/\____/\____/_/|_/\___/ /_/|_/\___/\____/
+-- Script: autocmds.lua
+-- Description: This file contains autocommands for Neovim, including auto-reloading files changed outside Neovim, restoring the last cursor position, and globally disabling spell checking.
 -- ================================================
+
 -- Kept in sync with the "auto-reload changed files + restore cursor
 -- position" feature in vimrc.
 
@@ -37,3 +36,26 @@ autocmd("BufReadPost", {
     end
   end,
 })
+
+-- ---------- GLOBALLY DISABLE SPELL CHECKING ----------
+-- Overwrite LazyVim's default wrap_spell autocommand which turns spell on
+-- for markdown, text, gitcommit, etc. (removing annoying red squiggles)
+local no_spell_group = augroup("lazyvim_wrap_spell", { clear = true })
+autocmd("FileType", {
+  group = no_spell_group,
+  pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.spell = false
+  end,
+})
+
+-- Force spell off globally across all buffers
+autocmd({ "BufEnter", "BufReadPost" }, {
+  group = augroup("DisableSpellGlobally", { clear = true }),
+  pattern = "*",
+  callback = function()
+    vim.opt_local.spell = false
+  end,
+})
+

@@ -17,13 +17,14 @@
 #   - a JDK (Java 17+)       needed by jdtls (Java LSP) and lemminx (XML LSP)
 #   - unzip                  Mason needs it to unpack some downloaded tools
 #   - xclip / wl-clipboard   system clipboard integration (X11 / Wayland)
-#   - lazygit                bound to <leader>gg via Snacks.lazygit()
 #   - a Nerd Font            icons used by Snacks, lualine, mini.icons, etc.
+
 #
-# Everything else (pyright, jdtls, rust_analyzer, bashls, yamlls, lemminx,
-# jsonls, marksman, lua_ls, black, isort, shfmt, stylua, prettier) is
+# Everything else (pyright, ts_ls, html, cssls, jsonls, bashls,
+# lua_ls, black, isort, shfmt, stylua, prettier) is
 # installed automatically by Mason the first time you launch `nvim` - this
 # script only provides the underlying runtimes Mason needs to do that.
+
 #
 # Supports: Debian/Ubuntu (apt), Fedora (dnf), Arch (pacman), macOS (brew).
 # Safe to re-run - every step checks whether its target already exists.
@@ -273,43 +274,7 @@ if [ "$OS" = "Linux" ]; then
 fi
 
 # =========================================================
-# 8. lazygit  (<leader>gg via Snacks.lazygit())
-# =========================================================
-if has lazygit; then
-	skip "lazygit"
-else
-	info "Installing lazygit"
-	case "$PKG_MGR" in
-	brew) brew install lazygit ;;
-	pacman) $SUDO pacman -S --noconfirm lazygit ;;
-	*)
-		# Not reliably in apt/dnf repos - install the prebuilt release.
-		lg_arch="$(uname -m)"
-		case "$lg_arch" in
-		x86_64) lg_asset="Linux_x86_64" ;;
-		aarch64 | arm64) lg_asset="Linux_arm64" ;;
-		*)
-			fail "Unsupported architecture '$lg_arch' for the lazygit release; install it manually."
-			lg_asset=""
-			;;
-		esac
-		if [ -n "$lg_asset" ]; then
-			lg_ver="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest |
-				grep -oE '"tag_name":\s*"v[0-9.]+"' | grep -oE '[0-9.]+' | head -n1)"
-			tmp_dir="$(mktemp -d)"
-			curl -fsSL -o "$tmp_dir/lazygit.tar.gz" \
-				"https://github.com/jesseduffield/lazygit/releases/download/v${lg_ver}/lazygit_${lg_ver}_${lg_asset}.tar.gz"
-			tar -C "$tmp_dir" -xzf "$tmp_dir/lazygit.tar.gz" lazygit
-			$SUDO install "$tmp_dir/lazygit" /usr/local/bin/lazygit
-			rm -rf "$tmp_dir"
-		fi
-		;;
-	esac
-	ok "lazygit installed"
-fi
-
-# =========================================================
-# 9. Nerd Font (icons for Snacks / lualine / mini.icons)
+# 8. Nerd Font (icons for Snacks / lualine / mini.icons)
 # =========================================================
 if [ "$OS" = "Linux" ]; then
 	font_dir="$HOME/.local/share/fonts"
@@ -344,7 +309,7 @@ fi
 # =========================================================
 echo
 info "Done. Versions installed:"
-for tool in nvim git rg node npm python3 java lazygit; do
+for tool in nvim git rg node npm python3 java; do
 	if has "$tool"; then
 		ver="$("$tool" --version 2>&1 | head -n1)"
 		printf "  ${c_green}✓${c_reset} %-8s %s\n" "$tool" "$ver"
@@ -352,11 +317,12 @@ for tool in nvim git rg node npm python3 java lazygit; do
 		printf "  ${c_red}✗${c_reset} %-8s not found\n" "$tool"
 	fi
 done
+
 if has fd; then printf "  ${c_green}✓${c_reset} %-8s %s\n" "fd" "$(fd --version)"; fi
 
 echo
 info "Next step: launch nvim. Mason will automatically install the LSP"
-echo "servers and formatters (pyright, jdtls, rust_analyzer, bashls, yamlls,"
-echo "lemminx, jsonls, marksman, lua_ls, black, isort, shfmt, stylua,"
-echo "prettier) the first time it starts - that requires the runtimes"
-echo "installed above (Node, Python, Java) and an internet connection."
+echo "servers and formatters (pyright, ts_ls, html, cssls, jsonls, bashls,"
+echo "lua_ls, black, isort, shfmt, stylua, prettier) the first time it starts"
+echo "- this requires the runtimes installed above (Node, Python) and an internet connection."
+

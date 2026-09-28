@@ -1,8 +1,6 @@
 -- ================================================
---   _   ____  ______  _  _______  _  ___________ 
---  | | / / / / / __ \/ |/ / ___/ / |/ / ___/ __ \
---  | |/ / /_/ / /_/ /    / (_ / /    / (_ / /_/ /
---  |___/\____/\____/_/|_/\___/ /_/|_/\___/\____/ 
+-- Script: init.lua
+-- Description: This is the main entry point for LazyVim. It loads the core configuration and plugins.
 -- ================================================
 
 -- bootstrap lazy.nvim, LazyVim and your plugins

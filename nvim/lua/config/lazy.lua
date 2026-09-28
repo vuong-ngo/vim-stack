@@ -1,8 +1,6 @@
 -- ================================================
---   _   ____  ______  _  _______  _  ___________
---  | | / / / / / __ \/ |/ / ___/ / |/ / ___/ __ \
---  | |/ / /_/ / /_/ /    / (_ / /    / (_ / /_/ /
---  |___/\____/\____/_/|_/\___/ /_/|_/\___/\____/
+-- Script: lazy.lua
+-- Description: This file contains the configuration for lazy.nvim, a plugin manager for Neovim
 -- ================================================
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim" -- Adjust the path as needed
