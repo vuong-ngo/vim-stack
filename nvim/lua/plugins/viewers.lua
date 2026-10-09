@@ -111,6 +111,7 @@ return {
 			},
 			{
 				"<leader>cp",
+				ft = { "csv", "tsv" },
 				function()
 					-- Open large CSV in floating terminal using less -S pager (smooth scrolling, zero RAM overhead)
 					local file = vim.api.nvim_buf_get_name(0)

@@ -15,7 +15,7 @@ return {
 			transparent_background = true,
 			integrations = {
 				blink_cmp = true,
-				bufferline = true,
+				bufferline = false, -- Disabled so Bufferline inherits custom pure transparent highlights without opaque Mocha override
 				mason = true,
 				gitsigns = true,
 				treesitter = true,
@@ -26,18 +26,122 @@ return {
 			},
 			custom_highlights = function(colors)
 				return {
+					-- 1. Pure Terminal Transparency (Matching Explorer)
 					Normal = { bg = "NONE" },
 					NormalNC = { bg = "NONE" },
-					NormalFloat = { bg = "NONE", fg = colors.text },
-					FloatBorder = { bg = "NONE", fg = colors.overlay0 },
-					FloatTitle = { bg = "NONE", fg = colors.blue, bold = true },
+					NormalFloat = { bg = "NONE", fg = "#f4f4f5" },
+					FloatBorder = { bg = "NONE", fg = "#3f3f46" },
+					FloatTitle = { bg = "NONE", fg = "#e4e4e7", bold = true },
+					MsgArea = { bg = "NONE", fg = "#f4f4f5" },
 
-					WhichKeyNormal = { bg = "NONE" },
+					SignColumn = { bg = "NONE" },
+					FoldColumn = { bg = "NONE" },
+					LineNr = { bg = "NONE", fg = "#71717a" },
+					CursorLineNr = { bg = "NONE", fg = "#e4e4e7", bold = true },
+					EndOfBuffer = { bg = "NONE" },
+					WinSeparator = { bg = "NONE", fg = "#27272a" },
 
+					StatusLine = { bg = "NONE" },
+					StatusLineNC = { bg = "NONE" },
+
+					TabLine = { bg = "NONE" },
+					TabLineFill = { bg = "NONE" },
+					TabLineSel = { bg = "#27272a" },
+
+					-- 2. Snacks Suite & Explorer Transparency
 					SnacksPicker = { bg = "NONE" },
-					SnacksPickerBorder = { fg = colors.overlay0, bg = "NONE" },
-					SnacksPickerTitle = { fg = colors.blue, bg = "NONE", bold = true },
+					SnacksPickerBorder = { fg = "#3f3f46", bg = "NONE" },
+					SnacksPickerTitle = { fg = "#e4e4e7", bg = "NONE", bold = true },
 					SnacksNormal = { bg = "NONE" },
+					SnacksNormalNC = { bg = "NONE" },
+					SnacksPickerList = { bg = "NONE" },
+					SnacksPickerInput = { bg = "NONE" },
+					SnacksPickerPreview = { bg = "NONE" },
+
+					NeoTreeNormal = { bg = "NONE" },
+					NeoTreeNormalNC = { bg = "NONE" },
+					NeoTreeEndOfBuffer = { bg = "NONE" },
+
+					TroubleNormal = { bg = "NONE" },
+					TroubleNormalNC = { bg = "NONE" },
+
+					-- 3. Unified Graphite Hints (LSP Inlay, Diagnostics & Ghost Text)
+					DiagnosticHint = { fg = "#a1a1aa", bg = "NONE" },
+					DiagnosticVirtualTextHint = { bg = "NONE", fg = "#71717a", italic = true },
+					DiagnosticFloatingHint = { fg = "#a1a1aa", bg = "NONE" },
+					DiagnosticSignHint = { fg = "#a1a1aa", bg = "NONE" },
+
+					DiagnosticInfo = { fg = "#38bdf8", bg = "NONE" },
+					DiagnosticVirtualTextInfo = { bg = "NONE", fg = "#71717a", italic = true },
+					DiagnosticWarn = { fg = "#f59e0b", bg = "NONE" },
+					DiagnosticVirtualTextWarn = { bg = "NONE", fg = "#f59e0b", italic = true },
+					DiagnosticError = { fg = "#f43f5e", bg = "NONE" },
+					DiagnosticVirtualTextError = { bg = "NONE", fg = "#f43f5e", italic = true },
+
+					-- Inlay hints (type/parameter hints in code)
+					LspInlayHint = { bg = "NONE", fg = "#71717a", italic = true },
+
+					-- Completion ghost text hints (Blink.cmp)
+					BlinkCmpGhostText = { fg = "#71717a", italic = true },
+
+					-- Completion Menu & Documentation Popups
+					BlinkCmpMenu = { bg = "NONE" },
+					BlinkCmpMenuBorder = { bg = "NONE", fg = "#3f3f46" },
+					BlinkCmpMenuSelection = { bg = "#27272a", fg = "#ffffff", bold = true },
+					BlinkCmpDoc = { bg = "NONE" },
+					BlinkCmpDocBorder = { bg = "NONE", fg = "#3f3f46" },
+					BlinkCmpDocSeparator = { bg = "NONE", fg = "#27272a" },
+					BlinkCmpLabel = { fg = "#f4f4f5" },
+					BlinkCmpLabelMatch = { fg = "#ffffff", bold = true },
+					BlinkCmpLabelDetail = { fg = "#71717a" },
+					BlinkCmpLabelDescription = { fg = "#71717a" },
+					BlinkCmpKind = { fg = "#a1a1aa" },
+
+					-- Popup Menu (Pmenu)
+					Pmenu = { bg = "NONE", fg = "#f4f4f5" },
+					PmenuSel = { bg = "#27272a", fg = "#ffffff", bold = true },
+					PmenuBorder = { bg = "NONE", fg = "#3f3f46" },
+					PmenuSbar = { bg = "NONE" },
+					PmenuThumb = { bg = "#3f3f46" },
+
+					-- Which-Key Hints
+					WhichKey = { fg = "#e4e4e7", bold = true },
+					WhichKeyNormal = { bg = "NONE" },
+					WhichKeyBorder = { bg = "NONE", fg = "#3f3f46" },
+					WhichKeyDesc = { fg = "#f4f4f5" },
+					WhichKeyGroup = { fg = "#a1a1aa" },
+					WhichKeySeparator = { fg = "#52525b" },
+
+					-- Noice Popups & Commandline
+					NoiceCmdlinePopup = { bg = "NONE" },
+					NoiceCmdlinePopupBorder = { bg = "NONE", fg = "#3f3f46" },
+					NoiceCmdlinePopupTitle = { bg = "NONE", fg = "#e4e4e7" },
+					NoicePopup = { bg = "NONE" },
+					NoicePopupBorder = { bg = "NONE", fg = "#3f3f46" },
+					NoiceConfirm = { bg = "NONE" },
+					NoiceConfirmBorder = { bg = "NONE", fg = "#3f3f46" },
+
+					-- 4. Bufferline Direct Pure Transparent Highlights
+					BufferLineFill = { bg = "NONE" },
+					BufferLineBackground = { bg = "NONE", fg = "#a1a1aa" },
+					BufferLineBufferVisible = { bg = "NONE", fg = "#71717a" },
+					BufferLineBufferSelected = { bg = "#27272a", fg = "#f4f4f5", bold = true },
+					BufferLineSeparator = { fg = "#3f3f46", bg = "NONE" },
+					BufferLineSeparatorVisible = { fg = "#3f3f46", bg = "NONE" },
+					BufferLineSeparatorSelected = { fg = "#27272a", bg = "NONE" },
+					BufferLineIndicatorSelected = { fg = "#e4e4e7", bg = "#27272a" },
+					BufferLineIndicatorVisible = { fg = "NONE", bg = "NONE" },
+					BufferLineModified = { fg = "#f59e0b", bg = "NONE" },
+					BufferLineModifiedSelected = { fg = "#f59e0b", bg = "#27272a" },
+					BufferLineModifiedVisible = { fg = "#f59e0b", bg = "NONE" },
+					BufferLineCloseButton = { fg = "#71717a", bg = "NONE" },
+					BufferLineCloseButtonSelected = { fg = "#a1a1aa", bg = "#27272a" },
+					BufferLineCloseButtonVisible = { fg = "#71717a", bg = "NONE" },
+					BufferLineTab = { bg = "NONE", fg = "#a1a1aa" },
+					BufferLineTabSelected = { bg = "#27272a", fg = "#f4f4f5", bold = true },
+					BufferLineTabSeparator = { fg = "#3f3f46", bg = "NONE" },
+					BufferLineTabSeparatorSelected = { fg = "#3f3f46", bg = "NONE" },
+					BufferLineOffsetSeparator = { fg = "#27272a", bg = "NONE" },
 
 					CursorLine = { bg = "#27272a" },
 					PmenuSel = { bg = "#3f3f46", fg = colors.text, bold = true },
@@ -95,8 +199,8 @@ return {
 			return {
 				options = {
 					theme = graphite_theme,
-					section_separators = { left = "", right = "" },
-					component_separators = { left = "", right = "" },
+					section_separators = { left = "", right = "" },
+					component_separators = { left = "│", right = "│" },
 					globalstatus = true,
 					disabled_filetypes = { statusline = { "dashboard", "alpha", "ministarter", "snacks_dashboard" } },
 				},
@@ -104,9 +208,7 @@ return {
 					lualine_a = {
 						{
 							"mode",
-							fmt = function(str)
-								return " " .. str
-							end,
+							fmt = string.upper,
 						},
 					},
 					lualine_b = {
@@ -120,18 +222,18 @@ return {
 					},
 					lualine_x = {
 						{ "encoding", fmt = string.upper },
-						{ "fileformat", symbols = { unix = "LF ", dos = "CRLF ", mac = "CR " } },
+						{ "fileformat", symbols = { unix = "LF", dos = "CRLF", mac = "CR" } },
 					},
 					lualine_y = { "progress" },
 					lualine_z = {
-						{ "location", icon = "󰍹" },
+						{ "location" },
 					},
 				},
 			}
 		end,
 	},
 
-	-- 3. Bufferline Top Tab Bar (VS Code Flat Square Tabs)
+	-- 3. Bufferline Top Tab Bar (VS Code Flat Square Tabs - Pure Graphite Theme)
 	{
 		"akinsho/bufferline.nvim",
 		event = "VeryLazy",
@@ -175,6 +277,27 @@ return {
 						highlight = "Directory",
 					},
 				},
+			},
+			highlights = {
+				fill = { bg = "NONE" },
+				background = { bg = "NONE", fg = "#a1a1aa" },
+				buffer_selected = { bg = "#27272a", fg = "#f4f4f5", bold = true, italic = false },
+				buffer_visible = { bg = "NONE", fg = "#71717a" },
+				indicator_selected = { fg = "#e4e4e7", bg = "#27272a" },
+				indicator_visible = { fg = "NONE", bg = "NONE" },
+				separator = { fg = "#3f3f46", bg = "NONE" },
+				separator_selected = { fg = "#27272a", bg = "NONE" },
+				separator_visible = { fg = "#3f3f46", bg = "NONE" },
+				modified = { fg = "#f59e0b", bg = "NONE" },
+				modified_selected = { fg = "#f59e0b", bg = "#27272a" },
+				modified_visible = { fg = "#f59e0b", bg = "NONE" },
+				close_button = { fg = "#71717a", bg = "NONE" },
+				close_button_selected = { fg = "#a1a1aa", bg = "#27272a" },
+				close_button_visible = { fg = "#71717a", bg = "NONE" },
+				tab = { bg = "NONE", fg = "#a1a1aa" },
+				tab_selected = { bg = "#27272a", fg = "#f4f4f5", bold = true },
+				tab_separator = { fg = "#3f3f46", bg = "NONE" },
+				tab_separator_selected = { fg = "#3f3f46", bg = "NONE" },
 			},
 		},
 	},
