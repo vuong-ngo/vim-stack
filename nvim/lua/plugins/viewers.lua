@@ -3,7 +3,6 @@
 -- Description: Configures specialized data and document visualizers, including CsvView.nvim for Excel-style CSV/TSV spreadsheet grids with sticky headers and safe size guards, and Render-Markdown.nvim for formatted tables and callouts.
 -- ================================================
 
-
 local MAX_SAFE_CSV_SIZE = 2 * 1024 * 1024 -- 2.0 MB limit to prevent freezing on massive datasets
 
 local function get_buf_size()
@@ -64,7 +63,11 @@ return {
 			-- User command to format and switch to Office table view
 			vim.api.nvim_create_user_command("CsvFormat", function()
 				vim.cmd("CsvViewEnable display_mode=border")
-				vim.notify("Formatted CSV view as an Office spreadsheet table.", vim.log.levels.INFO, { title = "CSV Office Format" })
+				vim.notify(
+					"Formatted CSV view as an Office spreadsheet table.",
+					vim.log.levels.INFO,
+					{ title = "CSV Office Format" }
+				)
 			end, { desc = "Format and display CSV as Office spreadsheet" })
 		end,
 		init = function()
@@ -78,7 +81,9 @@ return {
 						vim.schedule(function()
 							local mb = string.format("%.1f", size / (1024 * 1024))
 							vim.notify(
-								"Large CSV file (" .. mb .. "MB). Auto table rendering skipped to keep Neovim fast.\nUse <leader>cv to toggle manually or <leader>cp to inspect via fast Pager.",
+								"Large CSV file ("
+									.. mb
+									.. "MB). Auto table rendering skipped to keep Neovim fast.\nUse <leader>cv to toggle manually or <leader>cp to inspect via fast Pager.",
 								vim.log.levels.WARN,
 								{ title = "CSV Office View" }
 							)
@@ -116,7 +121,10 @@ return {
 					-- Open large CSV in floating terminal using less -S pager (smooth scrolling, zero RAM overhead)
 					local file = vim.api.nvim_buf_get_name(0)
 					if file and file ~= "" then
-						Snacks.terminal({ "less", "-S", file }, { win = { position = "float", width = 0.9, height = 0.9 } })
+						Snacks.terminal(
+							{ "less", "-S", file },
+							{ win = { position = "float", width = 0.9, height = 0.9 } }
+						)
 					end
 				end,
 				desc = "Open Large CSV in Fast Pager",

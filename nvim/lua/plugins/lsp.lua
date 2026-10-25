@@ -3,7 +3,6 @@
 -- Description: Configures Language Server Protocol and Treesitter syntax highlighting, including Mason package installer, Mason-Lspconfig, Nvim-Lspconfig with keymaps, and LazyDev for Neovim Lua API types.
 -- ================================================
 
-
 return {
 	-- 1. Neovim Lua API Autocompletion & Types for config editing
 	{
@@ -120,7 +119,9 @@ return {
 					end
 
 					map("gd", vim.lsp.buf.definition, "Go to Definition")
-					map("gr", function() Snacks.picker.lsp_references() end, "Go to References")
+					map("gr", function()
+						Snacks.picker.lsp_references()
+					end, "Go to References")
 					map("gI", vim.lsp.buf.implementation, "Go to Implementation")
 					map("K", vim.lsp.buf.hover, "Hover Documentation")
 					map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
