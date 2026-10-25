@@ -16,9 +16,9 @@ local autocmd = vim.api.nvim_create_autocmd
 -- checkout, another editor, a build script) are picked up immediately.
 local reload_group = augroup("AutoReloadOnFocus", { clear = true })
 autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
-  group = reload_group,
-  pattern = "*",
-  command = "checktime",
+	group = reload_group,
+	pattern = "*",
+	command = "checktime",
 })
 
 -- ---------- RESTORE LAST CURSOR POSITION ----------
@@ -26,15 +26,15 @@ autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
 -- instead of always starting at line 1.
 local restore_cursor_group = augroup("RestoreCursorPosition", { clear = true })
 autocmd("BufReadPost", {
-  group = restore_cursor_group,
-  pattern = "*",
-  callback = function()
-    local mark = vim.api.nvim_buf_get_mark(0, '"')
-    local lcount = vim.api.nvim_buf_line_count(0)
-    if mark[1] > 0 and mark[1] <= lcount then
-      pcall(vim.api.nvim_win_set_cursor, 0, mark)
-    end
-  end,
+	group = restore_cursor_group,
+	pattern = "*",
+	callback = function()
+		local mark = vim.api.nvim_buf_get_mark(0, '"')
+		local lcount = vim.api.nvim_buf_line_count(0)
+		if mark[1] > 0 and mark[1] <= lcount then
+			pcall(vim.api.nvim_win_set_cursor, 0, mark)
+		end
+	end,
 })
 
 -- ---------- GLOBALLY DISABLE SPELL CHECKING ----------
@@ -42,20 +42,33 @@ autocmd("BufReadPost", {
 -- for markdown, text, gitcommit, etc. (removing annoying red squiggles)
 local no_spell_group = augroup("lazyvim_wrap_spell", { clear = true })
 autocmd("FileType", {
-  group = no_spell_group,
-  pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
-  callback = function()
-    vim.opt_local.wrap = true
-    vim.opt_local.spell = false
-  end,
+	group = no_spell_group,
+	pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
+	callback = function()
+		vim.opt_local.wrap = true
+		vim.opt_local.spell = false
+	end,
 })
 
 -- Force spell off globally across all buffers
 autocmd({ "BufEnter", "BufReadPost" }, {
-  group = augroup("DisableSpellGlobally", { clear = true }),
-  pattern = "*",
-  callback = function()
-    vim.opt_local.spell = false
-  end,
+	group = augroup("DisableSpellGlobally", { clear = true }),
+	pattern = "*",
+	callback = function()
+		vim.opt_local.spell = false
+	end,
 })
 
+-- ---------- FORCE 4-SPACE INDENTATION ACROSS ALL FILETYPES ----------
+-- tab = 4 spaces, softtabstop = 4, shiftwidth = 4
+local indent_group = augroup("Enforce4SpaceIndent", { clear = true })
+autocmd("FileType", {
+	group = indent_group,
+	pattern = "*",
+	callback = function()
+		vim.opt_local.tabstop = 4
+		vim.opt_local.shiftwidth = 4
+		vim.opt_local.softtabstop = 4
+		vim.opt_local.expandtab = true
+	end,
+})

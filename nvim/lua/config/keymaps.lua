@@ -3,7 +3,6 @@
 -- Description: This file contains custom key mappings for Neovim, including tab and buffer management, file explorer and quick search, window splits and navigation, integrated terminal, code actions, and formatting.
 -- ================================================
 
-
 local set = vim.keymap.set
 
 -- Set Leader Keys
@@ -48,16 +47,16 @@ pcall(vim.keymap.del, { "n", "i", "v" }, "<C-s>")
 -- ------------------------------------------------------------
 -- Toggle Sidebar Explorer (<leader>e)
 map("n", "<leader>e", function()
-	Snacks.explorer()
+	Snacks.explorer({ hidden = true, ignored = true })
 end, "Toggle Sidebar Explorer")
 
 -- Quick File Search (Ctrl+P or <leader>ff)
 map("n", "<C-p>", function()
-	Snacks.picker.files()
+	Snacks.picker.files({ hidden = true })
 end, "Find Files (Ctrl+P)")
 
 map("n", "<leader>ff", function()
-	Snacks.picker.files()
+	Snacks.picker.files({ hidden = true })
 end, "Find Files")
 
 -- Live Grep / Project Text Search (Ctrl+Shift+F or <leader>fg)
@@ -111,10 +110,6 @@ map("v", "<A-k>", ":m '<-2<CR>gv=gv", "Move Selection Up")
 -- ------------------------------------------------------------
 -- Toggle Floating Terminal (Ctrl+/ or <leader>ft)
 map({ "n", "t" }, "<C-/>", function()
-	Snacks.terminal()
-end, "Toggle Integrated Terminal")
-
-map({ "n", "t" }, "<leader>ft", function()
 	Snacks.terminal()
 end, "Toggle Integrated Terminal")
 

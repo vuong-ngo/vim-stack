@@ -31,7 +31,6 @@ vim.opt.sidescrolloff = 8
 vim.opt.spell = false
 vim.opt.spelllang = { "en" }
 
-
 -- Force relativenumber = false on buffer open (overriding LazyVim default)
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 	group = vim.api.nvim_create_augroup("DisableRelativeNumbers", { clear = true }),
@@ -40,12 +39,14 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 	end,
 })
 
--- Indentation & Tabs (2 spaces standard, smart handling)
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
+-- Indentation & Tabs (4 spaces standard like VS Code and modern IDEs)
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
 vim.opt.expandtab = true
 vim.opt.autoindent = true
 vim.opt.smartindent = true
+vim.opt.shiftround = true
 
 -- Search settings
 vim.opt.ignorecase = true
