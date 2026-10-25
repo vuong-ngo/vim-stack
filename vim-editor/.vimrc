@@ -47,23 +47,81 @@ if has("patch-8.2.0000") || has("nvim")
     set wildoptions=pum
 endif
 
+set background=dark
+
 if has("termguicolors")
     set termguicolors
 endif
 
-" --- Transparent Background & Custom Highlights ---
-highlight Normal guibg=NONE ctermbg=NONE
-highlight CursorLine guibg=#27272a ctermbg=236 cterm=NONE gui=NONE
-highlight CursorLineNr guifg=#38bdf8 ctermfg=81 gui=bold cterm=bold
-highlight LineNr guifg=#71717a ctermfg=243
-highlight Visual guibg=#3f3f46 ctermbg=238
-highlight Search guibg=#f59e0b guifg=#18181b ctermbg=214 ctermfg=234
-highlight IncSearch guibg=#38bdf8 guifg=#18181b ctermbg=81 ctermfg=234
-highlight StatusLine guibg=NONE ctermbg=NONE guifg=#f4f4f5 ctermfg=255 gui=bold
-highlight StatusLineNC guibg=NONE ctermbg=NONE guifg=#71717a ctermfg=243
-highlight Pmenu guibg=#27272a guifg=#f4f4f5 ctermbg=236 ctermfg=255
-highlight PmenuSel guibg=#38bdf8 guifg=#18181b ctermbg=81 ctermfg=234 gui=bold
-highlight Directory guifg=#38bdf8 ctermfg=81 gui=bold
+" --- Transparent Background & Gentle Eye-Friendly Pastel Theme ---
+highlight Normal guibg=NONE ctermbg=NONE guifg=#cdd6f4 ctermfg=253
+highlight NormalNC guibg=NONE ctermbg=NONE guifg=#a6adc8 ctermfg=248
+highlight CursorLine guibg=#232634 ctermbg=236 cterm=NONE gui=NONE
+highlight CursorLineNr guifg=#fab387 ctermfg=216 gui=bold cterm=bold
+highlight LineNr guifg=#7f849c ctermfg=245
+highlight Visual guibg=#363a4f ctermbg=238
+highlight Search guibg=#45475a guifg=#f9e2af ctermbg=239 ctermfg=223 gui=NONE
+highlight IncSearch guibg=#94e2d5 guifg=#181825 ctermbg=115 ctermfg=234 gui=NONE
+highlight StatusLine guibg=NONE ctermbg=NONE guifg=#cdd6f4 ctermfg=253 gui=bold
+highlight StatusLineNC guibg=NONE ctermbg=NONE guifg=#6c7086 ctermfg=243
+highlight Pmenu guibg=#1e1e2e guifg=#cdd6f4 ctermbg=236 ctermfg=253
+highlight PmenuSel guibg=#363a4f guifg=#89dceb ctermbg=238 ctermfg=117 gui=bold
+highlight Directory guifg=#89dceb ctermfg=117 gui=bold
+highlight netrwDir guifg=#89dceb ctermfg=117 gui=bold
+highlight netrwClassify guifg=#7f849c ctermfg=245
+highlight netrwLink guifg=#94e2d5 ctermfg=115
+highlight netrwSymLink guifg=#94e2d5 ctermfg=115 gui=italic
+highlight netrwExe guifg=#a6e3a1 ctermfg=150
+highlight netrwTreeBar guifg=#45475a ctermfg=239
+highlight netrwTimeDate guifg=#6c7086 ctermfg=243
+highlight netrwSizeDate guifg=#fab387 ctermfg=216
+highlight VertSplit guifg=#313244 guibg=NONE ctermfg=237 ctermbg=NONE
+highlight MatchParen guibg=#45475a guifg=#89dceb ctermbg=239 ctermfg=117 gui=bold
+highlight SignColumn guibg=NONE ctermbg=NONE guifg=#6c7086 ctermfg=243
+highlight FoldColumn guibg=NONE ctermbg=NONE guifg=#6c7086 ctermfg=243
+highlight Folded guibg=#24273a ctermbg=235 guifg=#9399b2 ctermfg=247 gui=italic
+highlight NonText guibg=NONE ctermbg=NONE guifg=#45475a ctermfg=239
+highlight EndOfBuffer guibg=NONE ctermbg=NONE guifg=#45475a ctermfg=239
+highlight SpecialKey guibg=NONE ctermbg=NONE guifg=#585b70 ctermfg=240
+
+" --- Syntax Highlighting (Soft Pastel, Eliminates Unreadable Dark Blue) ---
+highlight Comment guifg=#9399b2 ctermfg=247 gui=italic cterm=italic
+highlight SpecialComment guifg=#9399b2 ctermfg=247 gui=italic cterm=italic
+highlight Constant guifg=#fab387 ctermfg=216
+highlight String guifg=#a6e3a1 ctermfg=150
+highlight Character guifg=#a6e3a1 ctermfg=150
+highlight Number guifg=#fab387 ctermfg=216
+highlight Boolean guifg=#fab387 ctermfg=216
+highlight Float guifg=#fab387 ctermfg=216
+highlight Identifier guifg=#cdd6f4 ctermfg=253
+highlight Function guifg=#89dceb ctermfg=117 gui=bold cterm=bold
+highlight Statement guifg=#cba6f7 ctermfg=183 gui=bold cterm=bold
+highlight Conditional guifg=#cba6f7 ctermfg=183 gui=bold cterm=bold
+highlight Repeat guifg=#cba6f7 ctermfg=183 gui=bold cterm=bold
+highlight Label guifg=#cba6f7 ctermfg=183
+highlight Operator guifg=#94e2d5 ctermfg=115
+highlight Keyword guifg=#cba6f7 ctermfg=183 gui=bold cterm=bold
+highlight Exception guifg=#cba6f7 ctermfg=183
+highlight PreProc guifg=#f5c2e7 ctermfg=218
+highlight Include guifg=#f5c2e7 ctermfg=218
+highlight Define guifg=#f5c2e7 ctermfg=218
+highlight Macro guifg=#f5c2e7 ctermfg=218
+highlight PreCondit guifg=#f5c2e7 ctermfg=218
+highlight Type guifg=#f9e2af ctermfg=223 gui=bold cterm=bold
+highlight StorageClass guifg=#f9e2af ctermfg=223
+highlight Structure guifg=#f9e2af ctermfg=223
+highlight Typedef guifg=#f9e2af ctermfg=223
+highlight Special guifg=#f2cdcd ctermfg=224
+highlight SpecialChar guifg=#f2cdcd ctermfg=224
+highlight Delimiter guifg=#94e2d5 ctermfg=115
+highlight Todo guifg=#f9e2af guibg=#363a4f ctermfg=223 ctermbg=238 gui=bold,italic cterm=bold
+highlight WarningMsg guifg=#fab387 guibg=NONE ctermfg=216 ctermbg=NONE
+highlight ErrorMsg guifg=#f38ba8 guibg=NONE ctermfg=211 ctermbg=NONE
+highlight Title guifg=#89dceb ctermfg=117 gui=bold cterm=bold
+highlight DiffAdd guifg=#a6e3a1 guibg=#233b32 ctermfg=150 ctermbg=236
+highlight DiffChange guifg=#f9e2af guibg=#383226 ctermfg=223 ctermbg=236
+highlight DiffDelete guifg=#f38ba8 guibg=#3e252e ctermfg=211 ctermbg=236 gui=NONE
+highlight DiffText guifg=#fab387 guibg=#453526 ctermfg=216 ctermbg=237 gui=bold
 
 " --- Statusline ---
 set statusline=
@@ -78,11 +136,15 @@ set statusline+=\ %p%%
 set expandtab                   " Convert tabs to spaces
 set tabstop=4                   " 1 tab = 4 spaces
 set shiftwidth=4                " Indent width = 4 spaces
-set softtabstop=4
+set softtabstop=4               " 4 spaces for backspace/tab
+set shiftround                  " Round indent to multiple of shiftwidth
 set autoindent                  " Copy indent from current line
 set smartindent                 " Smart indenting for code
 set wrap                        " Wrap long lines
 set linebreak                   " Wrap lines at convenient points (words)
+
+" Enforce 4-space tab indentation across all filetypes
+autocmd FileType * setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
 
 " --- 4. SEARCH OPTIONS ---
 set ignorecase                  " Case-insensitive searching...
@@ -99,6 +161,66 @@ let g:netrw_banner = 0          " Hide top banner
 let g:netrw_liststyle = 3       " Tree view
 let g:netrw_browse_split = 0    " Open files in current window
 let g:netrw_winsize = 25        " Explorer width 25%
+let g:netrw_hide = 0            " Show hidden (dot) and ignored files by default
+let g:netrw_list_hide = ''      " Clear hide filter to display all files
+
+" --- Netrw Explorer Navigation (l to open/expand, h to go back/collapse) ---
+function! NetrwNavLeft()
+    let l:lnum = line(".")
+    let l:curline = getline(l:lnum)
+    let l:curdepth = count(l:curline, "|")
+    let l:nextline = getline(l:lnum + 1)
+    let l:nextdepth = count(l:nextline, "|")
+
+    " If on an expanded directory -> collapse it
+    if l:curline =~ '/$' && l:nextdepth > l:curdepth
+        execute "normal \<Plug>NetrwLocalBrowseCheck"
+        return
+    endif
+
+    " If inside an expanded directory -> jump up to parent directory
+    if l:curdepth > 1
+        let l:i = l:lnum - 1
+        while l:i >= 1
+            let l:line = getline(l:i)
+            let l:depth = count(l:line, "|")
+            if l:depth < l:curdepth && l:line =~ '/$'
+                call cursor(l:i, 1)
+                return
+            endif
+            let l:i -= 1
+        endwhile
+    endif
+
+    " Otherwise at root level -> browse up to parent directory
+    execute "normal \<Plug>NetrwBrowseUpDir"
+endfunction
+
+function! NetrwNavRight()
+    let l:curline = getline(".")
+    let l:lnum = line(".")
+    let l:curdepth = count(l:curline, "|")
+    let l:nextline = getline(l:lnum + 1)
+    let l:nextdepth = count(l:nextline, "|")
+
+    if l:curline =~ '/$'
+        " If directory is already open, move down to first child item; otherwise expand it
+        if l:nextdepth > l:curdepth
+            call cursor(l:lnum + 1, 1)
+        else
+            execute "normal \<Plug>NetrwLocalBrowseCheck"
+        endif
+    else
+        " If file, open it in editor
+        execute "normal \<Plug>NetrwLocalBrowseCheck"
+    endif
+endfunction
+
+augroup NetrwNavigation
+    autocmd!
+    autocmd FileType netrw nnoremap <buffer> <silent> <nowait> l :call NetrwNavRight()<CR>
+    autocmd FileType netrw nnoremap <buffer> <silent> <nowait> h :call NetrwNavLeft()<CR>
+augroup END
 
 " ============================================================
 " --- 7. NATURAL KEYBINDINGS ---
