@@ -3,7 +3,6 @@
 -- Description: Configures in-buffer editing mechanics and autocompletion, including Blink.cmp completion engine, Mini.pairs auto-closing, Mini.surround motions, Mini.ai text objects, and Nvim-ts-autotag tag closing.
 -- ================================================
 
-
 return {
 	-- 1. Blink.cmp (Ultra-fast Rust-backed Autocomplete Engine)
 	{

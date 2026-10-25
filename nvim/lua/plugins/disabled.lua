@@ -3,7 +3,6 @@
 -- Description: Explicitly disables redundant, duplicate, or unused plugins (mini.comment, tokyonight, persistence, nvim-lint, flash) to optimize resource usage and prevent feature overlap.
 -- ================================================
 
-
 return {
 	-- 1. Disable mini.comment (Duplicate: Neovim 0.10+ native gc/gcc + ts-comments.nvim handles commenting)
 	{ "nvim-mini/mini.comment", enabled = false },

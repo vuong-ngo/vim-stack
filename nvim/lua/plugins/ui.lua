@@ -3,7 +3,6 @@
 -- Description: Configures visual appearance, including Catppuccin Mocha theme with full transparency, Lualine statusline, Bufferline tabs, and Noice floating commandline/notifications.
 -- ================================================
 
-
 return {
 	-- 1. Theme & Colorscheme (Catppuccin Mocha with 100% Terminal Transparency)
 	{
