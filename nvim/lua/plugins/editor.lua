@@ -3,7 +3,6 @@
 -- Description: Configures workspace navigation and editor utilities, including Snacks dashboard/explorer/pickers/terminal/bigfile, Which-Key popup, Grug-Far search & replace, Trouble diagnostics, Todo-Comments, and GitSigns gutter integration.
 -- ================================================
 
-
 return {
 	-- 1. Snacks Suite (Dashboard, Explorer, Pickers, Terminal, Bigfile)
 	{
@@ -24,11 +23,31 @@ return {
 ----= (づ｡◕‿‿◕｡)づ =----
                     ]],
 					keys = {
-						{ icon = " ", key = "f", desc = "Find File (Ctrl+P)", action = ":lua Snacks.dashboard.pick('files')" },
+						{
+							icon = " ",
+							key = "f",
+							desc = "Find File (Ctrl+P)",
+							action = ":lua Snacks.dashboard.pick('files')",
+						},
 						{ icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
-						{ icon = " ", key = "g", desc = "Find Text (Grep)", action = ":lua Snacks.dashboard.pick('live_grep')" },
-						{ icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
-						{ icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
+						{
+							icon = " ",
+							key = "g",
+							desc = "Find Text (Grep)",
+							action = ":lua Snacks.dashboard.pick('live_grep')",
+						},
+						{
+							icon = " ",
+							key = "r",
+							desc = "Recent Files",
+							action = ":lua Snacks.dashboard.pick('oldfiles')",
+						},
+						{
+							icon = " ",
+							key = "c",
+							desc = "Config",
+							action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})",
+						},
 						{ icon = " ", key = "q", desc = "Quit", action = ":qa" },
 					},
 				},
@@ -38,7 +57,18 @@ return {
 			indent = { enabled = true },
 			input = { enabled = true },
 			lazygit = { enabled = false }, -- Disabled: Git is managed in external terminal
-			picker = { enabled = true },
+			picker = {
+				enabled = true,
+				sources = {
+					explorer = {
+						hidden = true, -- Show dotfiles (.env, .gitignore, etc.)
+						ignored = true, -- Show files ignored by .gitignore / .ignore
+					},
+					files = {
+						hidden = true, -- Show dotfiles in file search
+					},
+				},
+			},
 			quickfile = { enabled = true },
 			scope = { enabled = true },
 			scroll = { enabled = false }, -- Instant scrolling
@@ -72,7 +102,11 @@ return {
 		opts = {},
 		keys = {
 			{ "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Workspace Diagnostics (Trouble)" },
-			{ "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Document Diagnostics (Trouble)" },
+			{
+				"<leader>xd",
+				"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+				desc = "Document Diagnostics (Trouble)",
+			},
 			{ "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
 		},
 	},
@@ -84,9 +118,27 @@ return {
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {},
 		keys = {
-			{ "<leader>st", function() Snacks.picker.todo_comments() end, desc = "Search TODOs" },
-			{ "]t", function() require("todo-comments").jump_next() end, desc = "Next Todo Comment" },
-			{ "[t", function() require("todo-comments").jump_prev() end, desc = "Previous Todo Comment" },
+			{
+				"<leader>st",
+				function()
+					Snacks.picker.todo_comments()
+				end,
+				desc = "Search TODOs",
+			},
+			{
+				"]t",
+				function()
+					require("todo-comments").jump_next()
+				end,
+				desc = "Next Todo Comment",
+			},
+			{
+				"[t",
+				function()
+					require("todo-comments").jump_prev()
+				end,
+				desc = "Previous Todo Comment",
+			},
 		},
 	},
 
@@ -111,18 +163,28 @@ return {
 				end
 
 				map("n", "]h", function()
-					if vim.wo.diff then return "]c" end
-					vim.schedule(function() gs.next_hunk() end)
+					if vim.wo.diff then
+						return "]c"
+					end
+					vim.schedule(function()
+						gs.next_hunk()
+					end)
 					return "<Ignore>"
 				end, { expr = true, desc = "Next Git Hunk" })
 
 				map("n", "[h", function()
-					if vim.wo.diff then return "[c" end
-					vim.schedule(function() gs.prev_hunk() end)
+					if vim.wo.diff then
+						return "[c"
+					end
+					vim.schedule(function()
+						gs.prev_hunk()
+					end)
 					return "<Ignore>"
 				end, { expr = true, desc = "Previous Git Hunk" })
 
-				map("n", "<leader>gb", function() gs.blame_line({ full = true }) end, { desc = "Git Line Blame" })
+				map("n", "<leader>gb", function()
+					gs.blame_line({ full = true })
+				end, { desc = "Git Line Blame" })
 				map("n", "<leader>hp", gs.preview_hunk, { desc = "Preview Git Hunk" })
 			end,
 		},
