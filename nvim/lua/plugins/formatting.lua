@@ -3,7 +3,6 @@
 -- Description: Configures asynchronous code and document formatting via Conform.nvim, with format-on-save and language-specific formatters (Prettier, Stylua, Black, Isort, Shfmt).
 -- ================================================
 
-
 return {
 	{
 		"stevearc/conform.nvim",
@@ -24,6 +23,14 @@ return {
 				markdown = { "prettier" },
 				sh = { "shfmt" },
 				bash = { "shfmt" },
+			},
+			formatters = {
+				prettier = {
+					prepend_args = { "--tab-width", "4" },
+				},
+				shfmt = {
+					prepend_args = { "-i", "4" },
+				},
 			},
 			format_on_save = {
 				timeout_ms = 1000,
