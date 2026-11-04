@@ -14,16 +14,8 @@ local function map(mode, lhs, rhs, desc)
 end
 
 -- ------------------------------------------------------------
--- 1. TAB & BUFFER MANAGEMENT (<leader>q closes 1 tab only!)
+-- 1. TAB & BUFFER MANAGEMENT
 -- ------------------------------------------------------------
--- <leader>q closes current buffer/tab ONLY (without closing window/Neovim)
-map("n", "<leader>q", function()
-	Snacks.bufdelete()
-end, "Close Current Tab/Buffer")
-
--- <leader>Q quits Neovim completely
-map("n", "<leader>Q", "<cmd>confirm qa<CR>", "Quit Neovim All")
-
 -- Buffer Tab Navigation (H / L & Alt+1..9)
 map("n", "H", "<cmd>bprevious<CR>", "Previous Tab")
 map("n", "L", "<cmd>bnext<CR>", "Next Tab")
@@ -38,9 +30,10 @@ end
 -- Clear Search Highlights (<esc>)
 map("n", "<esc>", "<cmd>nohlsearch<CR>", "Clear Search Highlight")
 
--- Unmap save keybindings
+-- Unmap unused save/quit shortcuts
 pcall(vim.keymap.del, "n", "<leader>w")
-pcall(vim.keymap.del, { "n", "i", "v" }, "<C-s>")
+pcall(vim.keymap.del, "n", "<leader>q")
+pcall(vim.keymap.del, "n", "<leader>Q")
 
 -- ------------------------------------------------------------
 -- 2. FILE EXPLORER & QUICK SEARCH
@@ -59,14 +52,21 @@ map("n", "<leader>ff", function()
 	Snacks.picker.files({ hidden = true })
 end, "Find Files")
 
--- Live Grep / Project Text Search (Ctrl+Shift+F or <leader>fg)
-map("n", "<C-f>", function()
-	Snacks.picker.grep()
-end, "Search Text in Project")
+-- Live Grep / Project Text Search (Ctrl+F or <leader>fg)
+local function safe_grep()
+	if vim.fn.executable("rg") == 1 then
+		Snacks.picker.grep()
+	else
+		vim.notify(
+			"ripgrep ('rg') is not installed. Run 'sudo pacman -S ripgrep' or ./install-deps.sh to enable live grep.",
+			vim.log.levels.WARN,
+			{ title = "ripgrep Missing" }
+		)
+	end
+end
 
-map("n", "<leader>fg", function()
-	Snacks.picker.grep()
-end, "Search Text (Grep)")
+map("n", "<C-f>", safe_grep, "Search Text in Project")
+map("n", "<leader>fg", safe_grep, "Search Text (Grep)")
 
 -- Recent Files (<leader>fr)
 map("n", "<leader>fr", function()
@@ -80,8 +80,16 @@ end, "Open Buffers")
 
 -- Global Search & Replace (grug-far) (<leader>sr)
 map("n", "<leader>sr", function()
-	local grug = require("grug-far")
-	grug.open()
+	if vim.fn.executable("rg") == 1 then
+		local grug = require("grug-far")
+		grug.open()
+	else
+		vim.notify(
+			"ripgrep ('rg') is required for workspace search & replace. Install via 'sudo pacman -S ripgrep'.",
+			vim.log.levels.WARN,
+			{ title = "ripgrep Missing" }
+		)
+	end
 end, "Search & Replace (Workspace)")
 
 -- ------------------------------------------------------------
@@ -105,6 +113,10 @@ map("n", "<leader>-", "<cmd>split<CR>", "Split Horizontally")
 map("v", "<A-j>", ":m '>+1<CR>gv=gv", "Move Selection Down")
 map("v", "<A-k>", ":m '<-2<CR>gv=gv", "Move Selection Up")
 
+-- Continuous Visual Indentation (< and > keep selection active)
+map("v", "<", "<gv", "Indent Left (Continuous)")
+map("v", ">", ">gv", "Indent Right (Continuous)")
+
 -- ------------------------------------------------------------
 -- 4. INTEGRATED TERMINAL
 -- ------------------------------------------------------------
@@ -120,7 +132,12 @@ end, "Toggle Integrated Terminal")
 map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
 map("n", "<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
 map("n", "<leader>cf", function()
-	require("conform").format({ async = true, lsp_fallback = true })
+	local ok, conform = pcall(require, "conform")
+	if ok then
+		conform.format({ async = true, lsp_format = "fallback" })
+	else
+		vim.lsp.buf.format({ async = true })
+	end
 end, "Format Document")
 
 -- Unmap any remaining conflicting LazyVim multi-key sequences
