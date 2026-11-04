@@ -30,7 +30,7 @@ require("lazy").setup({
 		-- version = "*", -- try installing the latest stable version for plugins that support semver
 	},
 	checker = {
-		enabled = true, -- check for plugin updates periodically
+		enabled = false, -- Disabled: prevents background git network polling that can hang or error offline
 		notify = false, -- notify on update
 	}, -- automatically check for plugin updates
 	performance = {
