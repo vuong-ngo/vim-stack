@@ -43,18 +43,14 @@ Any shortcut formatted as `<leader>x` means: press `Space`, then `x`.
 | `<leader>-` | Normal | Horizontal split (`:split`) |
 | `Ctrl + h/j/k/l` | Normal | Navigate between window splits |
 | `Ctrl + Arrows` | Normal | Resize active split window |
-| `<leader>sc` | Normal | Close current split window |
 
 ### Buffer Management & Tabs
 | Shortcut | Mode | Action |
 | :--- | :---: | :--- |
-| `H` / `L` | Normal | Switch to previous / next buffer |
-| `Alt + 1..9` | Normal | Jump directly to buffer 1 through 9 |
-| `<leader>q` | Normal | Quit current buffer/window (`:q`) |
-| `<leader>Q` | Normal | Force quit all without saving (`:qa!`) |
-| `<leader>w` | Normal | Save current buffer (`:w`) |
-| `<leader>bd` | Normal | Delete current buffer (`:bdelete`) |
-| `]b` / `[b` | Normal | Next / previous buffer |
+| `H` / `L` | Normal | Smart switch to previous / next buffer tab (skips netrw, wraps around) |
+| `Alt + 1..9` | Normal | Jump directly to buffer tab 1 through 9 |
+
+*(Note: Buffer and window closing are handled using standard Vim commands `:bd`, `:q`, `:qa`)*
 
 ### Editing, Moving Lines & Indentation
 | Shortcut | Mode | Action |
@@ -70,20 +66,22 @@ Any shortcut formatted as `<leader>x` means: press `Space`, then `x`.
 | :--- | :---: | :--- |
 | `gcc` | Normal | Toggle comment on current line |
 | `gc` | Visual | Toggle comment on selected block |
-| `<leader>/` | Normal / Visual | Alternative comment toggle (terminal friendly) |
 
 *Supports language-aware syntax for: C, C++, Java, JS, TS, Python, Go, Rust, PHP, CSS, HTML, XML, Bash, and Vimscript.*
 
 ### Search & Highlights
 | Shortcut | Mode | Action |
 | :--- | :---: | :--- |
-| `<Esc>` / `<leader>h` | Normal | Clear search highlight (`:nohlsearch`) |
+| `<Esc>` | Normal | Clear search highlight (`:nohlsearch`) |
 
 ---
 
 ## ⚙️ Built-In Features & Settings
 
-- **100% Terminal Transparency:** Inherits terminal background color (`guibg=NONE ctermbg=NONE`).
+- **Native Buffer Tabline:** Zero-plugin buffer bar displayed at top with clean active/modified indicators, matching Neovim Bufferline.
+- **Smart Buffer Cycling:** `H` and `L` cycle through active editable file buffers, intelligently skipping Netrw explorer, quickfix, and utility buffers with seamless wrap-around.
+- **100% Terminal Transparency:** Inherits terminal background color and opacity across all terminal emulators (`guibg=NONE ctermbg=NONE`, with explicit reset of all reverse attributes).
+- **Soft Translucent Gray CursorLine:** Active line is highlighted with a delicate gray wash (`#222222` / `ctermbg=235`) that blends smoothly into dark backgrounds without harsh solid stripes.
 - **Persistent Undo:** Automatically creates `~/.vim/undodir` and preserves undo history across restarts.
 - **System Clipboard:** Seamless synchronization with system clipboard (`clipboard^=unnamed,unnamedplus`).
 - **Absolute Line Numbers:** Clean 1-to-1 line numbers matching modern code editors.
