@@ -7,12 +7,19 @@
 vim.opt.clipboard = "unnamedplus"
 vim.opt.mouse = "a"
 
--- Wayland clipboard support
-if vim.fn.executable("wl-copy") == 1 then
+-- System clipboard integration (safe detection for Wayland and X11)
+if vim.env.WAYLAND_DISPLAY and vim.fn.executable("wl-copy") == 1 then
 	vim.g.clipboard = {
 		name = "wl-clipboard",
 		copy = { ["+"] = "wl-copy", ["*"] = "wl-copy" },
 		paste = { ["+"] = "wl-paste", ["*"] = "wl-paste" },
+		cache_enabled = 1,
+	}
+elseif vim.fn.executable("xclip") == 1 then
+	vim.g.clipboard = {
+		name = "xclip",
+		copy = { ["+"] = "xclip -selection clipboard", ["*"] = "xclip -selection primary" },
+		paste = { ["+"] = "xclip -selection clipboard -o", ["*"] = "xclip -selection primary -o" },
 		cache_enabled = 1,
 	}
 end
