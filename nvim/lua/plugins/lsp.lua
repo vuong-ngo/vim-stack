@@ -22,6 +22,8 @@ return {
 		build = ":TSUpdate",
 		event = { "BufReadPost", "BufNewFile" },
 		opts = {
+			sync_install = false,
+			auto_install = false, -- Don't trigger background network downloads on unknown filetypes
 			highlight = { enable = true },
 			indent = { enable = true },
 			ensure_installed = {
@@ -53,16 +55,17 @@ return {
 		"mason-org/mason.nvim",
 		cmd = "Mason",
 		keys = { { "<leader>cm", "<cmd>Mason<cr>", desc = "Mason Info" } },
-		opts = {
-			ui = {
+		opts = function(_, opts)
+			opts.ensure_installed = {} -- Prevent auto-downloading packages in background when external tools (unzip, npm) are missing
+			opts.ui = {
 				border = "rounded",
 				icons = {
 					package_installed = "✓",
 					package_pending = "➜",
 					package_uninstalled = "✗",
 				},
-			},
-		},
+			}
+		end,
 	},
 
 	-- 4. Mason LSPConfig & Nvim-LSPConfig
@@ -79,33 +82,29 @@ return {
 			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
 			require("mason-lspconfig").setup({
-				ensure_installed = {
-					"lua_ls",
-					"pyright",
-					"ts_ls",
-					"html",
-					"cssls",
-					"jsonls",
-					"bashls",
-				},
-				automatic_installation = true,
+				ensure_installed = {},
+				automatic_installation = false, -- Prevent background network installs failing without npm/unzip
 				handlers = {
 					function(server_name)
-						lspconfig[server_name].setup({
-							capabilities = capabilities,
-						})
+						pcall(function()
+							lspconfig[server_name].setup({
+								capabilities = capabilities,
+							})
+						end)
 					end,
 					["lua_ls"] = function()
-						lspconfig.lua_ls.setup({
-							capabilities = capabilities,
-							settings = {
-								Lua = {
-									diagnostics = { globals = { "vim" } },
-									workspace = { checkThirdParty = false },
-									telemetry = { enable = false },
+						pcall(function()
+							lspconfig.lua_ls.setup({
+								capabilities = capabilities,
+								settings = {
+									Lua = {
+										diagnostics = { globals = { "vim" } },
+										workspace = { checkThirdParty = false },
+										telemetry = { enable = false },
+									},
 								},
-							},
-						})
+							})
+						end)
 					end,
 				},
 			})
