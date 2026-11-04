@@ -43,7 +43,7 @@ A lean, high-performance, and modular Neovim configuration built on top of **Laz
 └── lua/
     ├── config/              # Core Neovim configuration
     │   ├── lazy.lua         # Plugin manager bootstrap (lazy.nvim)
-    │   ├── options.lua      # Global settings (2-space indent, absolute line numbers, clipboard)
+    │   ├── options.lua      # Global settings (4-space indent, absolute line numbers, clipboard)
     │   ├── keymaps.lua      # Core shortcuts (tabs, buffers, splits, terminal)
     │   └── autocmds.lua     # Automated event handlers (auto-reload, cursor restore, no-spell)
     └── plugins/             # Domain-specific plugin modules
@@ -119,7 +119,7 @@ Configured in `lua/plugins/formatting.lua` via `stevearc/conform.nvim`:
 - **Python:** Formats with `black` and organizes imports with `isort`.
 - **Lua:** Formats with `stylua`.
 - **Shell:** Formats with `shfmt`.
-- **Shortcut:** Press `<leader>cf` or save the buffer (`format_on_save` enabled).
+- **Shortcut:** Press `<leader>cf` or save the buffer.
 
 ### 4. Seamless Terminal Transparency
 
@@ -138,10 +138,8 @@ Leader key: **`Space`**
 
 | Shortcut       | Action                                            |
 | :------------- | :------------------------------------------------ |
-| `<leader>q`  | Close current tab / buffer (does not exit Neovim) |
-| `<leader>Q`  | Confirm and quit all windows                      |
-| `H` / `L`  | Navigate to previous / next buffer tab            |
-| `Alt + 1..9` | Jump directly to tab 1 through 9                  |
+| `H` / `L`      | Navigate to previous / next buffer tab            |
+| `Alt + 1..9`   | Jump directly to tab 1 through 9                  |
 
 ### File Navigation & Search
 
@@ -180,6 +178,7 @@ Leader key: **`Space`**
 | `sd` *(char)*         | Delete surrounding character     |
 | `sr` *(old, new)*     | Replace surrounding character    |
 | `Alt + j` / `Alt + k` | Move selected lines down / up    |
+| `<` / `>` *(visual)*      | Continuous visual indentation    |
 
 ### Specialized Viewers & Terminal
 
