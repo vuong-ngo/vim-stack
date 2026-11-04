@@ -37,6 +37,7 @@ set number                      " Show absolute line numbers
 set cursorline                  " Highlight active line
 set showcmd                     " Show partial command in bottom bar
 set laststatus=2                " Always display statusline
+set showtabline=2               " Always display tabline (buffer tabs)
 set title                       " Set terminal title
 set scrolloff=8                 " Keep 8 lines visible above/below cursor
 set sidescrolloff=8
@@ -54,20 +55,51 @@ if has("termguicolors")
 endif
 
 " --- Transparent Background & Gentle Eye-Friendly Pastel Theme ---
+highlight clear Normal
 highlight Normal guibg=NONE ctermbg=NONE guifg=#cdd6f4 ctermfg=253
+highlight clear NormalNC
 highlight NormalNC guibg=NONE ctermbg=NONE guifg=#a6adc8 ctermfg=248
-highlight CursorLine guibg=#232634 ctermbg=236 cterm=NONE gui=NONE
-highlight CursorLineNr guifg=#fab387 ctermfg=216 gui=bold cterm=bold
-highlight LineNr guifg=#7f849c ctermfg=245
-highlight Visual guibg=#363a4f ctermbg=238
-highlight Search guibg=#45475a guifg=#f9e2af ctermbg=239 ctermfg=223 gui=NONE
-highlight IncSearch guibg=#94e2d5 guifg=#181825 ctermbg=115 ctermfg=234 gui=NONE
-highlight StatusLine guibg=NONE ctermbg=NONE guifg=#cdd6f4 ctermfg=253 gui=bold
-highlight StatusLineNC guibg=NONE ctermbg=NONE guifg=#6c7086 ctermfg=243
-highlight Pmenu guibg=#1e1e2e guifg=#cdd6f4 ctermbg=236 ctermfg=253
-highlight PmenuSel guibg=#363a4f guifg=#89dceb ctermbg=238 ctermfg=117 gui=bold
-highlight Directory guifg=#89dceb ctermfg=117 gui=bold
-highlight netrwDir guifg=#89dceb ctermfg=117 gui=bold
+
+" --- Active Line (CursorLine): Soft Translucent Gray Veil (Harmonizes with Terminal Background) ---
+highlight clear CursorLine
+highlight CursorLine term=NONE cterm=NONE gui=NONE guibg=#222222 ctermbg=235
+highlight clear CursorLineNr
+highlight CursorLineNr term=bold cterm=bold gui=bold guifg=#e4e4e7 ctermfg=254 guibg=NONE ctermbg=NONE
+
+highlight clear LineNr
+highlight LineNr term=NONE cterm=NONE gui=NONE guifg=#7f849c ctermfg=245 guibg=NONE ctermbg=NONE
+
+highlight clear Visual
+highlight Visual term=NONE cterm=NONE gui=NONE guibg=#363a4f ctermbg=238
+
+highlight clear Search
+highlight Search term=NONE cterm=NONE gui=NONE guibg=#45475a guifg=#f9e2af ctermbg=239 ctermfg=223
+highlight clear IncSearch
+highlight IncSearch term=NONE cterm=NONE gui=NONE guibg=#94e2d5 guifg=#181825 ctermbg=115 ctermfg=234
+
+" --- Statusline (100% Transparent, No Reverse, Inherits Terminal Background) ---
+highlight clear StatusLine
+highlight StatusLine term=bold cterm=bold gui=bold guibg=NONE ctermbg=NONE guifg=#cdd6f4 ctermfg=253
+highlight clear StatusLineNC
+highlight StatusLineNC term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#6c7086 ctermfg=243
+
+" --- Split Windows & Separators ---
+highlight clear VertSplit
+highlight VertSplit term=NONE cterm=NONE gui=NONE guifg=#313244 guibg=NONE ctermfg=237 ctermbg=NONE
+
+" --- Popup Menu (Completion & Wildmenu) ---
+highlight clear Pmenu
+highlight Pmenu term=NONE cterm=NONE gui=NONE guibg=#1e1e2e guifg=#cdd6f4 ctermbg=236 ctermfg=253
+highlight clear PmenuSel
+highlight PmenuSel term=bold cterm=bold gui=bold guibg=#363a4f guifg=#89dceb ctermbg=238 ctermfg=117
+highlight clear WildMenu
+highlight WildMenu term=bold cterm=bold gui=bold guibg=#363a4f guifg=#89dceb ctermbg=238 ctermfg=117
+
+" --- Netrw File Explorer ---
+highlight clear Directory
+highlight Directory term=bold cterm=bold gui=bold guifg=#89dceb ctermfg=117
+highlight clear netrwDir
+highlight netrwDir term=bold cterm=bold gui=bold guifg=#89dceb ctermfg=117
 highlight netrwClassify guifg=#7f849c ctermfg=245
 highlight netrwLink guifg=#94e2d5 ctermfg=115
 highlight netrwSymLink guifg=#94e2d5 ctermfg=115 gui=italic
@@ -75,14 +107,33 @@ highlight netrwExe guifg=#a6e3a1 ctermfg=150
 highlight netrwTreeBar guifg=#45475a ctermfg=239
 highlight netrwTimeDate guifg=#6c7086 ctermfg=243
 highlight netrwSizeDate guifg=#fab387 ctermfg=216
-highlight VertSplit guifg=#313244 guibg=NONE ctermfg=237 ctermbg=NONE
-highlight MatchParen guibg=#45475a guifg=#89dceb ctermbg=239 ctermfg=117 gui=bold
-highlight SignColumn guibg=NONE ctermbg=NONE guifg=#6c7086 ctermfg=243
-highlight FoldColumn guibg=NONE ctermbg=NONE guifg=#6c7086 ctermfg=243
-highlight Folded guibg=#24273a ctermbg=235 guifg=#9399b2 ctermfg=247 gui=italic
-highlight NonText guibg=NONE ctermbg=NONE guifg=#45475a ctermfg=239
-highlight EndOfBuffer guibg=NONE ctermbg=NONE guifg=#45475a ctermfg=239
-highlight SpecialKey guibg=NONE ctermbg=NONE guifg=#585b70 ctermfg=240
+
+highlight clear MatchParen
+highlight MatchParen term=bold cterm=bold gui=bold guibg=#45475a guifg=#89dceb ctermbg=239 ctermfg=117
+highlight clear SignColumn
+highlight SignColumn term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#6c7086 ctermfg=243
+highlight clear FoldColumn
+highlight FoldColumn term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#6c7086 ctermfg=243
+highlight clear Folded
+highlight Folded term=NONE cterm=NONE gui=italic guibg=#24273a ctermbg=235 guifg=#9399b2 ctermfg=247
+highlight clear NonText
+highlight NonText term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#45475a ctermfg=239
+highlight clear EndOfBuffer
+highlight EndOfBuffer term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#45475a ctermfg=239
+highlight clear SpecialKey
+highlight SpecialKey term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#585b70 ctermfg=240
+
+" --- Top Buffer Tabline (100% Transparent Bar Matching Any Terminal Background) ---
+highlight clear TabLine
+highlight TabLine term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#7f849c ctermfg=245
+highlight clear TabLineSel
+highlight TabLineSel term=bold cterm=bold gui=bold guibg=NONE ctermbg=NONE guifg=#89dceb ctermfg=117
+highlight clear TabLineFill
+highlight TabLineFill term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=NONE ctermfg=NONE
+highlight clear TabLineSep
+highlight TabLineSep term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#45475a ctermfg=239
+highlight clear TabLineMod
+highlight TabLineMod term=bold cterm=bold gui=bold guibg=NONE ctermbg=NONE guifg=#fab387 ctermfg=216
 
 " --- Syntax Highlighting (Soft Pastel, Eliminates Unreadable Dark Blue) ---
 highlight Comment guifg=#9399b2 ctermfg=247 gui=italic cterm=italic
@@ -132,6 +183,54 @@ set statusline+=\ %{&fileencoding?&fileencoding:&encoding}\ \|
 set statusline+=\ %l:%c\ \|
 set statusline+=\ %p%%
 
+" --- Buffer Tabline (Zero Plugins, Neovim Bufferline Style) ---
+function! s:GetValidBuffers() abort
+    let l:bufs = []
+    for l:b in range(1, bufnr('$'))
+        let l:name = bufname(l:b)
+        let l:ft = getbufvar(l:b, '&filetype')
+        let l:bt = getbufvar(l:b, '&buftype')
+        if buflisted(l:b) && l:bt ==# '' && l:ft !=# 'netrw' && l:ft !=# 'qf' && l:ft !=# 'help' && !isdirectory(l:name)
+            call add(l:bufs, l:b)
+        endif
+    endfor
+    return l:bufs
+endfunction
+
+function! BufferTabLine() abort
+    let l:bufs = s:GetValidBuffers()
+    let l:cur = bufnr('%')
+    let l:line = ''
+    let l:tab_idx = 1
+
+    for l:b in l:bufs
+        let l:name = fnamemodify(bufname(l:b), ':t')
+        if empty(l:name)
+            let l:name = '[No Name]'
+        endif
+        let l:is_mod = getbufvar(l:b, '&modified')
+        if l:b == l:cur
+            let l:line .= '%#TabLineSel#  ' . l:tab_idx . '  ' . l:name
+            if l:is_mod
+                let l:line .= ' %#TabLineMod#●%#TabLineSel#'
+            endif
+            let l:line .= '  %#TabLineSep#│'
+        else
+            let l:line .= '%#TabLine#  ' . l:tab_idx . '  ' . l:name
+            if l:is_mod
+                let l:line .= ' %#TabLineMod#●%#TabLine#'
+            endif
+            let l:line .= '  %#TabLineSep#│'
+        endif
+        let l:tab_idx += 1
+    endfor
+
+    let l:line .= '%#TabLineFill#%='
+    return l:line
+endfunction
+
+set tabline=%!BufferTabLine()
+
 " --- 3. INDENTATION & WRAPPING ---
 set expandtab                   " Convert tabs to spaces
 set tabstop=4                   " 1 tab = 4 spaces
@@ -160,7 +259,7 @@ set splitright                  " Vertical split opens right
 let g:netrw_banner = 0          " Hide top banner
 let g:netrw_liststyle = 3       " Tree view
 let g:netrw_browse_split = 0    " Open files in current window
-let g:netrw_winsize = 25        " Explorer width 25%
+let g:netrw_winsize = 20        " Explorer width 20%
 let g:netrw_hide = 0            " Show hidden (dot) and ignored files by default
 let g:netrw_list_hide = ''      " Clear hide filter to display all files
 
@@ -233,14 +332,7 @@ nnoremap k gk
 vnoremap j gj
 vnoremap k gk
 
-" --- Fast Saving & Quitting (Space Leader) ---
-nnoremap <leader>w :w<CR>
-nnoremap <leader>q :q<CR>
-nnoremap <leader>Q :qa!<CR>
-nnoremap <leader>x :x<CR>
-
 " --- Clear Search Highlight ---
-nnoremap <leader>h :nohlsearch<CR>
 nnoremap <silent> <Esc> :nohlsearch<CR><Esc>
 
 " --- File Explorer Toggle ---
@@ -266,9 +358,6 @@ nnoremap <C-l> <C-w>l
 " --- Window Management Shortcuts (Leader + | & Leader + -) ---
 nnoremap <leader>\| :vsplit<CR>
 nnoremap <leader>- :split<CR>
-nnoremap <leader>sv :vsplit<CR>
-nnoremap <leader>sh :split<CR>
-nnoremap <leader>sc :close<CR>
 
 " --- Window Resizing (Ctrl + Arrow keys) ---
 nnoremap <C-Up> :resize +2<CR>
@@ -276,25 +365,61 @@ nnoremap <C-Down> :resize -2<CR>
 nnoremap <C-Left> :vertical resize -2<CR>
 nnoremap <C-Right> :vertical resize +2<CR>
 
-" --- Buffer / Tab Navigation ---
-nnoremap H :bprevious<CR>
-nnoremap L :bnext<CR>
-nnoremap <leader>bn :bnext<CR>
-nnoremap <leader>bp :bprevious<CR>
-nnoremap <leader>bd :bdelete<CR>
-nnoremap ]b :bnext<CR>
-nnoremap [b :bprevious<CR>
+" --- Smart Buffer / Tab Navigation (Zero Plugins, Neovim Parity) ---
+" Smart Buffer Next: cycles forward cleanly, wraps around, skips special windows, no errors
+function! SmartBufferNext() abort
+    let l:bufs = s:GetValidBuffers()
+    if len(l:bufs) <= 1
+        return
+    endif
+    let l:cur = bufnr('%')
+    let l:idx = index(l:bufs, l:cur)
+    if l:idx < 0
+        execute 'buffer ' . l:bufs[0]
+    else
+        let l:next_idx = (l:idx + 1) % len(l:bufs)
+        execute 'buffer ' . l:bufs[l:next_idx]
+    endif
+endfunction
 
-" --- Jump to Buffer 1..9 (Alt + 1..9) ---
-nnoremap <A-1> :b1<CR>
-nnoremap <A-2> :b2<CR>
-nnoremap <A-3> :b3<CR>
-nnoremap <A-4> :b4<CR>
-nnoremap <A-5> :b5<CR>
-nnoremap <A-6> :b6<CR>
-nnoremap <A-7> :b7<CR>
-nnoremap <A-8> :b8<CR>
-nnoremap <A-9> :b9<CR>
+" Smart Buffer Prev: cycles backward cleanly, wraps around, skips special windows, no errors
+function! SmartBufferPrev() abort
+    let l:bufs = s:GetValidBuffers()
+    if len(l:bufs) <= 1
+        return
+    endif
+    let l:cur = bufnr('%')
+    let l:idx = index(l:bufs, l:cur)
+    if l:idx < 0
+        execute 'buffer ' . l:bufs[-1]
+    else
+        let l:prev_idx = (l:idx - 1 + len(l:bufs)) % len(l:bufs)
+        execute 'buffer ' . l:bufs[l:prev_idx]
+    endif
+endfunction
+
+" Smart Buffer Goto: jumps directly to tab index 1..9 (parity with Neovim bufferline.go_to)
+function! SmartBufferGoto(target) abort
+    let l:bufs = s:GetValidBuffers()
+    if a:target >= 1 && a:target <= len(l:bufs)
+        execute 'buffer ' . l:bufs[a:target - 1]
+    endif
+endfunction
+
+" --- Smart Buffer / Tab Navigation (Zero Plugins, Neovim Parity) ---
+nnoremap <silent> H :call SmartBufferPrev()<CR>
+nnoremap <silent> L :call SmartBufferNext()<CR>
+
+" --- Jump to Buffer Tab 1..9 (Alt + 1..9) ---
+nnoremap <silent> <A-1> :call SmartBufferGoto(1)<CR>
+nnoremap <silent> <A-2> :call SmartBufferGoto(2)<CR>
+nnoremap <silent> <A-3> :call SmartBufferGoto(3)<CR>
+nnoremap <silent> <A-4> :call SmartBufferGoto(4)<CR>
+nnoremap <silent> <A-5> :call SmartBufferGoto(5)<CR>
+nnoremap <silent> <A-6> :call SmartBufferGoto(6)<CR>
+nnoremap <silent> <A-7> :call SmartBufferGoto(7)<CR>
+nnoremap <silent> <A-8> :call SmartBufferGoto(8)<CR>
+nnoremap <silent> <A-9> :call SmartBufferGoto(9)<CR>
 
 " --- Document Formatting (<leader>cf) ---
 nnoremap <leader>cf gg=G<C-o><C-o>
@@ -340,9 +465,7 @@ function! ToggleCommentNative() range
     endfor
 endfunction
 
-" Toggle comment on current line or visual selection using <leader>/ or gcc
-nnoremap <silent> <leader>/ :call ToggleCommentNative()<CR>
-vnoremap <silent> <leader>/ :call ToggleCommentNative()<CR>
+" Toggle comment on current line or visual selection using gcc / gc
 nnoremap <silent> gcc :call ToggleCommentNative()<CR>
 vnoremap <silent> gc :call ToggleCommentNative()<CR>
 
