@@ -120,11 +120,15 @@ return {
 				function()
 					-- Open large CSV in floating terminal using less -S pager (smooth scrolling, zero RAM overhead)
 					local file = vim.api.nvim_buf_get_name(0)
-					if file and file ~= "" then
-						Snacks.terminal(
-							{ "less", "-S", file },
-							{ win = { position = "float", width = 0.9, height = 0.9 } }
-						)
+					if file and file ~= "" and vim.fn.filereadable(file) == 1 then
+						if vim.fn.executable("less") == 1 then
+							Snacks.terminal(
+								{ "less", "-S", file },
+								{ win = { position = "float", width = 0.9, height = 0.9 } }
+							)
+						else
+							vim.notify("'less' is not installed on this system.", vim.log.levels.WARN)
+						end
 					end
 				end,
 				desc = "Open Large CSV in Fast Pager",
