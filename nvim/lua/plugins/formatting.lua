@@ -32,9 +32,9 @@ return {
 					prepend_args = { "-i", "4" },
 				},
 			},
-			format_on_save = {
-				timeout_ms = 1000,
-				lsp_fallback = true,
+			notify_on_error = false,
+			default_format_opts = {
+				lsp_format = "fallback",
 			},
 		},
 	},
