@@ -319,6 +319,8 @@ augroup NetrwNavigation
     autocmd!
     autocmd FileType netrw nnoremap <buffer> <silent> <nowait> l :call NetrwNavRight()<CR>
     autocmd FileType netrw nnoremap <buffer> <silent> <nowait> h :call NetrwNavLeft()<CR>
+    autocmd FileType netrw nnoremap <buffer> <silent> <nowait> H <Nop>
+    autocmd FileType netrw nnoremap <buffer> <silent> <nowait> L <Nop>
 augroup END
 
 " ============================================================
