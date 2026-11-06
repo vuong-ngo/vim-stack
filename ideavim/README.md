@@ -42,7 +42,9 @@ Any shortcut formatted as `<leader>x` means: press `Space`, then `x`.
 ### File Explorer, Search & Navigation
 | Shortcut | Mode | Action | JetBrains Action ID |
 | :--- | :---: | :--- | :--- |
-| `<leader>e` | Normal | Toggle Project / Files sidebar | `ActivateProjectToolWindow` |
+| `<leader>e` | Normal | Toggle Project / Files sidebar | `:NERDTreeToggle` |
+| `l` (in explorer) | Normal | Expand directory / Open file & focus editor | `NERDTree` |
+| `h` (in explorer) | Normal | Jump to parent directory | `NERDTree` |
 | `Ctrl + P` / `<leader>ff` | Normal | Find files across project | `GotoFile` |
 | `Ctrl + F` / `<leader>fg` | Normal | Live Grep / Find in path | `FindInPath` |
 | `<leader>fr` | Normal | Recent files popup | `RecentFiles` |
@@ -55,7 +57,9 @@ Any shortcut formatted as `<leader>x` means: press `Space`, then `x`.
 | :--- | :---: | :--- | :--- |
 | `<leader>\|` | Normal | Vertical split | `SplitVertically` |
 | `<leader>-` | Normal | Horizontal split | `SplitHorizontally` |
-| `Ctrl + h/j/k/l` | Normal | Navigate between window splits | Built-in / Splitters |
+| `Ctrl + h` / `Ctrl + l` | Normal | Navigate between Explorer & Code / splits | `VimEverywhere` / `<C-w>h/l` |
+| `Ctrl + j` / `Ctrl + k` | Normal | Navigate splits / bottom tool windows | `VimEverywhere` / `<C-w>j/k` |
+| `Ctrl + w w` | Normal | Cycle between windows / explorer | `<C-w>w` |
 | `Ctrl + Arrows` | Normal | Resize active split window | `ResizeToolWindow*` |
 
 ### Code Actions, Formatting & Navigation

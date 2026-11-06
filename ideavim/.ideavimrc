@@ -3,7 +3,17 @@
 " Description: JetBrains IdeaVim configuration synchronized 1-to-1 with Vim & Neovim muscle memory.
 " ============================================================
 
-" --- 1. LEADER KEYS ---
+" --- 1. SHORTCUT DELEGATION & LEADER KEY ---
+" Ensure IdeaVim handles these key combinations instead of IDE hijacking
+sethandler <Space> a:vim
+sethandler <C-h> a:vim
+sethandler <C-j> a:vim
+sethandler <C-k> a:vim
+sethandler <C-l> a:vim
+sethandler <C-w> a:vim
+
+" Clear default Space cursor motion before setting leader
+map <Space> <Nop>
 let mapleader = " "
 let maplocalleader = " "
 
@@ -17,6 +27,10 @@ set scrolloff=8
 set sidescrolloff=8
 set number
 set relativenumber=false
+
+" Fast, responsive key evaluation (Zero input lag)
+set timeout
+set timeoutlen=300
 
 " --- Native OS System Clipboard & JetBrains Paste Sync ---
 set clipboard=unnamed,unnamedplus,ideaput
@@ -35,70 +49,89 @@ set argtextobj            " Enable argument text objects (cia, daa)
 set highlightedyank       " Highlight yanked text briefly
 set ReplaceWithRegister   " Replace with register (gr)
 
+" --- Tool Window & Split Navigation (Vim-parity across Explorer & Code) ---
+set VimEverywhere          " Navigate seamlessly across splits & docked tool windows (Explorer, Terminal)
+
+" --- NERDTree File Explorer Navigation ---
+set NERDTree
+let g:NERDTreeMapActivateNode = 'l'  " l: expand directory / open file
+let g:NERDTreeMapJumpParent    = 'h'  " h: jump to parent directory
+
 " ============================================================
 " --- 4. SYNCHRONIZED KEYBINDINGS ---
+" Note: In IdeaVim, <Action>(...) requires 'nmap'/'vmap' (not 'nnoremap')
 " ============================================================
 
 " --- Tab / Buffer Navigation (Exact Parity with Neovim & Vim) ---
-nnoremap H <Action>(PreviousTab)
-nnoremap L <Action>(NextTab)
+nmap H <Action>(PreviousTab)
+nmap L <Action>(NextTab)
+nmap <S-h> <Action>(PreviousTab)
+nmap <S-l> <Action>(NextTab)
 
 " Jump directly to Tab 1 through 9 (Alt + 1..9)
-nnoremap <A-1> <Action>(GoToTab1)
-nnoremap <A-2> <Action>(GoToTab2)
-nnoremap <A-3> <Action>(GoToTab3)
-nnoremap <A-4> <Action>(GoToTab4)
-nnoremap <A-5> <Action>(GoToTab5)
-nnoremap <A-6> <Action>(GoToTab6)
-nnoremap <A-7> <Action>(GoToTab7)
-nnoremap <A-8> <Action>(GoToTab8)
-nnoremap <A-9> <Action>(GoToTab9)
+nmap <A-1> <Action>(GoToTab1)
+nmap <A-2> <Action>(GoToTab2)
+nmap <A-3> <Action>(GoToTab3)
+nmap <A-4> <Action>(GoToTab4)
+nmap <A-5> <Action>(GoToTab5)
+nmap <A-6> <Action>(GoToTab6)
+nmap <A-7> <Action>(GoToTab7)
+nmap <A-8> <Action>(GoToTab8)
+nmap <A-9> <Action>(GoToTab9)
 
 " --- File Explorer & Quick Search ---
-nnoremap <leader>e <Action>(ActivateProjectToolWindow)
+nmap <leader>e :NERDTreeToggle<CR>
 
 " Quick File Finder (Ctrl + P or <leader>ff)
-nnoremap <C-p> <Action>(GotoFile)
-nnoremap <leader>ff <Action>(GotoFile)
+nmap <C-p> <Action>(GotoFile)
+nmap <leader>ff <Action>(GotoFile)
 
 " Live Grep / Search Text in Project (Ctrl + F or <leader>fg)
-nnoremap <C-f> <Action>(FindInPath)
-nnoremap <leader>fg <Action>(FindInPath)
+nmap <C-f> <Action>(FindInPath)
+nmap <leader>fg <Action>(FindInPath)
 
 " Recent Files (<leader>fr)
-nnoremap <leader>fr <Action>(RecentFiles)
+nmap <leader>fr <Action>(RecentFiles)
 
 " Switcher / Open Buffers (<leader>fb)
-nnoremap <leader>fb <Action>(Switcher)
+nmap <leader>fb <Action>(Switcher)
 
 " Global Search & Replace (<leader>sr)
-nnoremap <leader>sr <Action>(ReplaceInPath)
+nmap <leader>sr <Action>(ReplaceInPath)
 
 " Clear Search Highlight (<Esc>)
 nnoremap <Esc> :nohlsearch<CR>
 
-" --- Window Splits & Navigation ---
-nnoremap <leader>\| <Action>(SplitVertically)
-nnoremap <leader>- <Action>(SplitHorizontally)
+" --- Window Splits & Navigation (Ctrl + h/j/k/l & Ctrl + w) ---
+nmap <leader>\| <Action>(SplitVertically)
+nmap <leader>- <Action>(SplitHorizontally)
 
-" Navigate between splits (Ctrl + h/j/k/l)
+" Navigate between splits & tool windows (Explorer <-> Main Code Editor)
+" With VimEverywhere enabled:
+" - In Editor: <C-h> / <C-w>h navigates left into Explorer (Project View) or left split
+" - In Explorer: <C-l> / <C-w>l navigates right into Main Code Editor
+" - Up / Down: <C-k> / <C-w>k and <C-j> / <C-w>j move between vertical splits / bottom terminal
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" Standard Vim window cycling (<C-w>w / <C-w><C-w>)
+nnoremap <C-w>w <C-w>w
+nnoremap <C-w><C-w> <C-w>w
+
 " Resize split windows (Ctrl + Arrows)
-nnoremap <C-Up> <Action>(ResizeToolWindowUp)
-nnoremap <C-Down> <Action>(ResizeToolWindowDown)
-nnoremap <C-Left> <Action>(ResizeToolWindowLeft)
-nnoremap <C-Right> <Action>(ResizeToolWindowRight)
+nmap <C-Up> <Action>(ResizeToolWindowUp)
+nmap <C-Down> <Action>(ResizeToolWindowDown)
+nmap <C-Left> <Action>(ResizeToolWindowLeft)
+nmap <C-Right> <Action>(ResizeToolWindowRight)
 
 " --- Editing & Code Navigation ---
 " Seamless Copy & Paste with System Clipboard (Insert & Command modes)
-vnoremap <C-c> <Action>($Copy)
-vnoremap <C-x> <Action>($Cut)
-inoremap <C-v> <Action>($Paste)
-cnoremap <C-v> <Action>($Paste)
+vmap <C-c> <Action>($Copy)
+vmap <C-x> <Action>($Cut)
+imap <C-v> <Action>($Paste)
+cmap <C-v> <Action>($Paste)
 
 " Wrapped line navigation
 nnoremap j gj
@@ -107,28 +140,28 @@ vnoremap j gj
 vnoremap k gk
 
 " Move Selected Lines Up / Down (Alt + j / Alt + k)
-nnoremap <A-j> <Action>(MoveLineDown)
-nnoremap <A-k> <Action>(MoveLineUp)
-vnoremap <A-j> <Action>(MoveLineDown)
-vnoremap <A-k> <Action>(MoveLineUp)
+nmap <A-j> <Action>(MoveLineDown)
+nmap <A-k> <Action>(MoveLineUp)
+vmap <A-j> <Action>(MoveLineDown)
+vmap <A-k> <Action>(MoveLineUp)
 
 " Continuous Visual Indentation
 vnoremap < <gv
 vnoremap > >gv
 
 " Integrated Terminal (<C-/> or <leader>ft)
-nnoremap <C-/> <Action>(ActivateTerminalToolWindow)
-nnoremap <leader>ft <Action>(ActivateTerminalToolWindow)
+nmap <C-/> <Action>(ActivateTerminalToolWindow)
+nmap <leader>ft <Action>(ActivateTerminalToolWindow)
 
 " --- Code Actions, Formatting & LSP ---
-nnoremap <leader>ca <Action>(ShowIntentionActions)
-nnoremap <leader>rn <Action>(RenameElement)
-nnoremap <leader>cf <Action>(ReformatCode)
+nmap <leader>ca <Action>(ShowIntentionActions)
+nmap <leader>rn <Action>(RenameElement)
+nmap <leader>cf <Action>(ReformatCode)
 
 " Code navigation helpers
-nnoremap gd <Action>(GotoDeclaration)
-nnoremap gr <Action>(FindUsages)
-nnoremap gi <Action>(GotoImplementation)
-nnoremap K <Action>(QuickJavaDoc)
-nnoremap [d <Action>(GotoPreviousError)
-nnoremap ]d <Action>(GotoNextError)
+nmap gd <Action>(GotoDeclaration)
+nmap gr <Action>(FindUsages)
+nmap gi <Action>(GotoImplementation)
+nmap K <Action>(QuickJavaDoc)
+nmap [d <Action>(GotoPreviousError)
+nmap ]d <Action>(GotoNextError)
