@@ -1,6 +1,6 @@
 -- ================================================
 -- Script: keymaps.lua
--- Description: This file contains custom key mappings for Neovim, including tab and buffer management, file explorer and quick search, window splits and navigation, integrated terminal, code actions, and formatting.
+-- Description: Essential keymaps for Neovim (pure Vim motions preserved; special plugins mapped cleanly under <leader> and Ctrl).
 -- ================================================
 
 local set = vim.keymap.set
@@ -13,30 +13,16 @@ local function map(mode, lhs, rhs, desc)
 	set(mode, lhs, rhs, { desc = desc, noremap = true, silent = true })
 end
 
--- ------------------------------------------------------------
--- 1. TAB & BUFFER MANAGEMENT
--- ------------------------------------------------------------
--- Buffer Tab Navigation (H / L & Alt+1..9)
-map("n", "H", "<cmd>bprevious<CR>", "Previous Tab")
-map("n", "L", "<cmd>bnext<CR>", "Next Tab")
-
--- Alt + Number to jump directly to tabs 1-9
-for i = 1, 9 do
-	map("n", "<A-" .. i .. ">", function()
-		require("bufferline").go_to(i, true)
-	end, "Go to Tab " .. i)
-end
-
 -- Clear Search Highlights (<esc>)
 map("n", "<esc>", "<cmd>nohlsearch<CR>", "Clear Search Highlight")
 
--- Unmap unused save/quit shortcuts
+-- Unmap unused save/quit shortcuts to eliminate leader key delay
 pcall(vim.keymap.del, "n", "<leader>w")
 pcall(vim.keymap.del, "n", "<leader>q")
 pcall(vim.keymap.del, "n", "<leader>Q")
 
 -- ------------------------------------------------------------
--- 2. FILE EXPLORER & QUICK SEARCH
+-- 1. FILE EXPLORER & QUICK SEARCH (SPECIAL UTILITIES)
 -- ------------------------------------------------------------
 -- Toggle Sidebar Explorer (<leader>e)
 map("n", "<leader>e", function()
@@ -52,7 +38,7 @@ map("n", "<leader>ff", function()
 	Snacks.picker.files({ hidden = true })
 end, "Find Files")
 
--- Live Grep / Project Text Search (Ctrl+F or <leader>fg)
+-- Live Grep / Project Text Search (<leader>fg)
 local function safe_grep()
 	if vim.fn.executable("rg") == 1 then
 		Snacks.picker.grep()
@@ -64,8 +50,6 @@ local function safe_grep()
 		)
 	end
 end
-
-map("n", "<C-f>", safe_grep, "Search Text in Project")
 map("n", "<leader>fg", safe_grep, "Search Text (Grep)")
 
 -- Recent Files (<leader>fr)
@@ -73,7 +57,7 @@ map("n", "<leader>fr", function()
 	Snacks.picker.recent()
 end, "Recent Files")
 
--- Buffers List (<leader>fb)
+-- Open Buffers List (<leader>fb)
 map("n", "<leader>fb", function()
 	Snacks.picker.buffers()
 end, "Open Buffers")
@@ -81,8 +65,7 @@ end, "Open Buffers")
 -- Global Search & Replace (grug-far) (<leader>sr)
 map("n", "<leader>sr", function()
 	if vim.fn.executable("rg") == 1 then
-		local grug = require("grug-far")
-		grug.open()
+		require("grug-far").open()
 	else
 		vim.notify(
 			"ripgrep ('rg') is required for workspace search & replace. Install via 'sudo pacman -S ripgrep'.",
@@ -93,32 +76,18 @@ map("n", "<leader>sr", function()
 end, "Search & Replace (Workspace)")
 
 -- ------------------------------------------------------------
--- 3. WINDOW SPLITS & NAVIGATION
+-- 2. WINDOW SPLITS & NAVIGATION
 -- ------------------------------------------------------------
 map("n", "<C-h>", "<C-w>h", "Move Left Window")
 map("n", "<C-j>", "<C-w>j", "Move Down Window")
 map("n", "<C-k>", "<C-w>k", "Move Up Window")
 map("n", "<C-l>", "<C-w>l", "Move Right Window")
 
--- Window Resize controls (Ctrl+Arrows)
-map("n", "<C-Up>", "<cmd>resize +2<CR>", "Increase Height")
-map("n", "<C-Down>", "<cmd>resize -2<CR>", "Decrease Height")
-map("n", "<C-Left>", "<cmd>vertical resize -2<CR>", "Decrease Width")
-map("n", "<C-Right>", "<cmd>vertical resize +2<CR>", "Increase Width")
-
 map("n", "<leader>|", "<cmd>vsplit<CR>", "Split Vertically")
 map("n", "<leader>-", "<cmd>split<CR>", "Split Horizontally")
 
--- Move Selected Lines Up/Down in Visual Mode (Alt+j / Alt+k)
-map("v", "<A-j>", ":m '>+1<CR>gv=gv", "Move Selection Down")
-map("v", "<A-k>", ":m '<-2<CR>gv=gv", "Move Selection Up")
-
--- Continuous Visual Indentation (< and > keep selection active)
-map("v", "<", "<gv", "Indent Left (Continuous)")
-map("v", ">", ">gv", "Indent Right (Continuous)")
-
 -- ------------------------------------------------------------
--- 4. INTEGRATED TERMINAL
+-- 3. INTEGRATED TERMINAL
 -- ------------------------------------------------------------
 -- Toggle Floating Terminal (Ctrl+/ or <leader>ft)
 map({ "n", "t" }, "<C-/>", function()
@@ -126,9 +95,8 @@ map({ "n", "t" }, "<C-/>", function()
 end, "Toggle Integrated Terminal")
 
 -- ------------------------------------------------------------
--- 5. LSP & CODE ACTIONS
+-- 4. LSP & CODE ACTIONS
 -- ------------------------------------------------------------
-
 map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
 map("n", "<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
 map("n", "<leader>cf", function()

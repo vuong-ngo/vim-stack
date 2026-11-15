@@ -134,12 +134,7 @@ Configured in `lua/plugins/ui.lua` via `catppuccin/nvim`:
 
 Leader key: **`Space`**
 
-### Tab & Buffer Management
-
-| Shortcut       | Action                                            |
-| :------------- | :------------------------------------------------ |
-| `H` / `L`      | Navigate to previous / next buffer tab            |
-| `Alt + 1..9`   | Jump directly to tab 1 through 9                  |
+All core Vim navigation and editing motions (`j`, `k`, `H`, `M`, `L`, `dd`, `x`, `p`, `<`, `>`, etc.) retain their 100% vanilla behavior. Specialized plugin actions are mapped cleanly under `<leader>` and `Ctrl`.
 
 ### File Navigation & Search
 
@@ -147,11 +142,19 @@ Leader key: **`Space`**
 | :------------------------- | :------------------------------------------------------- |
 | `<leader>e`              | Toggle sidebar File Explorer (`Snacks.explorer`)       |
 | `<C-p>` / `<leader>ff` | Quick open / search files (`Snacks.picker.files`)      |
-| `<C-f>` / `<leader>fg` | Project-wide text search (`Snacks.picker.grep`)        |
+| `<leader>fg`             | Project-wide live text search (`Snacks.picker.grep`)   |
 | `<leader>fr`             | Browse recently opened files                             |
 | `<leader>fb`             | List and switch open buffers                             |
 | `<leader>sr`             | Interactive project-wide Search & Replace (`Grug-Far`) |
 | `<Esc>`                  | Clear search highlight                                   |
+
+### Window Splits & Navigation
+
+| Shortcut                   | Action                                                   |
+| :------------------------- | :------------------------------------------------------- |
+| `<leader>\|`             | Split vertically (`:vsplit`)                            |
+| `<leader>-`              | Split horizontally (`:split`)                           |
+| `<C-h>` / `<C-j>` / `<C-k>` / `<C-l>` | Navigate between split windows               |
 
 ### Code Intelligence & LSP
 
@@ -177,8 +180,6 @@ Leader key: **`Space`**
 | `sa` *(motion)*       | Add surrounding quotes/brackets  |
 | `sd` *(char)*         | Delete surrounding character     |
 | `sr` *(old, new)*     | Replace surrounding character    |
-| `Alt + j` / `Alt + k` | Move selected lines down / up    |
-| `<` / `>` *(visual)*      | Continuous visual indentation    |
 
 ### Specialized Viewers & Terminal
 

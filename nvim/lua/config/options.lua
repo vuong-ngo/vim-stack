@@ -3,26 +3,9 @@
 -- Description: This file contains Neovim options and settings, including clipboard synchronization, line numbering, indentation, search behavior, split window direction, performance optimizations, and whitespace display.
 -- ================================================
 
--- Sync clipboard between OS and Neovim
-vim.opt.clipboard = "unnamedplus"
+-- Sync clipboard between OS and Neovim (safe for local and SSH sessions)
+vim.opt.clipboard = vim.env.SSH_CONNECTION and "" or "unnamedplus"
 vim.opt.mouse = "a"
-
--- System clipboard integration (safe detection for Wayland and X11)
-if vim.env.WAYLAND_DISPLAY and vim.fn.executable("wl-copy") == 1 then
-	vim.g.clipboard = {
-		name = "wl-clipboard",
-		copy = { ["+"] = "wl-copy", ["*"] = "wl-copy" },
-		paste = { ["+"] = "wl-paste", ["*"] = "wl-paste" },
-		cache_enabled = 1,
-	}
-elseif vim.fn.executable("xclip") == 1 then
-	vim.g.clipboard = {
-		name = "xclip",
-		copy = { ["+"] = "xclip -selection clipboard", ["*"] = "xclip -selection primary" },
-		paste = { ["+"] = "xclip -selection clipboard -o", ["*"] = "xclip -selection primary -o" },
-		cache_enabled = 1,
-	}
-end
 
 -- Line numbers & UI (Absolute 1-to-1 Line Numbers like VS Code)
 vim.opt.number = true
