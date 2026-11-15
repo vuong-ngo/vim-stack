@@ -14,7 +14,12 @@ let maplocalleader = " "
 set encoding=utf-8
 set fileencoding=utf-8
 set hidden                      " Allow buffer switching without saving
-set mouse=a                     " Enable mouse support in all modes
+if has('mouse')
+    set mouse=a                 " Enable mouse support in all modes
+    if has('mouse_sgr')
+        set ttymouse=sgr        " Fix mouse clicks jumping around in modern terminals & tmux
+    endif
+endif
 set clipboard^=unnamed,unnamedplus " Sync with system clipboard
 set backspace=indent,eol,start  " Make backspace behave naturally
 set history=1000                " Store line history
@@ -197,11 +202,20 @@ function! s:GetValidBuffers() abort
     return l:bufs
 endfunction
 
+function! BufferTabClick(info) abort
+    let l:b = get(a:info, 'minwid', 0)
+    if l:b > 0 && buflisted(l:b)
+        execute 'buffer ' . l:b
+    endif
+    return 1
+endfunction
+
 function! BufferTabLine() abort
     let l:bufs = s:GetValidBuffers()
     let l:cur = bufnr('%')
     let l:line = ''
     let l:tab_idx = 1
+    let l:has_click = has('statusline_click')
 
     for l:b in l:bufs
         let l:name = fnamemodify(bufname(l:b), ':t')
@@ -209,18 +223,21 @@ function! BufferTabLine() abort
             let l:name = '[No Name]'
         endif
         let l:is_mod = getbufvar(l:b, '&modified')
+        let l:click_start = l:has_click ? ('%' . l:b . '[BufferTabClick]') : ('%' . l:tab_idx . 'T')
+        let l:click_end = l:has_click ? '%[]' : '%T'
+
         if l:b == l:cur
-            let l:line .= '%#TabLineSel#  ' . l:tab_idx . '  ' . l:name
+            let l:line .= l:click_start . '%#TabLineSel#  ' . l:tab_idx . '  ' . l:name
             if l:is_mod
                 let l:line .= ' %#TabLineMod#●%#TabLineSel#'
             endif
-            let l:line .= '  %#TabLineSep#│'
+            let l:line .= '  %#TabLineSep#│' . l:click_end
         else
-            let l:line .= '%#TabLine#  ' . l:tab_idx . '  ' . l:name
+            let l:line .= l:click_start . '%#TabLine#  ' . l:tab_idx . '  ' . l:name
             if l:is_mod
                 let l:line .= ' %#TabLineMod#●%#TabLine#'
             endif
-            let l:line .= '  %#TabLineSep#│'
+            let l:line .= '  %#TabLineSep#│' . l:click_end
         endif
         let l:tab_idx += 1
     endfor
@@ -263,93 +280,19 @@ let g:netrw_winsize = 20        " Explorer width 20%
 let g:netrw_hide = 0            " Show hidden (dot) and ignored files by default
 let g:netrw_list_hide = ''      " Clear hide filter to display all files
 
-" --- Netrw Explorer Navigation (l to open/expand, h to go back/collapse) ---
-function! NetrwNavLeft()
-    let l:lnum = line(".")
-    let l:curline = getline(l:lnum)
-    let l:curdepth = count(l:curline, "|")
-    let l:nextline = getline(l:lnum + 1)
-    let l:nextdepth = count(l:nextline, "|")
-
-    " If on an expanded directory -> collapse it
-    if l:curline =~ '/$' && l:nextdepth > l:curdepth
-        execute "normal \<Plug>NetrwLocalBrowseCheck"
-        return
-    endif
-
-    " If inside an expanded directory -> jump up to parent directory
-    if l:curdepth > 1
-        let l:i = l:lnum - 1
-        while l:i >= 1
-            let l:line = getline(l:i)
-            let l:depth = count(l:line, "|")
-            if l:depth < l:curdepth && l:line =~ '/$'
-                call cursor(l:i, 1)
-                return
-            endif
-            let l:i -= 1
-        endwhile
-    endif
-
-    " Otherwise at root level -> browse up to parent directory
-    execute "normal \<Plug>NetrwBrowseUpDir"
-endfunction
-
-function! NetrwNavRight()
-    let l:curline = getline(".")
-    let l:lnum = line(".")
-    let l:curdepth = count(l:curline, "|")
-    let l:nextline = getline(l:lnum + 1)
-    let l:nextdepth = count(l:nextline, "|")
-
-    if l:curline =~ '/$'
-        " If directory is already open, move down to first child item; otherwise expand it
-        if l:nextdepth > l:curdepth
-            call cursor(l:lnum + 1, 1)
-        else
-            execute "normal \<Plug>NetrwLocalBrowseCheck"
-        endif
-    else
-        " If file, open it in editor
-        execute "normal \<Plug>NetrwLocalBrowseCheck"
-    endif
-endfunction
-
-augroup NetrwNavigation
-    autocmd!
-    autocmd FileType netrw nnoremap <buffer> <silent> <nowait> l :call NetrwNavRight()<CR>
-    autocmd FileType netrw nnoremap <buffer> <silent> <nowait> h :call NetrwNavLeft()<CR>
-    autocmd FileType netrw nnoremap <buffer> <silent> <nowait> H <Nop>
-    autocmd FileType netrw nnoremap <buffer> <silent> <nowait> L <Nop>
-augroup END
-
 " ============================================================
-" --- 7. NATURAL KEYBINDINGS ---
+" --- 7. SPECIAL KEYBINDINGS (ESSENTIALS ONLY) ---
 " ============================================================
-
-" --- Wrapped Line Navigation ---
-" Move by visual lines instead of physical lines when text wraps
-nnoremap j gj
-nnoremap k gk
-vnoremap j gj
-vnoremap k gk
 
 " --- Clear Search Highlight ---
 nnoremap <silent> <Esc> :nohlsearch<CR><Esc>
 
-" --- File Explorer Toggle ---
+" --- File Explorer Toggle (<leader>e) ---
 nnoremap <leader>e :Lexplore<CR>
 
-" --- Move Selected Lines Up / Down ---
-nnoremap <A-k> :m .-2<CR>==
-nnoremap <A-j> :m .+1<CR>==
-vnoremap <A-k> :m '<-2<CR>gv=gv
-vnoremap <A-j> :m '>+1<CR>gv=gv
-
-" --- Continuous Visual Indentation ---
-" Keep selection active after indenting with < or >
-vnoremap < <gv
-vnoremap > >gv
+" --- Window Splits (<leader>| & <leader>-) ---
+nnoremap <leader>\| :vsplit<CR>
+nnoremap <leader>- :split<CR>
 
 " --- Window Navigation (Ctrl + h/j/k/l) ---
 nnoremap <C-h> <C-w>h
@@ -357,78 +300,8 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
-" --- Window Management Shortcuts (Leader + | & Leader + -) ---
-nnoremap <leader>\| :vsplit<CR>
-nnoremap <leader>- :split<CR>
-
-" --- Window Resizing (Ctrl + Arrow keys) ---
-nnoremap <C-Up> :resize +2<CR>
-nnoremap <C-Down> :resize -2<CR>
-nnoremap <C-Left> :vertical resize -2<CR>
-nnoremap <C-Right> :vertical resize +2<CR>
-
-" --- Smart Buffer / Tab Navigation (Zero Plugins, Neovim Parity) ---
-" Smart Buffer Next: cycles forward cleanly, wraps around, skips special windows, no errors
-function! SmartBufferNext() abort
-    let l:bufs = s:GetValidBuffers()
-    if len(l:bufs) <= 1
-        return
-    endif
-    let l:cur = bufnr('%')
-    let l:idx = index(l:bufs, l:cur)
-    if l:idx < 0
-        execute 'buffer ' . l:bufs[0]
-    else
-        let l:next_idx = (l:idx + 1) % len(l:bufs)
-        execute 'buffer ' . l:bufs[l:next_idx]
-    endif
-endfunction
-
-" Smart Buffer Prev: cycles backward cleanly, wraps around, skips special windows, no errors
-function! SmartBufferPrev() abort
-    let l:bufs = s:GetValidBuffers()
-    if len(l:bufs) <= 1
-        return
-    endif
-    let l:cur = bufnr('%')
-    let l:idx = index(l:bufs, l:cur)
-    if l:idx < 0
-        execute 'buffer ' . l:bufs[-1]
-    else
-        let l:prev_idx = (l:idx - 1 + len(l:bufs)) % len(l:bufs)
-        execute 'buffer ' . l:bufs[l:prev_idx]
-    endif
-endfunction
-
-" Smart Buffer Goto: jumps directly to tab index 1..9 (parity with Neovim bufferline.go_to)
-function! SmartBufferGoto(target) abort
-    let l:bufs = s:GetValidBuffers()
-    if a:target >= 1 && a:target <= len(l:bufs)
-        execute 'buffer ' . l:bufs[a:target - 1]
-    endif
-endfunction
-
-" --- Smart Buffer / Tab Navigation (Zero Plugins, Neovim Parity) ---
-nnoremap <silent> H :call SmartBufferPrev()<CR>
-nnoremap <silent> L :call SmartBufferNext()<CR>
-
-" --- Jump to Buffer Tab 1..9 (Alt + 1..9) ---
-nnoremap <silent> <A-1> :call SmartBufferGoto(1)<CR>
-nnoremap <silent> <A-2> :call SmartBufferGoto(2)<CR>
-nnoremap <silent> <A-3> :call SmartBufferGoto(3)<CR>
-nnoremap <silent> <A-4> :call SmartBufferGoto(4)<CR>
-nnoremap <silent> <A-5> :call SmartBufferGoto(5)<CR>
-nnoremap <silent> <A-6> :call SmartBufferGoto(6)<CR>
-nnoremap <silent> <A-7> :call SmartBufferGoto(7)<CR>
-nnoremap <silent> <A-8> :call SmartBufferGoto(8)<CR>
-nnoremap <silent> <A-9> :call SmartBufferGoto(9)<CR>
-
 " --- Document Formatting (<leader>cf) ---
 nnoremap <leader>cf gg=G<C-o><C-o>
-
-" --- Clipboard Paste Enhancement ---
-" Prevent replacing paste register when pasting over visual selection
-xnoremap p "_dP
 
 
 " ============================================================
