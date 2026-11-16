@@ -33,8 +33,8 @@ The project is split into two specialized workspaces:
 * **[`nvim/`](nvim/)**: Modern Neovim IDE setup (Domain-Driven architecture).
   * **[`init.lua`](nvim/init.lua)**: Standardized entry point orchestrating startup.
   * **[`lua/config/`](nvim/lua/config/)**: Core options, synchronized keymaps, and event autocmds.
-  * **[`lua/plugins/`](nvim/lua/plugins/)**: 6 clean domain modules (`ui`, `editor`, `coding`, `lsp`, `formatting`, `viewers`) + `disabled.lua`.
-  * **[`install-deps.sh`](nvim/install-deps.sh)**: Comprehensive bash script installing OS runtimes (`ripgrep`, `fd`, compilers, node, python).
+  * **[`lua/plugins/`](nvim/lua/plugins/)**: 5 clean domain modules (`ui`, `editor`, `coding`, `lsp`, `viewers`) + `disabled.lua`.
+  * **[`install-deps.sh`](nvim/install-deps.sh)**: Comprehensive bash script installing OS runtimes (`ripgrep`, `fd`, compilers, unzip, clipboard, node, python).
   * **[`README.md`](nvim/README.md)**: Deep dive into the Neovim setup, viewers, and keybindings.
 * **[`ideavim/`](ideavim/)**: JetBrains IDEs IdeaVim integration.
   * **[`.ideavimrc`](ideavim/.ideavimrc)**: Production-ready configuration synchronized with Neovim & Vim keybindings for IntelliJ IDEA, Rider, DataGrip, PyCharm, WebStorm, and CLion.
@@ -118,7 +118,7 @@ To install the Neovim IDE configuration:
    ```
 
 3. **Install System Dependencies**:
-   Install external tools (`ripgrep`, `fd`, compilers, node, python) using the provided script:
+   Install external tools (`ripgrep`, `fd`, compilers, unzip, clipboard, node, python) using the provided script:
    ```bash
    cd ~/.config/nvim
    chmod +x install-deps.sh
