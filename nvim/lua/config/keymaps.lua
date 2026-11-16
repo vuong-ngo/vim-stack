@@ -5,9 +5,9 @@
 
 local set = vim.keymap.set
 
--- Set Leader Keys
+-- Leader keys (initialized in lazy.lua before loading plugins)
 vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+vim.g.maplocalleader = "\\"
 
 local function map(mode, lhs, rhs, desc)
 	set(mode, lhs, rhs, { desc = desc, noremap = true, silent = true })
@@ -99,14 +99,17 @@ end, "Toggle Integrated Terminal")
 -- ------------------------------------------------------------
 map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
 map("n", "<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
-map("n", "<leader>cf", function()
+
+local function format_document()
 	local ok, conform = pcall(require, "conform")
 	if ok then
 		conform.format({ async = true, lsp_format = "fallback" })
 	else
 		vim.lsp.buf.format({ async = true })
 	end
-end, "Format Document")
+end
+
+map({ "n", "v" }, "<leader>cf", format_document, "Format Document")
 
 -- Unmap any remaining conflicting LazyVim multi-key sequences
 pcall(vim.keymap.del, "n", "<leader>qq")

@@ -41,26 +41,26 @@ return {
 		},
 	},
 
-	-- 2. Auto Pairs (VS Code Style Quote/Bracket Auto-closing)
+	-- 2. Auto Pairs (Automatic closing of quotes, brackets, and parentheses)
 	{
 		"nvim-mini/mini.pairs",
 		event = "VeryLazy",
 		opts = {},
 	},
 
-	-- 3. Surround Motions (sa to add, sd to delete, sr to replace)
+	-- 3. Surround Motions (Pure Vim friendly - uses gz prefix to keep standard s/S instant)
 	{
 		"nvim-mini/mini.surround",
 		event = "VeryLazy",
 		opts = {
 			mappings = {
-				add = "sa",
-				delete = "sd",
-				find = "sf",
-				find_left = "sF",
-				highlight = "sh",
-				replace = "sr",
-				update_n_lines = "sn",
+				add = "gza",
+				delete = "gzd",
+				find = "gzf",
+				find_left = "gzF",
+				highlight = "gzh",
+				replace = "gzr",
+				update_n_lines = "gzn",
 			},
 		},
 	},

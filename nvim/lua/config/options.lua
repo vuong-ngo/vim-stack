@@ -7,7 +7,7 @@
 vim.opt.clipboard = vim.env.SSH_CONNECTION and "" or "unnamedplus"
 vim.opt.mouse = "a"
 
--- Line numbers & UI (Absolute 1-to-1 Line Numbers like VS Code)
+-- Line numbers: Absolute numbering (1, 2, 3...)
 vim.opt.number = true
 vim.opt.relativenumber = false
 vim.opt.signcolumn = "yes"
@@ -17,7 +17,7 @@ vim.opt.wrap = true
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
 
--- Explicitly disable spell check globally (VS Code style - no red underlines)
+-- Spell checking: Disabled globally to prevent underline noise
 vim.opt.spell = false
 vim.opt.spelllang = { "en" }
 
@@ -29,7 +29,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 	end,
 })
 
--- Indentation & Tabs (4 spaces standard like VS Code and modern IDEs)
+-- Indentation: 4 spaces default fallback
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.softtabstop = 4
@@ -38,13 +38,21 @@ vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.shiftround = true
 
+-- Code Formatting:
+-- 1. Format-on-save is OFF by default (saves without altering spacing)
+--    Use <leader>cf to format explicitly; toggle autoformat on save with <leader>uf when desired.
+vim.g.autoformat = false
+
+-- 2. Respect project .editorconfig rules (indent_size, tab_width, end_of_line)
+vim.g.editorconfig = true
+
 -- Search settings
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.incsearch = true
 vim.opt.hlsearch = true
 
--- Split windows direction (VSCode style)
+-- Split window placement: new windows open right and below
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 

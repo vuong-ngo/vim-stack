@@ -233,7 +233,7 @@ return {
 		end,
 	},
 
-	-- 3. Bufferline Top Tab Bar (VS Code Flat Square Tabs - Pure Graphite Theme)
+	-- 3. Bufferline Top Tab Bar (Flat square buffer tabs with graphite theme)
 	{
 		"akinsho/bufferline.nvim",
 		event = "VeryLazy",

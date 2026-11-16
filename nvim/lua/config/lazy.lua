@@ -13,6 +13,11 @@ end
 
 -- Prepend lazy.nvim to the runtime path
 vim.opt.rtp:prepend(lazypath)
+
+-- Set leader and localleader keys before loading lazy.nvim
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
+
 require("lazy").setup({
 	spec = {
 		-- add LazyVim and import its plugins

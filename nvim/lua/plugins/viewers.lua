@@ -1,6 +1,6 @@
 -- ================================================
 -- Script: viewers.lua
--- Description: Configures specialized data and document visualizers, including CsvView.nvim for Excel-style CSV/TSV spreadsheet grids with sticky headers and safe size guards, and Render-Markdown.nvim for formatted tables and callouts.
+-- Description: Configures specialized data and document visualizers, including CsvView.nvim for tabular CSV/TSV spreadsheet grids with sticky headers and safe size guards, and Render-Markdown.nvim for formatted tables and callouts.
 -- ================================================
 
 local MAX_SAFE_CSV_SIZE = 2 * 1024 * 1024 -- 2.0 MB limit to prevent freezing on massive datasets
@@ -17,7 +17,7 @@ local function get_buf_size()
 end
 
 return {
-	-- 1. CSV / TSV Interactive Spreadsheet Grid (Excel / Office Style)
+	-- 1. CSV / TSV Interactive Table Grid
 	{
 		"hat0uma/csvview.nvim",
 		cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle" },
@@ -28,7 +28,7 @@ return {
 				comments = { "#", "//" },
 			},
 			view = {
-				-- Visual spreadsheet style like Microsoft Excel / Office
+				-- Tabular presentation with thin vertical borders
 				display_mode = "border", -- Render thin vertical '│' borders between columns
 				min_column_width = 8, -- Minimum column width for comfortable viewing
 				spacing = { left = 1, right = 1 }, -- Cell padding on left and right borders
@@ -44,7 +44,7 @@ return {
 				},
 			},
 			keymaps = {
-				-- Cell-by-cell navigation matching Excel / Google Sheets
+				-- Cell-by-cell navigation across rows and columns
 				jump_next_field_end = { "<Tab>", mode = { "n", "v" } },
 				jump_prev_field_end = { "<S-Tab>", mode = { "n", "v" } },
 				jump_next_row = { "<Enter>", mode = { "n", "v" } },
@@ -54,21 +54,20 @@ return {
 		config = function(_, opts)
 			require("csvview").setup(opts)
 
-			-- Office / Spreadsheet UI styling:
-			-- Highlight header row with bold font and distinct background
+			-- Table header and border styling
 			vim.api.nvim_set_hl(0, "CsvViewHeaderLine", { bold = true, bg = "#2a2e3f", fg = "#89b4fa" })
 			vim.api.nvim_set_hl(0, "CsvViewStickyHeaderSeparator", { fg = "#89b4fa", bold = true })
 			vim.api.nvim_set_hl(0, "CsvViewDelimiter", { fg = "#6c7086" }) -- Subtle grid border lines
 
-			-- User command to format and switch to Office table view
+			-- User command to format and switch to table view
 			vim.api.nvim_create_user_command("CsvFormat", function()
 				vim.cmd("CsvViewEnable display_mode=border")
 				vim.notify(
-					"Formatted CSV view as an Office spreadsheet table.",
+					"Formatted CSV view as a tabular grid.",
 					vim.log.levels.INFO,
-					{ title = "CSV Office Format" }
+					{ title = "CSV Table Format" }
 				)
-			end, { desc = "Format and display CSV as Office spreadsheet" })
+			end, { desc = "Format and display CSV as tabular grid" })
 		end,
 		init = function()
 			-- Auto-enable visual table view ONLY for small/medium CSV files (< 2MB).
@@ -85,7 +84,7 @@ return {
 									.. mb
 									.. "MB). Auto table rendering skipped to keep Neovim fast.\nUse <leader>cv to toggle manually or <leader>cp to inspect via fast Pager.",
 								vim.log.levels.WARN,
-								{ title = "CSV Office View" }
+								{ title = "CSV Table View" }
 							)
 						end)
 					else
@@ -107,12 +106,12 @@ return {
 						vim.notify(
 							"Very large CSV file (" .. mb .. "MB). Parsing table may take a few seconds...",
 							vim.log.levels.WARN,
-							{ title = "CSV Office View" }
+							{ title = "CSV Table View" }
 						)
 					end
 					vim.cmd("CsvViewToggle")
 				end,
-				desc = "Toggle CSV Office View (Excel Grid)",
+				desc = "Toggle CSV Table Grid View",
 			},
 			{
 				"<leader>cp",

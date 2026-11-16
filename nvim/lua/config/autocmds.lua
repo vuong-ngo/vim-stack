@@ -58,17 +58,3 @@ autocmd({ "BufEnter", "BufReadPost" }, {
 		vim.opt_local.spell = false
 	end,
 })
-
--- ---------- FORCE 4-SPACE INDENTATION ACROSS ALL FILETYPES ----------
--- tab = 4 spaces, softtabstop = 4, shiftwidth = 4
-local indent_group = augroup("Enforce4SpaceIndent", { clear = true })
-autocmd("FileType", {
-	group = indent_group,
-	pattern = "*",
-	callback = function()
-		vim.opt_local.tabstop = 4
-		vim.opt_local.shiftwidth = 4
-		vim.opt_local.softtabstop = 4
-		vim.opt_local.expandtab = true
-	end,
-})
