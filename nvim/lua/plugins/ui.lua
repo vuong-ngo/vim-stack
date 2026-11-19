@@ -8,10 +8,14 @@ return {
 	{
 		"catppuccin/nvim",
 		name = "catppuccin",
+        lazy=false,
 		priority = 1000,
 		opts = {
 			flavour = "mocha",
 			transparent_background = true,
+			float = { transparent = true },
+			term_colors = true,
+			auto_integrations = true,
 			integrations = {
 				blink_cmp = true,
 				bufferline = false, -- Disabled so Bufferline inherits custom pure transparent highlights without opaque Mocha override

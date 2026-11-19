@@ -13,6 +13,9 @@ vim.opt.relativenumber = false
 vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
+-- Inherit terminal opacity; nonzero blend makes Catppuccin use a solid popup background.
+vim.opt.pumblend = 0
+vim.opt.winblend = 0
 vim.opt.wrap = true
 vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
