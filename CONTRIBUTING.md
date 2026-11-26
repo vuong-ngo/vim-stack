@@ -15,11 +15,11 @@ The most important rule in this repository is the **1:1 Keymap Parity Rule**:
 > [!IMPORTANT]
 > If you add, modify, or delete a keybinding in one configuration, you **must** apply the corresponding change to the other configuration and update all documentation tables.
 
-* If you add a keybinding in Vim's **[.vimrc](vim-editor/.vimrc)**, implement the equivalent feature or mapping in Neovim's **[keymaps.lua](nvim/lua/config/keymaps.lua)** and IdeaVim's **[.ideavimrc](ideavim/.ideavimrc)**.
+* If you add a keybinding in Vim's **[.vimrc](vim/.vimrc)**, implement the equivalent feature or mapping in Neovim's **[keymaps.lua](nvim/lua/config/keymaps.lua)** and IdeaVim's **[.ideavimrc](ideavim/.ideavimrc)**.
 * If you upgrade a Neovim binding (e.g. mapping to a plugin like `Snacks.picker` instead of raw Vim command), keep the **same trigger key** (e.g., `<leader>e`, `<leader>ff`).
 * Update the keymap tables across the documentation:
   1. The root **[README.md](README.md)**
-  2. The Vim configuration **[vim-editor/README.md](vim-editor/README.md)**
+  2. The Vim configuration **[vim/README.md](vim/README.md)**
   3. The Neovim configuration **[nvim/README.md](nvim/README.md)**
   4. The IdeaVim configuration **[ideavim/README.md](ideavim/README.md)**
 
@@ -27,19 +27,20 @@ The most important rule in this repository is the **1:1 Keymap Parity Rule**:
 
 ## 📂 Configuration Architecture
 
-### Minimal Vim (`vim-editor`)
+### Minimal Vim (`vim`)
 Keep this configuration lightweight and self-contained:
 * Avoid plugin managers or external packages.
 * Use Vim script features only.
 * Ensure configurations are compatible with standard stock Vim.
-* Read the **[vim-editor/README.md](vim-editor/README.md)** for details on hand-rolled comment functions or buffer management.
+* Read the **[vim/README.md](vim/README.md)** for details on hand-rolled comment functions or buffer management.
 
 ### Modern Neovim (`nvim`)
-This editor configuration is built on the **LazyVim** framework. Code is structured as follows:
+This editor configuration runs directly on **`lazy.nvim`** (without LazyVim distro overhead). Code is structured as follows:
+* **[init.lua](nvim/init.lua)**: Entry point loading options, `lazy.nvim`, autocmds, and keymaps.
 * **[lua/config/options.lua](nvim/lua/config/options.lua)**: Vim settings and options (tab stops, line numbers, clipboard settings).
 * **[lua/config/keymaps.lua](nvim/lua/config/keymaps.lua)**: Standard keymaps and synced sequences.
 * **[lua/config/autocmds.lua](nvim/lua/config/autocmds.lua)**: Event listener hooks (e.g. reload-on-change, restoring cursor position).
-* **[lua/plugins/](nvim/lua/plugins/)**: Submodules to configure and install plugins. Keep this lean and avoid duplicate plugins (e.g. we use `blink.cmp` instead of `nvim-cmp`, and `Snacks.terminal` instead of `toggleterm`).
+* **[lua/plugins/](nvim/lua/plugins/)**: Submodules to configure and install plugins directly. Keep this lean and avoid duplicate plugins (e.g. we use `blink.cmp` instead of `nvim-cmp`, and `Snacks.terminal` instead of `toggleterm`).
 
 ### JetBrains IdeaVim (`ideavim`)
 * **[.ideavimrc](ideavim/.ideavimrc)**: Production-ready configuration synchronized with Neovim & Vim keybindings for IntelliJ IDEA, Rider, DataGrip, PyCharm, WebStorm, and CLion.
@@ -49,10 +50,10 @@ This editor configuration is built on the **LazyVim** framework. Code is structu
 ## 🛠️ How to Test Changes
 
 ### Testing Vim Editor
-1. Make changes to `vim-editor/.vimrc`.
+1. Make changes to `vim/.vimrc`.
 2. Test it locally by sourcing that specific file:
    ```bash
-   vim -u vim-editor/.vimrc
+   vim -u vim/.vimrc
    ```
 3. Verify that the new functionality operates smoothly and doesn't trigger start-up errors.
 

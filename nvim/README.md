@@ -1,6 +1,6 @@
 # 🌌 Neovim Configuration Stack
 
-A clean, modular, and high-performance Neovim setup built on top of **Neovim 0.10+** and the **LazyVim** framework. Designed with domain-driven plugin isolation, instant responsiveness, and zero bloated configurations.
+A clean, modular, and lightweight Neovim setup built directly on **Neovim 0.10+** and **`lazy.nvim`** (without LazyVim distribution overhead). Designed with domain-driven plugin isolation, instant responsiveness, and zero bloated defaults.
 
 ---
 
@@ -15,16 +15,16 @@ A clean, modular, and high-performance Neovim setup built on top of **Neovim 0.1
   - [4. Seamless Terminal Transparency](#4-seamless-terminal-transparency)
 - [Keybindings Reference](#-keybindings-reference)
 - [System Requirements &amp; Installation](#-system-requirements--installation)
-- [Eliminated Redundancies &amp; Design Rationale](#-eliminated-redundancies--design-rationale)
+- [Lightweight Design Rationale](#-lightweight-design-rationale)
 
 ---
 
 ## 🌟 Key Highlights
 
-- **Domain-Driven Architecture:** Clean separation of concerns across 6 functional domains (`ui`, `editor`, `coding`, `lsp`, `viewers`), plus a dedicated `disabled.lua` module.
+- **Domain-Driven Architecture:** Clean separation of concerns across 5 functional domains (`ui`, `editor`, `coding`, `lsp`, `viewers`).
+- **Zero Distribution Overhead:** Loads only explicitly declared plugins directly via `lazy.nvim`, eliminating dozens of unused default plugins.
 - **Tabular Data Viewing:** High-performance CSV/TSV table grid with frozen sticky headers, cell padding, and grid cell navigation.
 - **Rich Markdown Formatting:** Aesthetic rounded table borders, syntax callouts, and inline task checkboxes.
-- **Zero Redundant Bloat:** Eliminated duplicate commenting engines, unused themes, and background disk writers.
 - **Safe Big File Handling:** Integrated size guards prevent Neovim from freezing when opening massive dataset files (100MB+).
 - **Global Spell Check Disabled:** Clean, distraction-free editing without red squiggly underlines.
 
@@ -32,28 +32,25 @@ A clean, modular, and high-performance Neovim setup built on top of **Neovim 0.1
 
 ## 🏗️ Architecture & Directory Structure
 
-All custom plugin specifications reside strictly within `lua/plugins/` to take advantage of LazyVim's automated plugin discovery. Core editor defaults and key mappings are segregated under `lua/config/`.
+All plugin specifications reside strictly within `lua/plugins/` for automatic discovery by `lazy.nvim`. Core editor defaults and key mappings are segregated under `lua/config/`.
 
 ```text
 ~/.config/nvim/
-├── init.lua                 # Main startup entry point (orchestrates config loading)
-├── lazy-lock.json           # Pinned Git commit hashes for reproducible plugin setups
-├── lazyvim.json             # LazyVim framework state and version tracker
+├── init.lua                 # Main startup entry point (loads options, lazy.nvim, autocmds, keymaps)
 ├── install-deps.sh          # Idempotent dependency installer for Linux/macOS
 ├── README.md                # Comprehensive documentation
 └── lua/
     ├── config/              # Core Neovim configuration
     │   ├── lazy.lua         # Plugin manager bootstrap (lazy.nvim)
     │   ├── options.lua      # Global settings (4-space indent, absolute line numbers, clipboard)
-    │   ├── keymaps.lua      # Core shortcuts (tabs, buffers, splits, terminal)
+    │   ├── keymaps.lua      # Core shortcuts (explorer, pickers, splits, terminal, LSP, format)
     │   └── autocmds.lua     # Automated event handlers (auto-reload, cursor restore, no-spell)
     └── plugins/             # Domain-specific plugin modules
-        ├── ui.lua           # Theme (Catppuccin Mocha), Lualine statusline, Bufferline tabs, Noice
-        ├── editor.lua       # Snacks suite, Explorer, Pickers, Grug-Far search, Trouble, GitSigns
-        ├── coding.lua       # Blink.cmp autocompletion, Mini.pairs, Mini.surround, Mini.ai
-        ├── lsp.lua          # Treesitter syntax (core + :LazyExtras), Mason package manager, LSPConfig
-        ├── viewers.lua      # CSV/TSV spreadsheet table viewer & Markdown visual decorator
-        └── disabled.lua     # Explicitly disabled overlapping/unused default plugins
+        ├── ui.lua           # Theme (Catppuccin Mocha), Lualine statusline, Bufferline tabs
+        ├── editor.lua       # Snacks suite (Explorer, Pickers, Terminal, Dashboard), Which-Key, GitSigns
+        ├── coding.lua       # Blink.cmp autocompletion
+        ├── lsp.lua          # Treesitter, Mason + Mason-LSPConfig, LSPConfig, Conform
+        └── viewers.lua      # CSV/TSV spreadsheet table viewer & Markdown visual decorator
 ```
 
 ---
@@ -65,23 +62,16 @@ All custom plugin specifications reside strictly within `lua/plugins/` to take a
 | **Theme & UI**   | `catppuccin/nvim`           | Pastel colorscheme with 100% transparent terminal background                  |
 |                  | `nvim-lualine/lualine.nvim` | Bottom status bar with graphite powerline styling                             |
 |                  | `akinsho/bufferline.nvim`   | Top tab bar with flat buffer tabs                                             |
-|                  | `folke/noice.nvim`          | Floating commandline, popup menus, and notification router                    |
 | **Workspace**    | `folke/snacks.nvim`         | Dashboard, file explorer, fuzzy pickers, floating terminal, bigfile optimizer |
 |                  | `folke/which-key.nvim`      | Keyboard shortcut popup guide                                                 |
-|                  | `MagicDuck/grug-far.nvim`   | Project-wide interactive search-and-replace editor buffer                     |
-|                  | `folke/trouble.nvim`        | Diagnostics, references, and symbols panel                                    |
-|                  | `folke/todo-comments.nvim`  | Highlights and indexes`TODO`, `FIXME`, `NOTE` tags                            |
 |                  | `lewis6991/gitsigns.nvim`   | In-editor Git gutter status indicators, line blame, and hunk preview          |
 | **Coding**       | `saghen/blink.cmp`          | Blazing-fast Rust-backed autocomplete engine with ghost text                  |
-|                  | `nvim-mini/mini.pairs`      | Automatic bracket and quote auto-closing                                      |
-|                  | `nvim-mini/mini.surround`   | Fast surrounding operator (`gza`, `gzd`, `gzr`)                               |
-|                  | `nvim-mini/mini.ai`         | Extended text objects for functions, parameters, and blocks                   |
-|                  | `windwp/nvim-ts-autotag`    | Auto-close and rename HTML/JSX tags                                           |
-| **LSP & Syntax** | `nvim-treesitter`           | Abstract Syntax Tree highlighting (core + synced via `:LazyExtras`)          |
+| **LSP & Syntax** | `nvim-treesitter`           | Abstract Syntax Tree highlighting (core parsers + on-demand install)         |
 |                  | `mason.nvim`                | In-editor package manager for language servers and tools                      |
-|                  | `neovim/nvim-lspconfig`     | Native LSP server configurations synced dynamically via `:LazyExtras`         |
+|                  | `mason-lspconfig.nvim`      | Bridges installed Mason language servers directly to Neovim LSP               |
+|                  | `neovim/nvim-lspconfig`     | Native LSP server configurations with `blink.cmp` capabilities                |
 |                  | `folke/lazydev.nvim`        | Lua API type definitions and completion for Neovim config editing             |
-| **Formatting**   | `stevearc/conform.nvim`     | Format-on-demand via `<leader>cf` and formatters synced via `:LazyExtras`     |
+| **Formatting**   | `stevearc/conform.nvim`     | Format-on-demand via `<leader>cf` with LSP fallback                           |
 | **Viewers**      | `hat0uma/csvview.nvim`      | Interactive tabular spreadsheet viewer for CSV/TSV                            |
 |                  | `render-markdown.nvim`      | Visual table borders, callouts, and checkboxes for Markdown                   |
 
@@ -113,12 +103,12 @@ Configured in `lua/plugins/viewers.lua` via `MeanderingProgrammer/render-markdow
 
 ### 3. Code & Document Formatting
 
-Formatting is managed dynamically by LazyVim core via `stevearc/conform.nvim` and `:LazyExtras`:
+Formatting is managed by `stevearc/conform.nvim` configured directly in `lua/plugins/lsp.lua`:
 
 - **Format-on-Save OFF by Default (`vim.g.autoformat = false`):** Saving files (`:w`) writes content as-is without altering indentation or causing unintended Git diff churn.
-- **On-Demand Formatting:** Press `<leader>cf` in normal or visual mode to format explicitly. Toggle autoformat on save anytime with `<leader>uf`.
+- **On-Demand Formatting:** Press `<leader>cf` in normal or visual mode to format explicitly (falls back to LSP formatting when no external formatter is configured). Toggle autoformat on save anytime with `<leader>uf`.
 - **Project Consistency (.editorconfig):** Strictly respects `.editorconfig` and project configuration files (`.prettierrc`, `pyproject.toml`, etc.) to guarantee formatting parity across repositories.
-- **Zero Language Hardcoding:** Pure editor by default; formatters for Python (`black`/`ruff`), JS/TS/Web (`prettier`), Rust (`rustfmt`), etc., are enabled dynamically via `:LazyExtras`.
+- **Zero Language Hardcoding:** No bloat by default; add language-specific formatters to `formatters_by_ft` in `lua/plugins/lsp.lua` only when needed.
 
 ### 4. Seamless Terminal Transparency
 
@@ -138,13 +128,13 @@ All custom shortcuts use `<Space>` as `<leader>`.
 
 | Shortcut     | Action                                      |
 | :----------- | :------------------------------------------ |
+| `H` / `L`    | Switch to previous / next buffer            |
 | `<leader>e`  | Toggle sidebar file explorer                |
 | `<C-p>`      | Fuzzy find files (Ctrl+P)                   |
 | `<leader>ff` | Fuzzy find files                            |
 | `<leader>fg` | Live text search across workspace (ripgrep) |
 | `<leader>fr` | Browse recent files                         |
 | `<leader>fb` | Browse open buffers                         |
-| `<leader>sr` | Project-wide interactive search-and-replace |
 
 ### Window Splits & Movement
 
@@ -170,15 +160,12 @@ All custom shortcuts use `<Space>` as `<leader>`.
 | `<leader>cf` | Format current document                   |
 
 
-### Editing Motions & Comments
+### Comments (Built-in)
 
-| Shortcut              | Action                           |
-| :-------------------- | :------------------------------- |
-| `gcc`                 | Toggle line comment              |
-| `gc` *(visual)*       | Toggle comment on selected block |
-| `gza` *(motion)*      | Add surrounding quotes/brackets  |
-| `gzd` *(char)*        | Delete surrounding character     |
-| `gzr` *(old, new)*    | Replace surrounding character    |
+| Shortcut        | Action                           |
+| :-------------- | :------------------------------- |
+| `gcc`           | Toggle line comment              |
+| `gc` *(visual)* | Toggle comment on selected block |
 
 ### Specialized Viewers & Terminal
 
@@ -209,15 +196,13 @@ chmod +x install-deps.sh
 - `unzip` (for Mason archive extraction)
 - `base-devel` / `build-essential` (C compiler for Treesitter parser compilation)
 - `wl-clipboard` / `xclip` (for system clipboard synchronization)
-- `nodejs` / `npm` (runtime for Mason language servers installed via `:LazyExtras`)
-- `python` / `python3` (runtime for Python tools installed via `:LazyExtras`)
+- `nodejs` / `npm` (runtime for Mason language servers)
+- `python` / `python3` (runtime for Python language tools)
 
 ---
 
-## 🛡️ Eliminated Redundancies & Design Rationale
+## 🛡️ Lightweight Design Rationale
 
-1. **Removed `mini.comment`:** Neovim 0.10+ includes native `gc`/`gcc` commenting logic alongside `ts-comments.nvim`. Maintaining `mini.comment` caused duplicate plugin overhead.
-2. **Removed Tokyonight Theme:** Catppuccin Mocha is configured as the single primary transparent theme, saving startup loading time.
-3. **Removed `persistence.nvim`:** User manages active workspaces and buffers directly; prevents redundant session write I/O on disk.
-4. **Removed `nvim-lint`:** Real-time diagnostics are delivered natively by LSP language servers; formatters are driven by Conform.
-5. **Removed `flash.nvim`:** Preserves pure standard Vim search motions (`/`, `?`, `s`, `S`, `f`, `F`, `t`, `T`) without key-hijacking.
+1. **No LazyVim Distro Bloat:** Uses pure `lazy.nvim` directly instead of importing `LazyVim/LazyVim`, eliminating unused defaults (`tokyonight`, `persistence`, `nvim-lint`, `flash`, `mini.comment`, etc.) without needing a `disabled.lua` override file.
+2. **Native Neovim Features First:** Relies on Neovim 0.10+ built-in `gc`/`gcc` commenting, built-in `[d`/`]d` diagnostic navigation, and native `vim.lsp.config` on Neovim 0.11+.
+3. **Pure Vim Motions Preserved:** Standard motions (`j`, `k`, `H`, `M`, `L`, `s`, `S`, `f`, `F`, `t`, `T`, `gi`) remain untouched across Vim, Neovim, and IdeaVim.

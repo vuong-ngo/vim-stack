@@ -35,12 +35,15 @@ Any shortcut formatted as `<leader>x` means: press `Space`, then `x`.
 
 ## 📋 Keybindings Reference
 
-Pure Vim motions and editing keys (`j`, `k`, `H`, `M`, `L`, `dd`, `x`, `p`, `<`, `>`, etc.) retain their 100% vanilla behavior. Only essential utilities are mapped cleanly under `<leader>` and `Ctrl`.
+Pure Vim motions and editing keys (`j`, `k`, `dd`, `x`, `p`, `<`, `>`, etc.) retain their 100% vanilla behavior. `H` / `L` switch buffers, and essential utilities are mapped cleanly under `<leader>` and `Ctrl`.
 
-### File Explorer & Windows
+### File Explorer, Buffers & Windows
 | Shortcut | Mode | Action |
 | :--- | :---: | :--- |
+| `H` / `L` | Normal | Switch to previous / next valid buffer |
 | `<leader>e` | Normal | Toggle Netrw file explorer tree (`:Lexplore`) |
+| `<leader>ff` | Normal | Recursive file search prompt (`:find ` with wildmenu popup) |
+| `<leader>fb` | Normal | List and switch open buffers (`:ls` + `:b`) |
 | `<leader>\|` | Normal | Vertical split (`:vsplit`) |
 | `<leader>-` | Normal | Horizontal split (`:split`) |
 | `Ctrl + h/j/k/l` | Normal | Navigate between window splits |
@@ -48,11 +51,11 @@ Pure Vim motions and editing keys (`j`, `k`, `H`, `M`, `L`, `dd`, `x`, `p`, `<`,
 ### Code Formatting & Commenting
 | Shortcut | Mode | Action |
 | :--- | :---: | :--- |
-| `<leader>cf` | Normal | Format whole document (`gg=G`) and return cursor |
+| `<leader>cf` | Normal | Format whole document (`gg=G`) and restore cursor/view |
 | `gcc` | Normal | Toggle comment on current line |
 | `gc` | Visual | Toggle comment on selected block |
 
-*Supports language-aware syntax for: C, C++, Java, JS, TS, Python, Go, Rust, PHP, CSS, HTML, XML, Bash, and Vimscript.*
+*Supports language-aware syntax for: C, C++, Java, JS, TS, Python, Go, Rust, PHP, CSS, Lua, SQL, Haskell, HTML, XML, Bash, and Vimscript.*
 
 ### Search & Highlights
 | Shortcut | Mode | Action |
@@ -63,8 +66,8 @@ Pure Vim motions and editing keys (`j`, `k`, `H`, `M`, `L`, `dd`, `x`, `p`, `<`,
 
 ## ⚙️ Built-In Features & Settings
 
-- **Native Buffer Tabline:** Zero-plugin buffer bar displayed at top with clean active/modified indicators, clickable with mouse, matching Neovim Bufferline.
-- **Native Netrw & Motion Parity:** Netrw file explorer and navigation keys (`H`, `L`) adhere strictly to Vim defaults without intrusive key remappings.
+- **Native Buffer Tabline:** Zero-plugin 100% transparent buffer bar displayed at top (`bg=NONE`, `#f4f4f5` bold active label, `#f59e0b` modified dot, mouse click support), matching Neovim Bufferline.
+- **Smart Buffer Navigation (`H` / `L`):** Cycles cleanly through valid file buffers while skipping explorer/help/quickfix windows.
 - **100% Terminal Transparency:** Inherits terminal background color and opacity across all terminal emulators (`guibg=NONE ctermbg=NONE`, with explicit reset of all reverse attributes).
 - **Soft Translucent Gray CursorLine:** Active line is highlighted with a delicate gray wash (`#222222` / `ctermbg=235`) that blends smoothly into dark backgrounds without harsh solid stripes.
 - **Persistent Undo:** Automatically creates `~/.vim/undodir` and preserves undo history across restarts.

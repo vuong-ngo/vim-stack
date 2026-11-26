@@ -15,25 +15,25 @@
 
 ---
 
-**Vim Stack** is a curated collection of dual editor configurations designed to optimize terminal text editing. It consists of a zero-plugin **Minimal Vim** setup ([`vim-editor/`](vim-editor/)) and a feature-rich, modernized **Neovim (LazyVim)** IDE ([`nvim/`](nvim/)). Both configurations are carefully synchronized so that identical keybindings trigger equivalent actions.
+**Vim Stack** is a curated collection of dual editor configurations designed to optimize terminal text editing. It consists of a zero-plugin **Minimal Vim** setup ([`vim/`](vim/)) and a lightweight, modernized **Neovim (`lazy.nvim`)** IDE ([`nvim/`](nvim/)). Both configurations are carefully synchronized so that identical keybindings trigger equivalent actions while keeping pure Vim motions vanilla.
 
 This dual setup allows you to switch seamlessly between:
-1. **Remote Servers, SSH Sessions & Containers**: Using the lightweight, zero-plugin Vim config (`vim-editor`) which boots instantly with pure stock Vimscript.
-2. **Local Machine & Heavy Development Work**: Using the modern Neovim IDE configuration (`nvim`) equipped with Rust-backed `blink.cmp` autocompletion, Mason LSPs, Treesitter syntax highlighting, `conform.nvim` formatters, `snacks.nvim`, and Excel-style CSV data visualization.
+1. **Remote Servers, SSH Sessions & Containers**: Using the lightweight, zero-plugin Vim config (`vim`) which boots instantly with pure stock Vimscript.
+2. **Local Machine & Heavy Development Work**: Using the modern Neovim IDE configuration (`nvim`) equipped with Rust-backed `blink.cmp` autocompletion, Mason LSPs, Treesitter syntax highlighting, `conform.nvim` formatters, `snacks.nvim`, and tabular CSV data visualization.
 
 ---
 
 ## 📂 Repository Structure
 
-The project is split into two specialized workspaces:
+The project is split into three specialized workspaces:
 
-* **[`vim-editor/`](vim-editor/)**: Classic, zero-plugin Vim setup.
-  * **[`.vimrc`](vim-editor/.vimrc)**: Single-file, zero-plugin configuration using pure Vimscript (native commenting, absolute line numbers, transparent background, persistent undo auto-dir).
-  * **[`README.md`](vim-editor/README.md)**: Feature list and installation details for minimal Vim.
+* **[`vim/`](vim/)**: Classic, zero-plugin Vim setup.
+  * **[`.vimrc`](vim/.vimrc)**: Single-file, zero-plugin configuration using pure Vimscript (native commenting, absolute line numbers, transparent background & graphite tabline synced with Neovim, persistent undo auto-dir).
+  * **[`README.md`](vim/README.md)**: Feature list and installation details for minimal Vim.
 * **[`nvim/`](nvim/)**: Modern Neovim IDE setup (Domain-Driven architecture).
   * **[`init.lua`](nvim/init.lua)**: Standardized entry point orchestrating startup.
   * **[`lua/config/`](nvim/lua/config/)**: Core options, synchronized keymaps, and event autocmds.
-  * **[`lua/plugins/`](nvim/lua/plugins/)**: 5 clean domain modules (`ui`, `editor`, `coding`, `lsp`, `viewers`) + `disabled.lua`.
+  * **[`lua/plugins/`](nvim/lua/plugins/)**: 5 clean domain modules (`ui`, `editor`, `coding`, `lsp`, `viewers`).
   * **[`install-deps.sh`](nvim/install-deps.sh)**: Comprehensive bash script installing OS runtimes (`ripgrep`, `fd`, compilers, unzip, clipboard, node, python).
   * **[`README.md`](nvim/README.md)**: Deep dive into the Neovim setup, viewers, and keybindings.
 * **[`ideavim/`](ideavim/)**: JetBrains IDEs IdeaVim integration.
@@ -45,30 +45,30 @@ The project is split into two specialized workspaces:
 
 ## 🔄 Synchronized Keyboard & Behavior Parity
 
-The leader key is set to **`Space`** across all editors (Minimal Vim, Neovim, and JetBrains IdeaVim).
+The leader key is set to **`Space`** across all editors (Minimal Vim, Neovim, and JetBrains IdeaVim). `H` / `L` cycle open buffers across all three configs, while other core Vim motions (`j`, `k`, `<`, `>`, `s`, `S`, `gi`) stay untouched.
 
-| Key combination | Mode | Minimal Vim (`vim-editor`) | Neovim (`nvim`) | IdeaVim (`ideavim`) | Behavior Description |
+| Key combination | Mode | Minimal Vim (`vim`) | Neovim (`nvim`) | IdeaVim (`ideavim`) | Behavior Description |
 | :--- | :---: | :--- | :--- | :--- | :--- |
-| **`H` / `L`** | Normal | `SmartBufferPrev/Next()` | `bprevious` / `bnext` | `PreviousTab` / `NextTab` | Switches to Previous / Next Tab |
-| **`Alt + 1..9`** | Normal | `SmartBufferGoto(1..9)` | `bufferline.go_to(1..9)` | `GoToTab1..9` | Jumps directly to Tab 1 through 9 |
-| **`<leader>e`** | Normal | `:Lexplore` (netrw) | `Snacks.explorer()` | `ActivateProjectToolWindow` | Toggles the sidebar file explorer |
-| **`Ctrl + P` / `<leader>ff`** | Normal | *Via terminal / :find* | `Snacks.picker.files()` | `GotoFile` | Opens fuzzy file finder |
-| **`Ctrl + F` / `<leader>fg`** | Normal | *Via terminal / grep* | `Snacks.picker.grep()` | `FindInPath` | Searches text in project (Live Grep) |
-| **`<leader>sr`** | Normal | *Via substitute* | `grug-far.open()` | `ReplaceInPath` | Global workspace search & replace UI |
+| **`H` / `L`** | Normal | `SmartBufferPrev/Next()` | `BufferLineCyclePrev/Next` | `PreviousTab` / `NextTab` | Switches to Previous / Next Buffer |
+| **`<leader>e`** | Normal | `:Lexplore` (netrw) | `Snacks.explorer()` | `:NERDTreeToggle` | Toggles the sidebar file explorer |
+| **`<leader>ff`** *(or `Ctrl + P` in IDE)* | Normal | `:find ` (recursive wildmenu) | `Snacks.picker.files()` | `GotoFile` | Opens fuzzy file finder |
+| **`<leader>fb`** | Normal | `:ls` + `:b` | `Snacks.picker.buffers()` | `Switcher` | Browse & switch open buffers |
+| **`<leader>fg`** | Normal | *Via terminal / `:vimgrep`* | `Snacks.picker.grep()` | `FindInPath` | Searches text in project (Live Grep) |
+| **`<leader>fr`** | Normal | *Via `:browse oldfiles`* | `Snacks.picker.recent()` | `RecentFiles` | Browse recent files |
+| **`<leader>sr`** | Normal | *Via `:%s`* | *Via `:%s`* | `ReplaceInPath` | Global workspace search & replace |
 | **`<leader>\|`** | Normal | `:vsplit` | `:vsplit` | `SplitVertically` | Creates vertical split (side-by-side) |
 | **`<leader>-`** | Normal | `:split` | `:split` | `SplitHorizontally` | Creates horizontal split (stacked) |
 | **`Ctrl + h/j/k/l`** | Normal | `<C-w>h/j/k/l` | `<C-w>h/j/k/l` | `<C-w>h/j/k/l` | Navigate between split windows |
-| **`Alt + j` / `Alt + k`** | Normal/Visual | Move line(s) down / up | Move line(s) down / up | `MoveLineDown` / `Up` | Move selected lines up or down |
-| **`<` / `>`** | Visual | Continuous visual indent (`<gv` / `>gv`) | Continuous visual indent (`<gv` / `>gv`) | Continuous visual indent (`<gv` / `>gv`) | Indent lines while keeping selection active |
 | **`gcc` / `gc`** | Normal/Visual | Native `ToggleCommentNative()` | Native `gc` / `gcc` (Treesitter) | `set commentary` | Toggles comments with language syntax |
-| **`<leader>cf`** | Normal | `gg=G` | `conform.format()` | `ReformatCode` | Format current document |
+| **`<leader>cf`** | Normal | `FormatDocumentNative()` (`gg=G`) | `conform.format()` | `ReformatCode` | Format current document |
 | **`<leader>ca`** | Normal | *Not bound* | `vim.lsp.buf.code_action()` | `ShowIntentionActions` | Show code actions / intentions |
 | **`<leader>rn`** | Normal | *Not bound* | `vim.lsp.buf.rename()` | `RenameElement` | Rename symbol across workspace |
-| **`gd`** | Normal | *Via tags (:tag)* | `vim.lsp.buf.definition()` | `GotoDeclaration` | Jump to definition / declaration |
+| **`gd`** | Normal | *Via tags (`:tag`)* | `vim.lsp.buf.definition()` | `GotoDeclaration` | Jump to definition / declaration |
 | **`gr`** | Normal | *Via search* | `Snacks.picker.lsp_references()` | `FindUsages` | Find references / usages |
-| **`gi`** | Normal | *Not bound* | `vim.lsp.buf.implementation()` | `GotoImplementation` | Jump to implementation |
+| **`gI`** | Normal | *Not bound* | `vim.lsp.buf.implementation()` | `GotoImplementation` | Jump to implementation |
 | **`K`** | Normal | Keywordprg (`:help`) | `vim.lsp.buf.hover()` | `QuickJavaDoc` | Quick documentation hover |
-| **`<leader>cv`** | Normal | *Not bound* | `csvview.toggle()` | *Not bound* | Toggle CSV/TSV Office spreadsheet grid |
+| **`[d` / `]d`** | Normal | *Not bound* | Native `vim.diagnostic.jump()` | `GotoPrevious/NextError` | Jump to previous / next diagnostic |
+| **`<leader>cv`** | Normal | *Not bound* | `csvview.toggle()` | *Not bound* | Toggle CSV/TSV tabular grid |
 | **`<leader>cp`** | Normal | *Not bound* | Floating `less -S` | *Not bound* | Open massive CSV in fast Pager |
 | **`<leader>um`** | Normal | *Not bound* | `render-markdown.toggle()` | *Not bound* | Toggle Markdown rounded tables & callouts |
 | **`Ctrl + /` / `<leader>ft`** | Normal/Term | *Not bound* | `Snacks.terminal()` | `ActivateTerminalToolWindow` | Toggles integrated terminal |
@@ -85,7 +85,7 @@ In addition to keymaps, both configurations establish consistent behaviors:
 * **Case-Sensitive Searching**: Searches are case-insensitive by default (`ignorecase`) but switch to case-sensitive if uppercase letters are included (`smartcase`).
 * **100% Terminal Transparency**: Inherits background and opacity directly from your terminal emulator across all terminal apps (Foot, Kitty, Alacritty, WezTerm, etc.).
 * **Translucent Gray CursorLine**: Subtle active line highlighting using a soft gray wash (`#222222` / `ctermbg=235`) that blends gently into dark terminal themes without harsh solid blocks.
-* **Transparent Buffer Tabline**: Seamless top file switching bar with zero reverse styling, matching the terminal background.
+* **Transparent Buffer Tabline**: 100% transparent top file switching bar (`bg = NONE` across active and inactive tabs, `#f4f4f5` bold active label, `#a1a1aa` inactive, `#3f3f46` separators, `#f59e0b` modified dot) inheriting the terminal background across both Vim and Neovim.
 * **Zero Distraction**: Spell checking is disabled globally across all buffers.
 
 ---
@@ -95,7 +95,7 @@ In addition to keymaps, both configurations establish consistent behaviors:
 ### 1. Minimal Vim Configuration
 To install the minimal zero-plugin configuration:
 ```bash
-cp vim-editor/.vimrc ~/.vimrc
+cp vim/.vimrc ~/.vimrc
 ```
 Launch Vim (`vim`), and it will run instantly with zero third-party plugin dependencies.
 
