@@ -33,20 +33,17 @@ Any shortcut formatted as `<leader>x` means: press `Space`, then `x`.
 
 ## 📋 Synchronized Keybindings Reference
 
-### Tab & Buffer Navigation
-| Shortcut | Mode | Action | JetBrains Action ID |
-| :--- | :---: | :--- | :--- |
-| `H` / `L` | Normal | Switch to previous / next editor tab | `PreviousTab` / `NextTab` |
-| `Alt + 1..9` | Normal | Jump directly to tab 1 through 9 | `GoToTab1` .. `GoToTab9` |
+Pure Vim motions (`j`, `k`, `<`, `>`, `gi`) retain their vanilla behavior, while `H` / `L` switch tabs to stay synchronized with Vim and Neovim.
 
 ### File Explorer, Search & Navigation
 | Shortcut | Mode | Action | JetBrains Action ID |
 | :--- | :---: | :--- | :--- |
+| `H` / `L` | Normal | Switch to previous / next editor tab | `PreviousTab` / `NextTab` |
 | `<leader>e` | Normal | Toggle Project / Files sidebar | `:NERDTreeToggle` |
 | `l` (in explorer) | Normal | Expand directory / Open file & focus editor | `NERDTree` |
 | `h` (in explorer) | Normal | Jump to parent directory | `NERDTree` |
 | `Ctrl + P` / `<leader>ff` | Normal | Find files across project | `GotoFile` |
-| `Ctrl + F` / `<leader>fg` | Normal | Live Grep / Find in path | `FindInPath` |
+| `<leader>fg` | Normal | Live Grep / Find in path | `FindInPath` |
 | `<leader>fr` | Normal | Recent files popup | `RecentFiles` |
 | `<leader>fb` | Normal | Switcher / open tabs | `Switcher` |
 | `<leader>sr` | Normal | Replace in project | `ReplaceInPath` |
@@ -68,12 +65,10 @@ Any shortcut formatted as `<leader>x` means: press `Space`, then `x`.
 | `<leader>ca` | Normal | Show Intentions / Quick Fixes | `ShowIntentionActions` |
 | `<leader>rn` | Normal | Rename symbol across project | `RenameElement` |
 | `<leader>cf` | Normal | Reformat code | `ReformatCode` |
-| `Alt + j` / `Alt + k` | Normal / Visual | Move active line(s) down / up | `MoveLineDown` / `MoveLineUp` |
 | `gcc` / `gc` | Normal / Visual | Toggle comment line / block | `set commentary` |
-| `<` / `>` | Visual | Continuous visual indentation | Native `<gv` / `>gv` |
 | `Ctrl + /` / `<leader>ft` | Normal | Toggle Integrated Terminal | `ActivateTerminalToolWindow` |
 | `gd` | Normal | Go to Declaration / Definition | `GotoDeclaration` |
 | `gr` | Normal | Find Usages / References | `FindUsages` |
-| `gi` | Normal | Go to Implementation | `GotoImplementation` |
+| `gI` | Normal | Go to Implementation | `GotoImplementation` |
 | `K` | Normal | Quick Documentation preview | `QuickJavaDoc` |
 | `[d` / `]d` | Normal | Previous / Next inspection error | `GotoPreviousError` / `GotoNextError` |
