@@ -300,6 +300,38 @@ let g:netrw_list_hide = ''      " Clear hide filter to display all files
 " --- Clear Search Highlight ---
 nnoremap <silent> <Esc> :nohlsearch<CR><Esc>
 
+" --- Buffer Switching (H / L) ---
+function! SmartBufferNext() abort
+    let l:bufs = s:GetValidBuffers()
+    if len(l:bufs) <= 1
+        return
+    endif
+    let l:cur = bufnr('%')
+    let l:idx = index(l:bufs, l:cur)
+    if l:idx < 0
+        execute 'buffer ' . l:bufs[0]
+    else
+        execute 'buffer ' . l:bufs[(l:idx + 1) % len(l:bufs)]
+    endif
+endfunction
+
+function! SmartBufferPrev() abort
+    let l:bufs = s:GetValidBuffers()
+    if len(l:bufs) <= 1
+        return
+    endif
+    let l:cur = bufnr('%')
+    let l:idx = index(l:bufs, l:cur)
+    if l:idx < 0
+        execute 'buffer ' . l:bufs[-1]
+    else
+        execute 'buffer ' . l:bufs[(l:idx - 1 + len(l:bufs)) % len(l:bufs)]
+    endif
+endfunction
+
+nnoremap <silent> H :call SmartBufferPrev()<CR>
+nnoremap <silent> L :call SmartBufferNext()<CR>
+
 " --- File Explorer & Quick Find/Buffers (<leader>e, <leader>ff, <leader>fb) ---
 nnoremap <leader>e :Lexplore<CR>
 nnoremap <leader>ff :find 
