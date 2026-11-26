@@ -1,6 +1,6 @@
 -- ================================================
 -- Script: editor.lua
--- Description: Configures workspace navigation and editor utilities, including Snacks dashboard/explorer/pickers/terminal/bigfile, Which-Key popup, Grug-Far search & replace, Trouble diagnostics, Todo-Comments, and GitSigns gutter integration.
+-- Description: Configures workspace navigation and editor utilities, including Snacks dashboard/explorer/pickers/terminal/bigfile, Which-Key popup, and GitSigns gutter integration.
 -- ================================================
 
 return {
@@ -78,71 +78,28 @@ return {
 		},
 	},
 
-	-- 2. Which-Key (Keybinding Popup Guide)
+	-- 2. Which-Key (Compact Right-Corner Keybinding Popup Guide)
 	{
 		"folke/which-key.nvim",
 		event = "VeryLazy",
 		opts = {
-			preset = "classic",
+			preset = "helix",
 			delay = 200,
+			win = {
+				wo = {
+					winblend = 0,
+				},
+			},
+			defer = function(ctx)
+				if vim.list_contains({ "d", "y" }, ctx.operator) then
+					return true
+				end
+				return vim.list_contains({ "<C-V>", "V", "v" }, ctx.mode)
+			end,
 		},
 	},
 
-	-- 3. Grug-Far (Project-wide Search & Replace)
-	{
-		"MagicDuck/grug-far.nvim",
-		cmd = "GrugFar",
-		opts = { headerMaxWidth = 80 },
-	},
-
-	-- 4. Trouble (Diagnostics & Symbols Panel)
-	{
-		"folke/trouble.nvim",
-		cmd = "Trouble",
-		opts = {},
-		keys = {
-			{ "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Workspace Diagnostics (Trouble)" },
-			{
-				"<leader>xd",
-				"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-				desc = "Document Diagnostics (Trouble)",
-			},
-			{ "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)" },
-		},
-	},
-
-	-- 5. TODO Comments (Highlight & Search TODO/FIXME/NOTE)
-	{
-		"folke/todo-comments.nvim",
-		event = { "BufReadPost", "BufNewFile" },
-		dependencies = { "nvim-lua/plenary.nvim" },
-		opts = {},
-		keys = {
-			{
-				"<leader>st",
-				function()
-					Snacks.picker.todo_comments()
-				end,
-				desc = "Search TODOs",
-			},
-			{
-				"]t",
-				function()
-					require("todo-comments").jump_next()
-				end,
-				desc = "Next Todo Comment",
-			},
-			{
-				"[t",
-				function()
-					require("todo-comments").jump_prev()
-				end,
-				desc = "Previous Todo Comment",
-			},
-		},
-	},
-
-	-- 6. Git Signs (Gutter status indicators, line blame, hunk navigation)
+	-- 3. Git Signs (Gutter status indicators, line blame, hunk navigation)
 	{
 		"lewis6991/gitsigns.nvim",
 		event = { "BufReadPost", "BufNewFile" },

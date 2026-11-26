@@ -1,6 +1,6 @@
 -- ================================================
 -- Script: ui.lua
--- Description: Configures visual appearance, including Catppuccin Mocha theme with full transparency, Lualine statusline, Bufferline tabs, and Noice floating commandline/notifications.
+-- Description: Configures visual appearance, including Catppuccin Mocha theme with full transparency, Lualine statusline, and Bufferline tabs.
 -- ================================================
 
 return {
@@ -8,7 +8,7 @@ return {
 	{
 		"catppuccin/nvim",
 		name = "catppuccin",
-        lazy=false,
+		lazy = false,
 		priority = 1000,
 		opts = {
 			flavour = "mocha",
@@ -23,8 +23,6 @@ return {
 				gitsigns = true,
 				treesitter = true,
 				which_key = true,
-				noice = true,
-				trouble = true,
 				native_lsp = { enabled = true },
 			},
 			custom_highlights = function(colors)
@@ -61,13 +59,6 @@ return {
 					SnacksPickerInput = { bg = "NONE" },
 					SnacksPickerPreview = { bg = "NONE" },
 
-					NeoTreeNormal = { bg = "NONE" },
-					NeoTreeNormalNC = { bg = "NONE" },
-					NeoTreeEndOfBuffer = { bg = "NONE" },
-
-					TroubleNormal = { bg = "NONE" },
-					TroubleNormalNC = { bg = "NONE" },
-
 					-- 3. Unified Graphite Hints (LSP Inlay, Diagnostics & Ghost Text)
 					DiagnosticHint = { fg = "#a1a1aa", bg = "NONE" },
 					DiagnosticVirtualTextHint = { bg = "NONE", fg = "#71717a", italic = true },
@@ -102,7 +93,7 @@ return {
 
 					-- Popup Menu (Pmenu)
 					Pmenu = { bg = "NONE", fg = "#f4f4f5" },
-					PmenuSel = { bg = "#27272a", fg = "#ffffff", bold = true },
+					PmenuSel = { bg = "#3f3f46", fg = colors.text, bold = true },
 					PmenuBorder = { bg = "NONE", fg = "#3f3f46" },
 					PmenuSbar = { bg = "NONE" },
 					PmenuThumb = { bg = "#3f3f46" },
@@ -115,86 +106,73 @@ return {
 					WhichKeyGroup = { fg = "#a1a1aa" },
 					WhichKeySeparator = { fg = "#52525b" },
 
-					-- Noice Popups & Commandline
-					NoiceCmdlinePopup = { bg = "NONE" },
-					NoiceCmdlinePopupBorder = { bg = "NONE", fg = "#3f3f46" },
-					NoiceCmdlinePopupTitle = { bg = "NONE", fg = "#e4e4e7" },
-					NoicePopup = { bg = "NONE" },
-					NoicePopupBorder = { bg = "NONE", fg = "#3f3f46" },
-					NoiceConfirm = { bg = "NONE" },
-					NoiceConfirmBorder = { bg = "NONE", fg = "#3f3f46" },
-
 					-- 4. Bufferline Direct Pure Transparent Highlights
 					BufferLineFill = { bg = "NONE" },
 					BufferLineBackground = { bg = "NONE", fg = "#a1a1aa" },
 					BufferLineBufferVisible = { bg = "NONE", fg = "#71717a" },
-					BufferLineBufferSelected = { bg = "#222222", fg = "#f4f4f5", bold = true },
+					BufferLineBufferSelected = { bg = "NONE", fg = "#f4f4f5", bold = true },
 					BufferLineSeparator = { fg = "#3f3f46", bg = "NONE" },
 					BufferLineSeparatorVisible = { fg = "#3f3f46", bg = "NONE" },
 					BufferLineSeparatorSelected = { fg = "#3f3f46", bg = "NONE" },
-					BufferLineIndicatorSelected = { fg = "#e4e4e7", bg = "#222222" },
+					BufferLineIndicatorSelected = { fg = "#e4e4e7", bg = "NONE" },
 					BufferLineIndicatorVisible = { fg = "NONE", bg = "NONE" },
 					BufferLineModified = { fg = "#f59e0b", bg = "NONE" },
-					BufferLineModifiedSelected = { fg = "#f59e0b", bg = "#222222" },
+					BufferLineModifiedSelected = { fg = "#f59e0b", bg = "NONE" },
 					BufferLineModifiedVisible = { fg = "#f59e0b", bg = "NONE" },
 					BufferLineCloseButton = { fg = "#71717a", bg = "NONE" },
-					BufferLineCloseButtonSelected = { fg = "#a1a1aa", bg = "#222222" },
+					BufferLineCloseButtonSelected = { fg = "#a1a1aa", bg = "NONE" },
 					BufferLineCloseButtonVisible = { fg = "#71717a", bg = "NONE" },
 					BufferLineTab = { bg = "NONE", fg = "#a1a1aa" },
-					BufferLineTabSelected = { bg = "#222222", fg = "#f4f4f5", bold = true },
+					BufferLineTabSelected = { bg = "NONE", fg = "#f4f4f5", bold = true },
 					BufferLineTabSeparator = { fg = "#3f3f46", bg = "NONE" },
 					BufferLineTabSeparatorSelected = { fg = "#3f3f46", bg = "NONE" },
-					BufferLineOffsetSeparator = { fg = "#222222", bg = "NONE" },
+					BufferLineOffsetSeparator = { fg = "#3f3f46", bg = "NONE" },
 
 					-- CursorLine: soft translucent gray wash matching any dark terminal background
 					CursorLine = { bg = "#222222" },
-					PmenuSel = { bg = "#3f3f46", fg = colors.text, bold = true },
 				}
 			end,
 		},
+		config = function(_, opts)
+			require("catppuccin").setup(opts)
+			vim.cmd.colorscheme("catppuccin-mocha")
+		end,
 	},
 
-	-- Activate Catppuccin as LazyVim's default colorscheme
-	{
-		"LazyVim/LazyVim",
-		opts = {
-			colorscheme = "catppuccin-mocha",
-		},
-	},
-
-	-- 2. Lualine Statusline (Powerline Graphite Style)
+	-- 2. Lualine Statusline (100% Transparent Terminal-Synced Style)
 	{
 		"nvim-lualine/lualine.nvim",
 		event = "VeryLazy",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 		opts = function()
-			local graphite_theme = {
+			local transparent_theme = {
 				normal = {
 					a = { bg = "#e4e4e7", fg = "#18181b", gui = "bold" },
-					b = { bg = "#27272a", fg = "#f4f4f5", gui = "bold" },
+					b = { bg = "NONE", fg = "#a1a1aa", gui = "bold" },
 					c = { bg = "NONE", fg = "#a1a1aa" },
 				},
 				insert = {
 					a = { bg = "#f59e0b", fg = "#18181b", gui = "bold" },
-					b = { bg = "#27272a", fg = "#f4f4f5", gui = "bold" },
+					b = { bg = "NONE", fg = "#a1a1aa", gui = "bold" },
 					c = { bg = "NONE", fg = "#a1a1aa" },
 				},
 				visual = {
 					a = { bg = "#c084fc", fg = "#18181b", gui = "bold" },
-					b = { bg = "#27272a", fg = "#f4f4f5", gui = "bold" },
+					b = { bg = "NONE", fg = "#a1a1aa", gui = "bold" },
 					c = { bg = "NONE", fg = "#a1a1aa" },
 				},
 				replace = {
 					a = { bg = "#f43f5e", fg = "#18181b", gui = "bold" },
-					b = { bg = "#27272a", fg = "#f4f4f5", gui = "bold" },
+					b = { bg = "NONE", fg = "#a1a1aa", gui = "bold" },
 					c = { bg = "NONE", fg = "#a1a1aa" },
 				},
 				command = {
 					a = { bg = "#38bdf8", fg = "#18181b", gui = "bold" },
-					b = { bg = "#27272a", fg = "#f4f4f5", gui = "bold" },
+					b = { bg = "NONE", fg = "#a1a1aa", gui = "bold" },
 					c = { bg = "NONE", fg = "#a1a1aa" },
 				},
 				inactive = {
-					a = { bg = "#27272a", fg = "#71717a" },
+					a = { bg = "NONE", fg = "#71717a" },
 					b = { bg = "NONE", fg = "#71717a" },
 					c = { bg = "NONE", fg = "#71717a" },
 				},
@@ -202,7 +180,7 @@ return {
 
 			return {
 				options = {
-					theme = graphite_theme,
+					theme = transparent_theme,
 					section_separators = { left = "", right = "" },
 					component_separators = { left = "│", right = "│" },
 					globalstatus = true,
@@ -237,7 +215,7 @@ return {
 		end,
 	},
 
-	-- 3. Bufferline Top Tab Bar (Flat square buffer tabs with graphite theme)
+	-- 3. Bufferline Top Tab Bar (100% Transparent Terminal-Synced Tabs)
 	{
 		"akinsho/bufferline.nvim",
 		event = "VeryLazy",
@@ -269,12 +247,6 @@ return {
 				end,
 				offsets = {
 					{
-						filetype = "neo-tree",
-						text = "󰙅 FILE EXPLORER",
-						text_align = "left",
-						highlight = "Directory",
-					},
-					{
 						filetype = "snacks_layout_box",
 						text = "󰙅 FILE EXPLORER",
 						text_align = "left",
@@ -285,52 +257,23 @@ return {
 			highlights = {
 				fill = { bg = "NONE" },
 				background = { bg = "NONE", fg = "#a1a1aa" },
-				buffer_selected = { bg = "#222222", fg = "#f4f4f5", bold = true, italic = false },
+				buffer_selected = { bg = "NONE", fg = "#f4f4f5", bold = true, italic = false },
 				buffer_visible = { bg = "NONE", fg = "#71717a" },
-				indicator_selected = { fg = "#e4e4e7", bg = "#222222" },
+				indicator_selected = { fg = "#e4e4e7", bg = "NONE" },
 				indicator_visible = { fg = "NONE", bg = "NONE" },
 				separator = { fg = "#3f3f46", bg = "NONE" },
 				separator_selected = { fg = "#3f3f46", bg = "NONE" },
 				separator_visible = { fg = "#3f3f46", bg = "NONE" },
 				modified = { fg = "#f59e0b", bg = "NONE" },
-				modified_selected = { fg = "#f59e0b", bg = "#222222" },
+				modified_selected = { fg = "#f59e0b", bg = "NONE" },
 				modified_visible = { fg = "#f59e0b", bg = "NONE" },
 				close_button = { fg = "#71717a", bg = "NONE" },
-				close_button_selected = { fg = "#a1a1aa", bg = "#222222" },
+				close_button_selected = { fg = "#a1a1aa", bg = "NONE" },
 				close_button_visible = { fg = "#71717a", bg = "NONE" },
 				tab = { bg = "NONE", fg = "#a1a1aa" },
-				tab_selected = { bg = "#222222", fg = "#f4f4f5", bold = true },
+				tab_selected = { bg = "NONE", fg = "#f4f4f5", bold = true },
 				tab_separator = { fg = "#3f3f46", bg = "NONE" },
 				tab_separator_selected = { fg = "#3f3f46", bg = "NONE" },
-			},
-		},
-	},
-
-	-- 4. Noice UI (Floating Commandline & Notifications)
-	{
-		"folke/noice.nvim",
-		event = "VeryLazy",
-		dependencies = { "MunifTanjim/nui.nvim" },
-		opts = {
-			lsp = {
-				override = {
-					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-					["vim.lsp.util.stylize_markdown"] = true,
-					["cmp.entry.get_documentation"] = true,
-				},
-			},
-			presets = {
-				bottom_search = false,
-				command_palette = true,
-				long_message_to_split = true,
-				inc_rename = false,
-				lsp_doc_border = true,
-			},
-			routes = {
-				{
-					filter = { event = "msg_show", find = "written" },
-					opts = { skip = true },
-				},
 			},
 		},
 	},

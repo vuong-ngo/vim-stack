@@ -5,10 +5,6 @@
 
 local set = vim.keymap.set
 
--- Leader keys (initialized in lazy.lua before loading plugins)
-vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
-
 local function map(mode, lhs, rhs, desc)
 	set(mode, lhs, rhs, { desc = desc, noremap = true, silent = true })
 end
@@ -16,10 +12,17 @@ end
 -- Clear Search Highlights (<esc>)
 map("n", "<esc>", "<cmd>nohlsearch<CR>", "Clear Search Highlight")
 
--- Unmap unused save/quit shortcuts to eliminate leader key delay
-pcall(vim.keymap.del, "n", "<leader>w")
-pcall(vim.keymap.del, "n", "<leader>q")
-pcall(vim.keymap.del, "n", "<leader>Q")
+-- Buffer Switching (H / L)
+map("n", "H", function()
+	if not pcall(vim.cmd, "BufferLineCyclePrev") then
+		vim.cmd("bprevious")
+	end
+end, "Previous Buffer")
+map("n", "L", function()
+	if not pcall(vim.cmd, "BufferLineCycleNext") then
+		vim.cmd("bnext")
+	end
+end, "Next Buffer")
 
 -- ------------------------------------------------------------
 -- 1. FILE EXPLORER & QUICK SEARCH (SPECIAL UTILITIES)
@@ -62,19 +65,6 @@ map("n", "<leader>fb", function()
 	Snacks.picker.buffers()
 end, "Open Buffers")
 
--- Global Search & Replace (grug-far) (<leader>sr)
-map("n", "<leader>sr", function()
-	if vim.fn.executable("rg") == 1 then
-		require("grug-far").open()
-	else
-		vim.notify(
-			"ripgrep ('rg') is required for workspace search & replace. Install via 'sudo pacman -S ripgrep'.",
-			vim.log.levels.WARN,
-			{ title = "ripgrep Missing" }
-		)
-	end
-end, "Search & Replace (Workspace)")
-
 -- ------------------------------------------------------------
 -- 2. WINDOW SPLITS & NAVIGATION
 -- ------------------------------------------------------------
@@ -89,16 +79,38 @@ map("n", "<leader>-", "<cmd>split<CR>", "Split Horizontally")
 -- ------------------------------------------------------------
 -- 3. INTEGRATED TERMINAL
 -- ------------------------------------------------------------
--- Toggle Floating Terminal (Ctrl+/ or <leader>ft)
+-- Toggle Floating Terminal (Ctrl+/, <C-_> fallback, or <leader>ft)
 map({ "n", "t" }, "<C-/>", function()
+	Snacks.terminal()
+end, "Toggle Integrated Terminal")
+map({ "n", "t" }, "<C-_>", function()
+	Snacks.terminal()
+end, "which_key_ignore")
+map("n", "<leader>ft", function()
 	Snacks.terminal()
 end, "Toggle Integrated Terminal")
 
 -- ------------------------------------------------------------
--- 4. LSP & CODE ACTIONS
+-- 4. LSP, DIAGNOSTICS & FORMATTING
 -- ------------------------------------------------------------
-map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
-map("n", "<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
+map("n", "gd", function()
+	vim.lsp.buf.definition()
+end, "Goto Definition")
+map("n", "gr", function()
+	Snacks.picker.lsp_references()
+end, "Find References")
+map("n", "gI", function()
+	vim.lsp.buf.implementation()
+end, "Goto Implementation")
+map("n", "K", function()
+	vim.lsp.buf.hover()
+end, "Hover Documentation")
+map("n", "<leader>ca", function()
+	vim.lsp.buf.code_action()
+end, "Code Action")
+map("n", "<leader>rn", function()
+	vim.lsp.buf.rename()
+end, "Rename Symbol")
 
 local function format_document()
 	local ok, conform = pcall(require, "conform")
@@ -110,10 +122,11 @@ local function format_document()
 end
 
 map({ "n", "v" }, "<leader>cf", format_document, "Format Document")
-
--- Unmap any remaining conflicting LazyVim multi-key sequences
-pcall(vim.keymap.del, "n", "<leader>qq")
-pcall(vim.keymap.del, "n", "<leader>qs")
-pcall(vim.keymap.del, "n", "<leader>ql")
-pcall(vim.keymap.del, "n", "<leader>qd")
-pcall(vim.keymap.del, "n", "<leader>qf")
+map("n", "<leader>uf", function()
+	vim.g.autoformat = not vim.g.autoformat
+	vim.notify(
+		"Format on save: " .. (vim.g.autoformat and "ON" or "OFF"),
+		vim.log.levels.INFO,
+		{ title = "Formatting" }
+	)
+end, "Toggle Format on Save")

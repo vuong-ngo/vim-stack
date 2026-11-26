@@ -38,9 +38,8 @@ autocmd("BufReadPost", {
 })
 
 -- ---------- GLOBALLY DISABLE SPELL CHECKING ----------
--- Overwrite LazyVim's default wrap_spell autocommand which turns spell on
--- for markdown, text, gitcommit, etc. (removing annoying red squiggles)
-local no_spell_group = augroup("lazyvim_wrap_spell", { clear = true })
+-- Keep spell checking off on prose/git buffers (removing red squiggle noise)
+local no_spell_group = augroup("DisableSpellOnText", { clear = true })
 autocmd("FileType", {
 	group = no_spell_group,
 	pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },

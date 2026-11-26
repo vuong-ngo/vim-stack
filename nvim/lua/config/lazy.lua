@@ -9,43 +9,47 @@ local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim" -- Adjust the path 
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
 	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+	if vim.v.shell_error ~= 0 then
+		vim.api.nvim_echo({
+			{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+			{ out, "WarningMsg" },
+			{ "\nPress any key to exit..." },
+		}, true, {})
+		vim.fn.getchar()
+		os.exit(1)
+	end
 end
 
 -- Prepend lazy.nvim to the runtime path
 vim.opt.rtp:prepend(lazypath)
 
--- Set leader and localleader keys before loading lazy.nvim
-vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
+-- Set leader and localleader keys before loading lazy.nvim (safe fallback if required directly)
+vim.g.mapleader = vim.g.mapleader or " "
+vim.g.maplocalleader = vim.g.maplocalleader or "\\"
 
 require("lazy").setup({
 	spec = {
-		-- add LazyVim and import its plugins
-		{ "LazyVim/LazyVim", import = "lazyvim.plugins" },
-		-- import/override with your plugins
+		-- Load lightweight domain plugin modules directly (no LazyVim distro overhead)
 		{ import = "plugins" },
 	},
 	defaults = {
-		-- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
-		-- If you know what you're doing, you can set this to `true` to have all your custom plugins lazy-loaded by default.
+		-- Keep user plugin specs lazy unless explicitly marked lazy = false
 		lazy = false,
-		-- It's recommended to leave version=false for now, since a lot the plugin that support versioning,
-		-- have outdated releases, which may break your Neovim install.
 		version = false, -- always use the latest git commit
-		-- version = "*", -- try installing the latest stable version for plugins that support semver
 	},
 	checker = {
 		enabled = false, -- Disabled: prevents background git network polling that can hang or error offline
-		notify = false, -- notify on update
-	}, -- automatically check for plugin updates
+		notify = false,
+	},
+	change_detection = {
+		notify = false,
+	},
 	performance = {
 		rtp = {
-			-- disable some rtp plugins
+			-- disable unused built-in runtime plugins
 			disabled_plugins = {
 				"gzip",
-				-- "matchit",
-				-- "matchparen",
-				-- "netrwPlugin",
+				"matchit",
 				"tarPlugin",
 				"tohtml",
 				"tutor",

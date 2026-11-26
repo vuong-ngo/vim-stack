@@ -1,6 +1,6 @@
 -- ================================================
 -- Script: coding.lua
--- Description: Configures in-buffer editing mechanics and autocompletion, including Blink.cmp completion engine, Mini.pairs auto-closing, Mini.surround motions, Mini.ai text objects, and Nvim-ts-autotag tag closing.
+-- Description: Configures autocompletion via Blink.cmp while keeping standard Vim editing mechanics pure.
 -- ================================================
 
 return {
@@ -39,43 +39,5 @@ return {
 				},
 			},
 		},
-	},
-
-	-- 2. Auto Pairs (Automatic closing of quotes, brackets, and parentheses)
-	{
-		"nvim-mini/mini.pairs",
-		event = "VeryLazy",
-		opts = {},
-	},
-
-	-- 3. Surround Motions (Pure Vim friendly - uses gz prefix to keep standard s/S instant)
-	{
-		"nvim-mini/mini.surround",
-		event = "VeryLazy",
-		opts = {
-			mappings = {
-				add = "gza",
-				delete = "gzd",
-				find = "gzf",
-				find_left = "gzF",
-				highlight = "gzh",
-				replace = "gzr",
-				update_n_lines = "gzn",
-			},
-		},
-	},
-
-	-- 4. Enhanced Text Objects (mini.ai)
-	{
-		"nvim-mini/mini.ai",
-		event = "VeryLazy",
-		opts = {},
-	},
-
-	-- 5. Auto Close & Rename HTML/JSX Tags
-	{
-		"windwp/nvim-ts-autotag",
-		event = { "BufReadPost", "BufNewFile" },
-		opts = {},
 	},
 }

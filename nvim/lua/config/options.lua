@@ -24,11 +24,11 @@ vim.opt.sidescrolloff = 8
 vim.opt.spell = false
 vim.opt.spelllang = { "en" }
 
--- Force relativenumber = false on buffer open (overriding LazyVim default)
+-- Ensure relativenumber stays disabled across buffers
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 	group = vim.api.nvim_create_augroup("DisableRelativeNumbers", { clear = true }),
 	callback = function()
-		vim.opt.relativenumber = false
+		vim.opt_local.relativenumber = false
 	end,
 })
 
