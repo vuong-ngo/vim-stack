@@ -48,6 +48,8 @@ set scrolloff=8                 " Keep 8 lines visible above/below cursor
 set sidescrolloff=8
 set wildmenu                    " Visual completion popup for command mode
 set wildmode=longest:full,full
+set path+=**                    " Allow :find to search subdirectories recursively
+set wildignore+=*/.git/*,*/node_modules/*
 
 if has("patch-8.2.0000") || has("nvim")
     set wildoptions=pum
@@ -59,7 +61,7 @@ if has("termguicolors")
     set termguicolors
 endif
 
-" --- Transparent Background & Gentle Eye-Friendly Pastel Theme ---
+" --- Transparent Background & Catppuccin Mocha / Graphite Palette (Synced with Neovim) ---
 highlight clear Normal
 highlight Normal guibg=NONE ctermbg=NONE guifg=#cdd6f4 ctermfg=253
 highlight clear NormalNC
@@ -72,7 +74,7 @@ highlight clear CursorLineNr
 highlight CursorLineNr term=bold cterm=bold gui=bold guifg=#e4e4e7 ctermfg=254 guibg=NONE ctermbg=NONE
 
 highlight clear LineNr
-highlight LineNr term=NONE cterm=NONE gui=NONE guifg=#7f849c ctermfg=245 guibg=NONE ctermbg=NONE
+highlight LineNr term=NONE cterm=NONE gui=NONE guifg=#71717a ctermfg=243 guibg=NONE ctermbg=NONE
 
 highlight clear Visual
 highlight Visual term=NONE cterm=NONE gui=NONE guibg=#363a4f ctermbg=238
@@ -82,23 +84,27 @@ highlight Search term=NONE cterm=NONE gui=NONE guibg=#45475a guifg=#f9e2af cterm
 highlight clear IncSearch
 highlight IncSearch term=NONE cterm=NONE gui=NONE guibg=#94e2d5 guifg=#181825 ctermbg=115 ctermfg=234
 
-" --- Statusline (100% Transparent, No Reverse, Inherits Terminal Background) ---
+" --- Statusline (100% Transparent, Graphite Styling Matching Lualine) ---
 highlight clear StatusLine
-highlight StatusLine term=bold cterm=bold gui=bold guibg=NONE ctermbg=NONE guifg=#cdd6f4 ctermfg=253
+highlight StatusLine term=bold cterm=bold gui=bold guibg=NONE ctermbg=NONE guifg=#e4e4e7 ctermfg=254
 highlight clear StatusLineNC
-highlight StatusLineNC term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#6c7086 ctermfg=243
+highlight StatusLineNC term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#71717a ctermfg=243
 
 " --- Split Windows & Separators ---
 highlight clear VertSplit
-highlight VertSplit term=NONE cterm=NONE gui=NONE guifg=#313244 guibg=NONE ctermfg=237 ctermbg=NONE
+highlight VertSplit term=NONE cterm=NONE gui=NONE guifg=#27272a guibg=NONE ctermfg=235 ctermbg=NONE
 
-" --- Popup Menu (Completion & Wildmenu) ---
+" --- Popup Menu (100% Transparent Pmenu & Graphite Selection Matching Neovim) ---
 highlight clear Pmenu
-highlight Pmenu term=NONE cterm=NONE gui=NONE guibg=#1e1e2e guifg=#cdd6f4 ctermbg=236 ctermfg=253
+highlight Pmenu term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#f4f4f5 ctermfg=255
 highlight clear PmenuSel
-highlight PmenuSel term=bold cterm=bold gui=bold guibg=#363a4f guifg=#89dceb ctermbg=238 ctermfg=117
+highlight PmenuSel term=bold cterm=bold gui=bold guibg=#3f3f46 ctermbg=238 guifg=#cdd6f4 ctermfg=253
+highlight clear PmenuSbar
+highlight PmenuSbar term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE
+highlight clear PmenuThumb
+highlight PmenuThumb term=NONE cterm=NONE gui=NONE guibg=#3f3f46 ctermbg=238
 highlight clear WildMenu
-highlight WildMenu term=bold cterm=bold gui=bold guibg=#363a4f guifg=#89dceb ctermbg=238 ctermfg=117
+highlight WildMenu term=bold cterm=bold gui=bold guibg=#3f3f46 ctermbg=238 guifg=#cdd6f4 ctermfg=253
 
 " --- Netrw File Explorer ---
 highlight clear Directory
@@ -116,29 +122,33 @@ highlight netrwSizeDate guifg=#fab387 ctermfg=216
 highlight clear MatchParen
 highlight MatchParen term=bold cterm=bold gui=bold guibg=#45475a guifg=#89dceb ctermbg=239 ctermfg=117
 highlight clear SignColumn
-highlight SignColumn term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#6c7086 ctermfg=243
+highlight SignColumn term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#71717a ctermfg=243
 highlight clear FoldColumn
-highlight FoldColumn term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#6c7086 ctermfg=243
+highlight FoldColumn term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#71717a ctermfg=243
 highlight clear Folded
 highlight Folded term=NONE cterm=NONE gui=italic guibg=#24273a ctermbg=235 guifg=#9399b2 ctermfg=247
 highlight clear NonText
-highlight NonText term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#45475a ctermfg=239
+highlight NonText term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#3f3f46 ctermfg=238
 highlight clear EndOfBuffer
-highlight EndOfBuffer term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#45475a ctermfg=239
+highlight EndOfBuffer term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#3f3f46 ctermfg=238
 highlight clear SpecialKey
 highlight SpecialKey term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#585b70 ctermfg=240
 
-" --- Top Buffer Tabline (100% Transparent Bar Matching Any Terminal Background) ---
+" --- Top Buffer Tabline (100% Transparent Style Matching Neovim Bufferline) ---
 highlight clear TabLine
-highlight TabLine term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#7f849c ctermfg=245
+highlight TabLine term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#a1a1aa ctermfg=248
 highlight clear TabLineSel
-highlight TabLineSel term=bold cterm=bold gui=bold guibg=NONE ctermbg=NONE guifg=#89dceb ctermfg=117
+highlight TabLineSel term=bold cterm=bold gui=bold guibg=NONE ctermbg=NONE guifg=#f4f4f5 ctermfg=255
+highlight clear TabLineInd
+highlight TabLineInd term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#e4e4e7 ctermfg=254
 highlight clear TabLineFill
 highlight TabLineFill term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=NONE ctermfg=NONE
 highlight clear TabLineSep
-highlight TabLineSep term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#45475a ctermfg=239
+highlight TabLineSep term=NONE cterm=NONE gui=NONE guibg=NONE ctermbg=NONE guifg=#3f3f46 ctermfg=238
 highlight clear TabLineMod
-highlight TabLineMod term=bold cterm=bold gui=bold guibg=NONE ctermbg=NONE guifg=#fab387 ctermfg=216
+highlight TabLineMod term=bold cterm=bold gui=bold guibg=NONE ctermbg=NONE guifg=#f59e0b ctermfg=214
+highlight clear TabLineModSel
+highlight TabLineModSel term=bold cterm=bold gui=bold guibg=NONE ctermbg=NONE guifg=#f59e0b ctermfg=214
 
 " --- Syntax Highlighting (Soft Pastel, Eliminates Unreadable Dark Blue) ---
 highlight Comment guifg=#9399b2 ctermfg=247 gui=italic cterm=italic
@@ -171,8 +181,8 @@ highlight Special guifg=#f2cdcd ctermfg=224
 highlight SpecialChar guifg=#f2cdcd ctermfg=224
 highlight Delimiter guifg=#94e2d5 ctermfg=115
 highlight Todo guifg=#f9e2af guibg=#363a4f ctermfg=223 ctermbg=238 gui=bold,italic cterm=bold
-highlight WarningMsg guifg=#fab387 guibg=NONE ctermfg=216 ctermbg=NONE
-highlight ErrorMsg guifg=#f38ba8 guibg=NONE ctermfg=211 ctermbg=NONE
+highlight WarningMsg guifg=#f59e0b guibg=NONE ctermfg=214 ctermbg=NONE
+highlight ErrorMsg guifg=#f43f5e guibg=NONE ctermfg=203 ctermbg=NONE
 highlight Title guifg=#89dceb ctermfg=117 gui=bold cterm=bold
 highlight DiffAdd guifg=#a6e3a1 guibg=#233b32 ctermfg=150 ctermbg=236
 highlight DiffChange guifg=#f9e2af guibg=#383226 ctermfg=223 ctermbg=236
@@ -227,13 +237,13 @@ function! BufferTabLine() abort
         let l:click_end = l:has_click ? '%[]' : '%T'
 
         if l:b == l:cur
-            let l:line .= l:click_start . '%#TabLineSel#  ' . l:tab_idx . '  ' . l:name
+            let l:line .= l:click_start . '%#TabLineInd#▎%#TabLineSel# ' . l:tab_idx . ' ' . l:name
             if l:is_mod
-                let l:line .= ' %#TabLineMod#●%#TabLineSel#'
+                let l:line .= ' %#TabLineModSel#●%#TabLineSel#'
             endif
             let l:line .= '  %#TabLineSep#│' . l:click_end
         else
-            let l:line .= l:click_start . '%#TabLine#  ' . l:tab_idx . '  ' . l:name
+            let l:line .= l:click_start . '%#TabLine#  ' . l:tab_idx . ' ' . l:name
             if l:is_mod
                 let l:line .= ' %#TabLineMod#●%#TabLine#'
             endif
@@ -259,8 +269,11 @@ set smartindent                 " Smart indenting for code
 set wrap                        " Wrap long lines
 set linebreak                   " Wrap lines at convenient points (words)
 
-" Enforce 4-space tab indentation across all filetypes
-autocmd FileType * setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+" Enforce 4-space tab indentation across all filetypes (except Makefiles)
+augroup Enforce4SpaceIndent
+    autocmd!
+    autocmd FileType * if &filetype !=# 'make' | setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab | endif
+augroup END
 
 " --- 4. SEARCH OPTIONS ---
 set ignorecase                  " Case-insensitive searching...
@@ -287,8 +300,10 @@ let g:netrw_list_hide = ''      " Clear hide filter to display all files
 " --- Clear Search Highlight ---
 nnoremap <silent> <Esc> :nohlsearch<CR><Esc>
 
-" --- File Explorer Toggle (<leader>e) ---
+" --- File Explorer & Quick Find/Buffers (<leader>e, <leader>ff, <leader>fb) ---
 nnoremap <leader>e :Lexplore<CR>
+nnoremap <leader>ff :find 
+nnoremap <leader>fb :ls<CR>:b<Space>
 
 " --- Window Splits (<leader>| & <leader>-) ---
 nnoremap <leader>\| :vsplit<CR>
@@ -301,7 +316,12 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
 " --- Document Formatting (<leader>cf) ---
-nnoremap <leader>cf gg=G<C-o><C-o>
+function! FormatDocumentNative() abort
+    let l:view = winsaveview()
+    silent keepjumps normal! gg=G
+    call winrestview(l:view)
+endfunction
+nnoremap <silent> <leader>cf :call FormatDocumentNative()<CR>
 
 
 " ============================================================
@@ -312,6 +332,8 @@ function! ToggleCommentNative() range
     let l:comment = '#'
     if index(['c', 'cpp', 'java', 'javascript', 'typescript', 'php', 'css', 'go', 'rust', 'dart'], &filetype) >= 0
         let l:comment = '//'
+    elseif index(['lua', 'sql', 'haskell'], &filetype) >= 0
+        let l:comment = '--'
     elseif index(['vim'], &filetype) >= 0
         let l:comment = '"'
     elseif index(['html', 'xml'], &filetype) >= 0
@@ -325,12 +347,12 @@ function! ToggleCommentNative() range
         let l:line = getline(l:i)
         if l:comment == '<!--'
             if l:line =~ '^\s*<!--.*-->\s*$'
-                call setline(l:i, substitute(l:line, '^\(\s*\)<!--\s*\(.*\)\s*-->\s*$', '\1\2', ''))
+                call setline(l:i, substitute(l:line, '^\(\s*\)<!--\s*\(.\{-}\)\s*-->\s*$', '\1\2', ''))
             else
                 call setline(l:i, substitute(l:line, '^\(\s*\)\(.*\)$', '\1<!-- \2 -->', ''))
             endif
         else
-            let l:escaped = escape(l:comment, '/"*')
+            let l:escaped = escape(l:comment, '/"*-')
             if l:line =~ '^\s*' . l:escaped
                 call setline(l:i, substitute(l:line, '^\(\s*\)' . l:escaped . '\s*', '\1', ''))
             else
