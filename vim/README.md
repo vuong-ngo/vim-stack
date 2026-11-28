@@ -41,12 +41,6 @@ Pure Vim motions and editing keys (`j`, `k`, `dd`, `x`, `p`, `<`, `>`, etc.) ret
 | Shortcut | Mode | Action |
 | :--- | :---: | :--- |
 | `H` / `L` | Normal | Switch to previous / next valid buffer |
-| `<leader>e` | Normal | Toggle Netrw file explorer tree (`:Lexplore`) |
-| `<leader>ff` | Normal | Recursive file search prompt (`:find ` with wildmenu popup) |
-| `<leader>fb` | Normal | List and switch open buffers (`:ls` + `:b`) |
-| `<leader>\|` | Normal | Vertical split (`:vsplit`) |
-| `<leader>-` | Normal | Horizontal split (`:split`) |
-| `Ctrl + h/j/k/l` | Normal | Navigate between window splits |
 
 ### Code Formatting & Commenting
 | Shortcut | Mode | Action |

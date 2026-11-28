@@ -332,21 +332,6 @@ endfunction
 nnoremap <silent> H :call SmartBufferPrev()<CR>
 nnoremap <silent> L :call SmartBufferNext()<CR>
 
-" --- File Explorer & Quick Find/Buffers (<leader>e, <leader>ff, <leader>fb) ---
-nnoremap <leader>e :Lexplore<CR>
-nnoremap <leader>ff :find 
-nnoremap <leader>fb :ls<CR>:b<Space>
-
-" --- Window Splits (<leader>| & <leader>-) ---
-nnoremap <leader>\| :vsplit<CR>
-nnoremap <leader>- :split<CR>
-
-" --- Window Navigation (Ctrl + h/j/k/l) ---
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-
 " --- Document Formatting (<leader>cf) ---
 function! FormatDocumentNative() abort
     let l:view = winsaveview()
